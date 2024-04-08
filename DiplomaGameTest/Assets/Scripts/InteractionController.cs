@@ -3,12 +3,19 @@ using UnityEngine;
 public class InteractionController : MonoBehaviour
 {
     public float longPressThreshold = 2f;
+    [SerializeField]
+    private float moveSpeed = 5f;
     private IInteractable selectedObject;
     private GameObject pressingObject;
     private float pressTime = 0f;
     private bool isPressing = false;
     private bool isFollowing = false;
-    private float selectHeight = 7.99f;
+    [SerializeField]
+    private float selectHeight = 8.55f;
+    private InteractableObject.ObjectState currentState = InteractableObject.ObjectState.Complete;
+    [SerializeField]
+    private float placementThreshold = 1.0f; // La distance maximale pour considérer l'objet comme étant dans la zone cible
+
 
     void Update()
     {
@@ -66,8 +73,14 @@ public class InteractionController : MonoBehaviour
 
     private void UpdateFollowingObjectPosition()
     {
-        Vector3 newPosition = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, selectHeight));
-        pressingObject.transform.position = newPosition;
+        if (pressingObject != null)
+        {
+            // Calcule la position cible basée sur la position actuelle de la souris/toucher
+            Vector3 targetPosition = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, selectHeight));
+            
+            // Option 1: Utilisation de Lerp pour un mouvement fluide avec un retard
+            pressingObject.transform.position = Vector3.Lerp(pressingObject.transform.position, targetPosition, Time.deltaTime * moveSpeed);
+        }
     }
 
     private void EndPress()
@@ -82,6 +95,7 @@ public class InteractionController : MonoBehaviour
             if (interactableObject != null)
             {
                 interactableObject.SetCanRotate(true);
+                CheckPlacement(interactableObject); // Vérifie si l'objet doit être placé ou réinitialisé
 
                 // Détermine la position de relâchement
                 if (Input.mousePosition.y > Screen.height / 2)
@@ -135,5 +149,37 @@ public class InteractionController : MonoBehaviour
         isFollowing = false;
         pressingObject = null;
         pressTime = 0f;
+    }
+
+    private void CheckPlacement(InteractableObject interactableObject)
+    {
+        // Log pour indiquer que la vérification de placement commence
+        Debug.Log($"Vérification du placement pour {interactableObject.name}");
+
+        Collider[] hitColliders = Physics.OverlapSphere(interactableObject.transform.position, placementThreshold);
+        bool placedCorrectly = false;
+
+        foreach (var hitCollider in hitColliders)
+        {
+            // Vérifie si l'objet est proche de sa zone de placement
+            Debug.Log($"Objet {interactableObject.name} détecté proche de {hitCollider.gameObject.name}");
+
+            if (hitCollider.gameObject.CompareTag("PlacementZone") && hitCollider.gameObject.name == interactableObject.GetDestinationZoneName())
+            {
+                Debug.Log($"Objet {interactableObject.name} placé correctement dans {hitCollider.gameObject.name}");
+                placedCorrectly = true;
+                break;
+            }
+        }
+        
+        if (placedCorrectly)
+        {
+            interactableObject.Place();
+        }
+        else
+        {
+            Debug.Log($"Objet {interactableObject.name} n'a pas été placé correctement.");
+            interactableObject.ResetPosition();
+        }
     }
 }

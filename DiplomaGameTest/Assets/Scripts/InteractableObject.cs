@@ -6,7 +6,7 @@ public class InteractableObject : MonoBehaviour, IInteractable
 {
     public bool isMainObject = false;
     public Vector3 centerPosition = new Vector3(0, 0, 0);
-    public float moveSpeed = 5f;
+    //public float moveSpeed = 5f;
     public float animationDuration = 0.4f;
     private Vector3 initialPosition;
     private Quaternion initialRotation;
@@ -15,7 +15,23 @@ public class InteractableObject : MonoBehaviour, IInteractable
     [SerializeField] private Color selectedColor = Color.green; // Couleur lors de la sélection
     private Color originalColor; // Pour stocker la couleur originale
     private bool canRotate = true; // Contrôle si l'objet peut tourner
+    [SerializeField]
+    private string destinationZoneName; // Le nom de la zone de destination spécifique pour cet objet
+    public string GetDestinationZoneName()
+    {
+        return destinationZoneName;
+    }
 
+
+    public enum ObjectState
+    {
+        Complete,
+        Dismantled,
+        Following,
+        Placed
+    }
+
+    public ObjectState currentState;
 
     private void Start()
     {
@@ -54,20 +70,22 @@ public class InteractableObject : MonoBehaviour, IInteractable
     private IEnumerator MoveToPosition(Vector3 targetPosition, System.Action onComplete = null)
     {
         float elapsedTime = 0f;
-        //animationDuration = 1f; // Durée de l'animation, en secondes. Ajuste selon les besoins.
         Vector3 startPosition = transform.position;
         Quaternion startRotation = transform.rotation;
         Quaternion endRotation = (targetPosition == initialPosition) ? initialRotation : transform.rotation;
 
         while (elapsedTime < animationDuration)
         {
-            transform.position = Vector3.Lerp(startPosition, targetPosition, elapsedTime / animationDuration);
-            transform.rotation = Quaternion.Lerp(startRotation, endRotation, elapsedTime / animationDuration);
+            // Utilise SmoothStep pour un effet d'ease in/out
+            float fraction = elapsedTime / animationDuration;
+            float smoothFraction = Mathf.SmoothStep(0.0f, 1.0f, fraction);
+
+            transform.position = Vector3.Lerp(startPosition, targetPosition, smoothFraction);
+            transform.rotation = Quaternion.Lerp(startRotation, endRotation, smoothFraction);
             elapsedTime += Time.deltaTime;
             yield return null;
         }
 
-        // Assure que l'objet est exactement à la position et rotation cibles à la fin de l'animation
         transform.position = targetPosition;
         transform.rotation = endRotation;
 
@@ -96,5 +114,22 @@ public class InteractableObject : MonoBehaviour, IInteractable
         Debug.Log("ToggleState appelé sur " + gameObject.name);
         isSelected = !isSelected; // Bascule l'état de sélection
         GetComponent<Renderer>().material.color = isSelected ? selectedColor : originalColor;
+    }
+
+    public void Place()
+    {
+        // Logique pour "placer" l'objet, comme le déplacer à une position précise
+        currentState = ObjectState.Placed; // Met à jour l'état pour indiquer que l'objet a été correctement placé
+        // Appliquer ici l'animation ou l'effet visuel de "placement réussi"
+    }
+
+    public void ResetPosition()
+    {
+        // Logique pour réinitialiser l'objet à sa position/état initial
+        currentState = ObjectState.Dismantled; // ou Complete, selon la logique de ton jeu
+        // Commence une coroutine pour déplacer l'objet à sa position initiale avec une animation
+        StartCoroutine(MoveToPosition(initialPosition, () => {
+            // Optionnel : Réinitialise la rotation ou d'autres propriétés si nécessaire
+        }));
     }
 }
