@@ -20,6 +20,19 @@ public class InteractionController : MonoBehaviour
     void Update()
     {
         HandleInput();
+
+        if (isFollowing && pressingObject != null)
+        {
+            UpdateFollowingObjectPosition();
+
+            // Faire le check de placement en live pour le feedback visuel
+            var interactableObject = pressingObject.GetComponent<InteractableObject>();
+            if (interactableObject != null)
+            {
+                bool canPlace = CheckPlacement(interactableObject, false); // Ne pas appliquer le placement, juste vérifier
+                interactableObject.ShowPlacementFeedback(canPlace);
+            }
+        }
     }
 
     private void HandleInput()
@@ -67,6 +80,7 @@ public class InteractionController : MonoBehaviour
             if (interactableObject != null && !interactableObject.IsSelected())
             {
                 isFollowing = true;
+                
             }
         }
     }
@@ -78,8 +92,9 @@ public class InteractionController : MonoBehaviour
             // Calcule la position cible basée sur la position actuelle de la souris/toucher
             Vector3 targetPosition = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, selectHeight));
             
-            // Option 1: Utilisation de Lerp pour un mouvement fluide avec un retard
+            // Utilisation de Lerp pour un mouvement fluide avec un retard
             pressingObject.transform.position = Vector3.Lerp(pressingObject.transform.position, targetPosition, Time.deltaTime * moveSpeed);
+            
         }
     }
 
@@ -92,6 +107,7 @@ public class InteractionController : MonoBehaviour
         else if (isFollowing && pressingObject != null)
         {
             var interactableObject = pressingObject.GetComponent<InteractableObject>();
+
             if (interactableObject != null)
             {
                 interactableObject.SetCanRotate(true);
@@ -108,7 +124,7 @@ public class InteractionController : MonoBehaviour
                     // Si relâché dans la partie inférieure, l'objet est sélectionné et agrandi
                     selectedObject?.Deselect();
                     selectedObject = interactableObject;
-                    selectedObject.Select();   
+                    selectedObject.Select();
                 }
             }
         }
@@ -151,35 +167,26 @@ public class InteractionController : MonoBehaviour
         pressTime = 0f;
     }
 
-    private void CheckPlacement(InteractableObject interactableObject)
+    private bool CheckPlacement(InteractableObject interactableObject, bool applyPlacement = false)
     {
-        // Log pour indiquer que la vérification de placement commence
-        Debug.Log($"Vérification du placement pour {interactableObject.name}");
-
         Collider[] hitColliders = Physics.OverlapSphere(interactableObject.transform.position, placementThreshold);
-        bool placedCorrectly = false;
-
         foreach (var hitCollider in hitColliders)
         {
-            // Vérifie si l'objet est proche de sa zone de placement
-            Debug.Log($"Objet {interactableObject.name} détecté proche de {hitCollider.gameObject.name}");
-
             if (hitCollider.gameObject.CompareTag("PlacementZone") && hitCollider.gameObject.name == interactableObject.GetDestinationZoneName())
             {
-                Debug.Log($"Objet {interactableObject.name} placé correctement dans {hitCollider.gameObject.name}");
-                placedCorrectly = true;
-                break;
+                if (applyPlacement)
+                {
+                    interactableObject.Place();
+                }
+                return true; // Placement possible
             }
         }
         
-        if (placedCorrectly)
+        if (applyPlacement)
         {
-            interactableObject.Place();
-        }
-        else
-        {
-            Debug.Log($"Objet {interactableObject.name} n'a pas été placé correctement.");
             interactableObject.ResetPosition();
         }
+        return false; // Placement non possible
     }
+
 }

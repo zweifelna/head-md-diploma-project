@@ -15,6 +15,15 @@ public class InteractableObject : MonoBehaviour, IInteractable
     [SerializeField] private Color selectedColor = Color.green; // Couleur lors de la sélection
     private Color originalColor; // Pour stocker la couleur originale
     private bool canRotate = true; // Contrôle si l'objet peut tourner
+    public bool CanRotate
+    {
+        get { return canRotate; }
+        set
+        {
+            canRotate = value;
+            // Ici, tu peux ajouter du code qui doit s'exécuter lorsque canRotate change.
+        }
+    }
     [SerializeField]
     private string destinationZoneName; // Le nom de la zone de destination spécifique pour cet objet
     public string GetDestinationZoneName()
@@ -132,4 +141,30 @@ public class InteractableObject : MonoBehaviour, IInteractable
             // Optionnel : Réinitialise la rotation ou d'autres propriétés si nécessaire
         }));
     }
+
+    public void ShowPlacementFeedback(bool canPlace)
+    {
+        var renderer = GetComponent<Renderer>();
+        if (canPlace)
+        {
+            // Rendre la couleur un peu plus claire
+            // Lerp entre la couleur originale et le blanc pour éclaircir
+            float lerpValue = 0.2f; // Ajuste cette valeur pour contrôler à quel point la couleur est plus claire (0 = couleur originale, 1 = vert)
+            Color lighterColor = Color.Lerp(originalColor, Color.green, lerpValue);
+            renderer.material.color = lighterColor;
+        }
+        else
+        {
+            // Revenir à la couleur normale ou indiquer que le placement n'est pas possible
+            ResetVisualFeedback();
+        }
+    }
+
+    public void ResetVisualFeedback()
+    {
+        // Rétablit la couleur originale de l'objet
+        GetComponent<Renderer>().material.color = originalColor;
+    }
 }
+
+
