@@ -21,7 +21,6 @@ public class InteractableObject : MonoBehaviour, IInteractable
         set
         {
             canRotate = value;
-            // Ici, tu peux ajouter du code qui doit s'exécuter lorsque canRotate change.
         }
     }
     [SerializeField]
@@ -52,11 +51,6 @@ public class InteractableObject : MonoBehaviour, IInteractable
     public bool IsSelected()
     {
         return isSelected;
-    }
-
-    public void SetCanRotate(bool rotate)
-    {
-        canRotate = rotate;
     }
 
     public void Select()
@@ -120,7 +114,6 @@ public class InteractableObject : MonoBehaviour, IInteractable
 
     public void ToggleState()
     {
-        Debug.Log("ToggleState appelé sur " + gameObject.name);
         isSelected = !isSelected; // Bascule l'état de sélection
         GetComponent<Renderer>().material.color = isSelected ? selectedColor : originalColor;
     }

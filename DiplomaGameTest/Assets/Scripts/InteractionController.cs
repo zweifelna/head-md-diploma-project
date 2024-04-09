@@ -32,7 +32,9 @@ public class InteractionController : MonoBehaviour
                 bool canPlace = CheckPlacement(interactableObject, false); // Ne pas appliquer le placement, juste vérifier
                 interactableObject.ShowPlacementFeedback(canPlace);
             }
+            
         }
+        
     }
 
     private void HandleInput()
@@ -80,7 +82,11 @@ public class InteractionController : MonoBehaviour
             if (interactableObject != null && !interactableObject.IsSelected())
             {
                 isFollowing = true;
-                
+                // Suspend la rotation de l'objet actuellement sélectionné
+                if (selectedObject != null)
+                {
+                    selectedObject.CanRotate = false;
+                }
             }
         }
     }
@@ -110,8 +116,12 @@ public class InteractionController : MonoBehaviour
 
             if (interactableObject != null)
             {
-                interactableObject.SetCanRotate(true);
+                //interactableObject.SetCanRotate(true);
                 CheckPlacement(interactableObject); // Vérifie si l'objet doit être placé ou réinitialisé
+                if (selectedObject != null && (object)selectedObject != (object)interactableObject)
+                {
+                    selectedObject.CanRotate = true;
+                }
 
                 // Détermine la position de relâchement
                 if (Input.mousePosition.y > Screen.height / 2)
@@ -127,6 +137,7 @@ public class InteractionController : MonoBehaviour
                     selectedObject.Select();
                 }
             }
+            interactableObject.ResetVisualFeedback();
         }
 
         ResetPressState();
