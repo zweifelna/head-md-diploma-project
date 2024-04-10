@@ -116,8 +116,24 @@ public class InteractionController : MonoBehaviour
 
             if (interactableObject != null)
             {
-                //interactableObject.SetCanRotate(true);
-                CheckPlacement(interactableObject); // Vérifie si l'objet doit être placé ou réinitialisé
+                
+                bool canPlace = CheckPlacement(interactableObject, false); // Vérifie si on doit snapper
+            
+                if (canPlace)
+                {
+                    GameObject destinationZone = GameObject.Find(interactableObject.GetDestinationZoneName());
+                    if (destinationZone != null)
+                    {
+                        // Snapper l'objet à la position de destinationZone
+                        interactableObject.transform.position = destinationZone.transform.position;
+                        interactableObject.CanRotate = true; // Ou toute autre logique nécessaire après le snap
+                    }
+                }
+                else
+                {
+                    interactableObject.ResetPosition(); // Ou tout autre feedback nécessaire
+                }
+
                 if (selectedObject != null && (object)selectedObject != (object)interactableObject)
                 {
                     selectedObject.CanRotate = true;
@@ -129,9 +145,9 @@ public class InteractionController : MonoBehaviour
                     // Si relâché dans la partie supérieure, l'objet retourne à sa place
                     interactableObject.Deselect();
                 }
-                else if (!interactableObject.IsSelected())
+                else if (!interactableObject.IsSelected() && selectedObject == null)
                 {
-                    // Si relâché dans la partie inférieure, l'objet est sélectionné et agrandi
+                    // Si relâché dans la partie inférieure et qu'il n'y a aucun objet sélectionné, l'objet est sélectionné et agrandi
                     selectedObject?.Deselect();
                     selectedObject = interactableObject;
                     selectedObject.Select();
