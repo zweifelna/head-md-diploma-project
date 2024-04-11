@@ -23,12 +23,22 @@ public class InteractableObject : MonoBehaviour, IInteractable
             canRotate = value;
         }
     }
+    public bool isRotating = false;
+     public bool IsRotating
+    {
+        get { return isRotating; }
+        set
+        {
+            isRotating = value;
+        }
+    }
     [SerializeField]
     private string destinationZoneName; // Le nom de la zone de destination spécifique pour cet objet
     public string GetDestinationZoneName()
     {
         return destinationZoneName;
     }
+    public bool IsSnapped { get; set; } = false;
 
 
     public enum ObjectState
@@ -68,6 +78,9 @@ public class InteractableObject : MonoBehaviour, IInteractable
             transform.rotation = initialRotation;
         }));
         isSelected = false;
+
+        // Détacher cet objet de son parent actuel (le rendre à nouveau un objet de premier niveau dans la hiérarchie)
+        this.transform.SetParent(null);
     }
 
     private IEnumerator MoveToPosition(Vector3 targetPosition, System.Action onComplete = null)
@@ -107,28 +120,31 @@ public class InteractableObject : MonoBehaviour, IInteractable
 
                 transform.Rotate(Vector3.forward, -rotateX, Space.World);
                 transform.Rotate(Vector3.right, rotateY, Space.World);
-            }
-            // Ajoute ici une logique similaire pour les interactions tactiles si nécessaire
-        }
-    }
 
-    public void ToggleState()
-    {
-        isSelected = !isSelected; // Bascule l'état de sélection
-        GetComponent<Renderer>().material.color = isSelected ? selectedColor : originalColor;
+                IsRotating = true;
+            }
+            else
+            {
+                IsRotating = false;
+            }
+        }
     }
 
     public void Place()
     {
         // Logique pour "placer" l'objet, comme le déplacer à une position précise
         currentState = ObjectState.Placed; // Met à jour l'état pour indiquer que l'objet a été correctement placé
+        IsSnapped = true;
+        Debug.Log($"{gameObject.name} est maintenant snappé.");
         // Appliquer ici l'animation ou l'effet visuel de "placement réussi"
     }
 
     public void ResetPosition()
     {
         // Logique pour réinitialiser l'objet à sa position/état initial
-        currentState = ObjectState.Dismantled; // ou Complete, selon la logique de ton jeu
+        currentState = ObjectState.Dismantled;
+        IsSnapped = false;
+        Debug.Log($"{gameObject.name} a été réinitialisé et n'est plus snappé.");
         // Commence une coroutine pour déplacer l'objet à sa position initiale avec une animation
         StartCoroutine(MoveToPosition(initialPosition, () => {
             // Optionnel : Réinitialise la rotation ou d'autres propriétés si nécessaire

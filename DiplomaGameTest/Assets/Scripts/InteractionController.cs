@@ -15,6 +15,10 @@ public class InteractionController : MonoBehaviour
     private InteractableObject.ObjectState currentState = InteractableObject.ObjectState.Complete;
     [SerializeField]
     private float placementThreshold = 1.0f; // La distance maximale pour considérer l'objet comme étant dans la zone cible
+    [SerializeField]
+    private float movementThreshold = 50f; // La distance maximale en pixels que le doigt peut bouger pendant un long press
+    private Vector2 initialTouchPosition;
+    private bool isLongPressActive = false;
 
 
     void Update()
@@ -65,6 +69,7 @@ public class InteractionController : MonoBehaviour
     {
         isPressing = true;
         pressTime = 0f;
+        initialTouchPosition = Input.mousePosition; // Enregistre la position initiale du toucher
         pressingObject = null;
 
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -76,18 +81,27 @@ public class InteractionController : MonoBehaviour
 
     private void HandleLongPress()
     {
-        if (pressTime >= longPressThreshold && !isFollowing && pressingObject != null)
+        // Calcule la distance parcourue depuis le début du press
+        float distanceMoved = Vector2.Distance(initialTouchPosition, Input.mousePosition);
+        if (pressTime >= longPressThreshold && !isFollowing && pressingObject != null && distanceMoved <= movementThreshold)
         {
             var interactableObject = pressingObject.GetComponent<InteractableObject>();
             if (interactableObject != null && !interactableObject.IsSelected())
             {
                 isFollowing = true;
+                Debug.Log($"L'objet interactable détecté est : {interactableObject.gameObject.name}");
                 // Suspend la rotation de l'objet actuellement sélectionné
                 if (selectedObject != null)
                 {
                     selectedObject.CanRotate = false;
                 }
             }
+        }
+        else if (distanceMoved > movementThreshold)
+        {
+            // Si l'utilisateur a déplacé le doigt au-delà du seuil, considère que ce n'est plus un long press
+            // Réinitialise ou annule le long press ici si nécessaire
+            isPressing = false; // Optionnel : arrête de considérer cela comme un press
         }
     }
 
@@ -121,11 +135,14 @@ public class InteractionController : MonoBehaviour
             
                 if (canPlace)
                 {
+                    CheckPlacement(interactableObject, true);
                     GameObject destinationZone = GameObject.Find(interactableObject.GetDestinationZoneName());
                     if (destinationZone != null)
                     {
                         // Snapper l'objet à la position de destinationZone
                         interactableObject.transform.position = destinationZone.transform.position;
+                        // Parente l'objet snappé à l'objet sélectionné
+                        interactableObject.transform.SetParent(destinationZone.transform, true);
                         interactableObject.CanRotate = true; // Ou toute autre logique nécessaire après le snap
                     }
                 }
@@ -163,20 +180,34 @@ public class InteractionController : MonoBehaviour
     {
         if (pressingObject != null)
         {
-            var interactable = pressingObject.GetComponent<IInteractable>();
-            if (interactable != null)
+            Debug.Log($"Objet pressé: {pressingObject.name}");
+            
+            var interactableObject = pressingObject.GetComponent<InteractableObject>();
+            if (interactableObject != null)
             {
-                if (selectedObject != interactable)
+                Debug.Log($"{pressingObject.name} IsSnapped: {interactableObject.IsSnapped}");
+                // Vérifie si l'objet n'est pas snappé ou si c'est le fond qui est cliqué
+                if (!interactableObject.IsSnapped)
                 {
-                    selectedObject?.Deselect();
-                    selectedObject = interactable;
+                    if (selectedObject != null)
+                    {
+                        selectedObject.Deselect();
+                    }
+                    else
+                    {
+                        // Gestion du cas où le fond est cliqué
+                        selectedObject = null;
+                    }
+
+                    selectedObject = interactableObject;
                     selectedObject.Select();
+
                 }
+                
             }
-            else
+            else 
             {
-                selectedObject.Deselect();
-                selectedObject = null;
+                    selectedObject.Deselect();
             }
         }
         else if (selectedObject != null)
@@ -192,6 +223,7 @@ public class InteractionController : MonoBehaviour
         isFollowing = false;
         pressingObject = null;
         pressTime = 0f;
+        isLongPressActive = false;
     }
 
     private bool CheckPlacement(InteractableObject interactableObject, bool applyPlacement = false)
