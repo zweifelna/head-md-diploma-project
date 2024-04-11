@@ -6,7 +6,6 @@ public class InteractableObject : MonoBehaviour, IInteractable
 {
     public bool isMainObject = false;
     public Vector3 centerPosition = new Vector3(0, 0, 0);
-    //public float moveSpeed = 5f;
     public float animationDuration = 0.4f;
     private Vector3 initialPosition;
     private Quaternion initialRotation;

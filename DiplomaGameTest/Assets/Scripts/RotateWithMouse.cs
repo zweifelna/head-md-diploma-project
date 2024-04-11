@@ -8,7 +8,7 @@ public class RotateWithMouse : MonoBehaviour
     public float touchSpeed = 1f;
 
     private Vector2 lastRotationSpeed = Vector2.zero;
-    private bool isRotating = false;
+    private bool isRotating = false; 
 
     void Update()
     {

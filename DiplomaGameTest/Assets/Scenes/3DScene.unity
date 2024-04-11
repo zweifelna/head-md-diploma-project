@@ -146,6 +146,7 @@ MonoBehaviour:
   animationDuration: 0.4
   rotateSpeed: 4000
   selectedColor: {r: 0, g: 1, b: 0, a: 1}
+  isRotating: 0
   destinationZoneName: 
   currentState: 0
 --- !u!65 &43060928
@@ -192,6 +193,7 @@ MonoBehaviour:
   animationDuration: 0.4
   rotateSpeed: 4000
   selectedColor: {r: 0, g: 1, b: 0, a: 1}
+  isRotating: 0
   destinationZoneName: 
   currentState: 0
 --- !u!65 &132531221
@@ -280,6 +282,7 @@ MonoBehaviour:
   animationDuration: 0.4
   rotateSpeed: 4000
   selectedColor: {r: 0, g: 1, b: 0, a: 1}
+  isRotating: 0
   destinationZoneName: 
   currentState: 0
 --- !u!65 &163498039
@@ -326,6 +329,7 @@ MonoBehaviour:
   animationDuration: 0.4
   rotateSpeed: 4000
   selectedColor: {r: 0, g: 1, b: 0, a: 1}
+  isRotating: 0
   destinationZoneName: 
   currentState: 0
 --- !u!65 &192834749
@@ -372,6 +376,7 @@ MonoBehaviour:
   animationDuration: 0.4
   rotateSpeed: 4000
   selectedColor: {r: 0, g: 1, b: 0, a: 1}
+  isRotating: 0
   destinationZoneName: 
   currentState: 0
 --- !u!65 &244623045
@@ -909,6 +914,7 @@ MonoBehaviour:
   animationDuration: 0.4
   rotateSpeed: 4000
   selectedColor: {r: 0, g: 1, b: 0, a: 1}
+  isRotating: 0
   destinationZoneName: 
   currentState: 0
 --- !u!65 &336142185
@@ -1003,6 +1009,7 @@ MonoBehaviour:
   animationDuration: 0.4
   rotateSpeed: 4000
   selectedColor: {r: 0, g: 1, b: 0, a: 1}
+  isRotating: 0
   destinationZoneName: 
   currentState: 0
 --- !u!65 &422289318
@@ -1253,6 +1260,7 @@ MonoBehaviour:
   animationDuration: 0.35
   rotateSpeed: 4000
   selectedColor: {r: 0, g: 1, b: 0, a: 1}
+  isRotating: 0
   destinationZoneName: ZonePourCube
   currentState: 0
 --- !u!114 &519774930
@@ -1271,6 +1279,7 @@ MonoBehaviour:
   moveSpeed: 8
   selectHeight: 3
   placementThreshold: 1
+  movementThreshold: 50
 --- !u!1 &524861327
 GameObject:
   m_ObjectHideFlags: 0
@@ -1394,6 +1403,7 @@ MonoBehaviour:
   animationDuration: 0.35
   rotateSpeed: 4000
   selectedColor: {r: 0, g: 1, b: 0, a: 1}
+  isRotating: 0
   destinationZoneName: ZonePourSphere
   currentState: 0
 --- !u!1001 &543606498
@@ -1534,6 +1544,7 @@ MonoBehaviour:
   animationDuration: 0.4
   rotateSpeed: 4000
   selectedColor: {r: 0, g: 1, b: 0, a: 1}
+  isRotating: 0
   destinationZoneName: 
   currentState: 0
 --- !u!65 &543606501
@@ -1580,6 +1591,7 @@ MonoBehaviour:
   animationDuration: 0.4
   rotateSpeed: 4000
   selectedColor: {r: 0, g: 1, b: 0, a: 1}
+  isRotating: 0
   destinationZoneName: 
   currentState: 0
 --- !u!65 &563401555
@@ -1626,6 +1638,7 @@ MonoBehaviour:
   animationDuration: 0.4
   rotateSpeed: 4000
   selectedColor: {r: 0, g: 1, b: 0, a: 1}
+  isRotating: 0
   destinationZoneName: 
   currentState: 0
 --- !u!65 &580973382
@@ -1672,6 +1685,7 @@ MonoBehaviour:
   animationDuration: 0.4
   rotateSpeed: 4000
   selectedColor: {r: 0, g: 1, b: 0, a: 1}
+  isRotating: 0
   destinationZoneName: 
   currentState: 0
 --- !u!65 &598383601
@@ -1718,6 +1732,7 @@ MonoBehaviour:
   animationDuration: 0.4
   rotateSpeed: 4000
   selectedColor: {r: 0, g: 1, b: 0, a: 1}
+  isRotating: 0
   destinationZoneName: 
   currentState: 0
 --- !u!65 &617440193
@@ -1764,6 +1779,7 @@ MonoBehaviour:
   animationDuration: 0.4
   rotateSpeed: 4000
   selectedColor: {r: 0, g: 1, b: 0, a: 1}
+  isRotating: 0
   destinationZoneName: 
   currentState: 0
 --- !u!65 &676259151
@@ -1916,6 +1932,7 @@ MonoBehaviour:
   animationDuration: 0.4
   rotateSpeed: 4000
   selectedColor: {r: 0, g: 1, b: 0, a: 1}
+  isRotating: 0
   destinationZoneName: 
   currentState: 0
 --- !u!65 &786540753
@@ -2039,15 +2056,15 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 790162591}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 2.05, y: 1.5, z: -1.8499999}
-  m_LocalScale: {x: 0.5, y: 0.25, z: 1.0000001}
+  m_LocalScale: {x: 0.5, y: 1, z: 0.5}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1783663087}
   - {fileID: 335161750}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &790162598
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2086,6 +2103,7 @@ MonoBehaviour:
   animationDuration: 0.35
   rotateSpeed: 4000
   selectedColor: {r: 0, g: 1, b: 0, a: 1}
+  isRotating: 0
   destinationZoneName: ZonePourRectangle
   currentState: 0
 --- !u!1 &829820847 stripped
@@ -2111,6 +2129,7 @@ MonoBehaviour:
   animationDuration: 0.4
   rotateSpeed: 4000
   selectedColor: {r: 0, g: 1, b: 0, a: 1}
+  isRotating: 0
   destinationZoneName: 
   currentState: 0
 --- !u!65 &829820850
@@ -2157,6 +2176,7 @@ MonoBehaviour:
   animationDuration: 0.4
   rotateSpeed: 4000
   selectedColor: {r: 0, g: 1, b: 0, a: 1}
+  isRotating: 0
   destinationZoneName: 
   currentState: 0
 --- !u!65 &923628276
@@ -2203,6 +2223,7 @@ MonoBehaviour:
   animationDuration: 0.4
   rotateSpeed: 4000
   selectedColor: {r: 0, g: 1, b: 0, a: 1}
+  isRotating: 0
   destinationZoneName: 
   currentState: 0
 --- !u!65 &928752991
@@ -2249,6 +2270,7 @@ MonoBehaviour:
   animationDuration: 0.4
   rotateSpeed: 4000
   selectedColor: {r: 0, g: 1, b: 0, a: 1}
+  isRotating: 0
   destinationZoneName: 
   currentState: 0
 --- !u!65 &934478750
@@ -2445,6 +2467,7 @@ MonoBehaviour:
   animationDuration: 0.4
   rotateSpeed: 4000
   selectedColor: {r: 0, g: 1, b: 0, a: 1}
+  isRotating: 0
   destinationZoneName: 
   currentState: 0
 --- !u!65 &1322664769
@@ -2491,6 +2514,7 @@ MonoBehaviour:
   animationDuration: 0.4
   rotateSpeed: 4000
   selectedColor: {r: 0, g: 1, b: 0, a: 1}
+  isRotating: 0
   destinationZoneName: 
   currentState: 0
 --- !u!65 &1341051673
@@ -2537,6 +2561,7 @@ MonoBehaviour:
   animationDuration: 0.4
   rotateSpeed: 4000
   selectedColor: {r: 0, g: 1, b: 0, a: 1}
+  isRotating: 0
   destinationZoneName: 
   currentState: 0
 --- !u!65 &1422232607
@@ -2701,6 +2726,7 @@ MonoBehaviour:
   animationDuration: 0.4
   rotateSpeed: 4000
   selectedColor: {r: 0, g: 1, b: 0, a: 1}
+  isRotating: 0
   destinationZoneName: 
   currentState: 0
 --- !u!65 &1499676138
@@ -2747,6 +2773,7 @@ MonoBehaviour:
   animationDuration: 0.4
   rotateSpeed: 4000
   selectedColor: {r: 0, g: 1, b: 0, a: 1}
+  isRotating: 0
   destinationZoneName: 
   currentState: 0
 --- !u!65 &1709133459
@@ -2793,6 +2820,7 @@ MonoBehaviour:
   animationDuration: 0.4
   rotateSpeed: 4000
   selectedColor: {r: 0, g: 1, b: 0, a: 1}
+  isRotating: 0
   destinationZoneName: 
   currentState: 0
 --- !u!65 &1779121154
@@ -2842,7 +2870,7 @@ Transform:
   m_GameObject: {fileID: 1783663086}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0.5}
+  m_LocalPosition: {x: 0, y: 0.5, z: 0}
   m_LocalScale: {x: 2, y: 4, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2892,6 +2920,7 @@ MonoBehaviour:
   animationDuration: 0.4
   rotateSpeed: 4000
   selectedColor: {r: 0, g: 1, b: 0, a: 1}
+  isRotating: 0
   destinationZoneName: 
   currentState: 0
 --- !u!65 &1805506599
@@ -2991,6 +3020,7 @@ MonoBehaviour:
   animationDuration: 0.4
   rotateSpeed: 4000
   selectedColor: {r: 0, g: 1, b: 0, a: 1}
+  isRotating: 0
   destinationZoneName: 
   currentState: 0
 --- !u!65 &1961181210
@@ -3037,6 +3067,7 @@ MonoBehaviour:
   animationDuration: 0.4
   rotateSpeed: 4000
   selectedColor: {r: 0, g: 1, b: 0, a: 1}
+  isRotating: 0
   destinationZoneName: 
   currentState: 0
 --- !u!65 &2106689974

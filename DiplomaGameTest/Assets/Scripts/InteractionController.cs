@@ -18,7 +18,7 @@ public class InteractionController : MonoBehaviour
     [SerializeField]
     private float movementThreshold = 50f; // La distance maximale en pixels que le doigt peut bouger pendant un long press
     private Vector2 initialTouchPosition;
-    private bool isLongPressActive = false;
+    //private bool isLongPressActive = false;
 
 
     void Update()
@@ -141,6 +141,14 @@ public class InteractionController : MonoBehaviour
                     {
                         // Snapper l'objet à la position de destinationZone
                         interactableObject.transform.position = destinationZone.transform.position;
+
+                        // Si un objet est sélectionné, récupère sa rotation et applique-la à l'objet snappé
+                        if (selectedObject != null && selectedObject is InteractableObject selectedInteractable)
+                        {
+                            Quaternion selectedObjectRotation = selectedInteractable.transform.rotation;
+                            interactableObject.transform.rotation = selectedObjectRotation;
+                        }
+
                         // Parente l'objet snappé à l'objet sélectionné
                         interactableObject.transform.SetParent(destinationZone.transform, true);
                         interactableObject.CanRotate = true; // Ou toute autre logique nécessaire après le snap
@@ -223,7 +231,7 @@ public class InteractionController : MonoBehaviour
         isFollowing = false;
         pressingObject = null;
         pressTime = 0f;
-        isLongPressActive = false;
+        //isLongPressActive = false; 
     }
 
     private bool CheckPlacement(InteractableObject interactableObject, bool applyPlacement = false)
