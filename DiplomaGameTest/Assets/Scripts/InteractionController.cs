@@ -190,7 +190,8 @@ public class InteractionController : MonoBehaviour
         {
             Debug.Log($"Objet pressé: {pressingObject.name}");
             
-            var interactableObject = pressingObject.GetComponent<InteractableObject>();
+            var interactableObject = GetHighestInteractableParent(pressingObject);
+
             if (interactableObject != null)
             {
                 Debug.Log($"{pressingObject.name} IsSnapped: {interactableObject.IsSnapped}");
@@ -254,6 +255,25 @@ public class InteractionController : MonoBehaviour
             interactableObject.ResetPosition();
         }
         return false; // Placement non possible
+    }
+
+    private InteractableObject GetHighestInteractableParent(GameObject child)
+    {
+        Transform current = child.transform;
+        InteractableObject highestFound = null;
+
+        // Remonte la hiérarchie à la recherche du component InteractableObject
+        while (current != null)
+        {
+            var interactable = current.GetComponent<InteractableObject>();
+            if (interactable != null)
+            {
+                highestFound = interactable;  // Garde en mémoire le dernier InteractableObject trouvé
+            }
+            current = current.parent;  // Remonte à l'ancêtre suivant
+        }
+
+        return highestFound;
     }
 
 }
