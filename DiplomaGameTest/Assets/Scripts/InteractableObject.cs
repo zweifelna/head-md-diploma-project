@@ -7,6 +7,7 @@ public class InteractableObject : MonoBehaviour, IInteractable
     public bool isMainObject = false;
     public Vector3 centerPosition = new Vector3(0, 0, 0);
     public float animationDuration = 0.4f;
+    [SerializeField]
     private Vector3 initialPosition;
     private Quaternion initialRotation;
     private bool isSelected = false;
@@ -52,7 +53,7 @@ public class InteractableObject : MonoBehaviour, IInteractable
 
     private void Start()
     {
-        initialPosition = transform.position;
+        //initialPosition = transform.position;
         initialRotation = transform.rotation;
         originalColor = GetComponent<Renderer>().material.color;
     }

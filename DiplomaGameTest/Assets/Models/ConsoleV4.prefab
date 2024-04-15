@@ -1,0 +1,160 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &2041106572814613541
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 2192513348841903930, guid: 8bd1f29a123174b7a933a6efb7d9c69c,
+        type: 3}
+      propertyPath: initialPosition.x
+      value: 1.472
+      objectReference: {fileID: 0}
+    - target: {fileID: 2192513348841903930, guid: 8bd1f29a123174b7a933a6efb7d9c69c,
+        type: 3}
+      propertyPath: initialPosition.y
+      value: 1.071
+      objectReference: {fileID: 0}
+    - target: {fileID: 2192513348841903930, guid: 8bd1f29a123174b7a933a6efb7d9c69c,
+        type: 3}
+      propertyPath: initialPosition.z
+      value: -2.688
+      objectReference: {fileID: 0}
+    - target: {fileID: 2826808353855951599, guid: 8bd1f29a123174b7a933a6efb7d9c69c,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -1.73
+      objectReference: {fileID: 0}
+    - target: {fileID: 2826808353855951599, guid: 8bd1f29a123174b7a933a6efb7d9c69c,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.19
+      objectReference: {fileID: 0}
+    - target: {fileID: 2826808353855951599, guid: 8bd1f29a123174b7a933a6efb7d9c69c,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -3.04
+      objectReference: {fileID: 0}
+    - target: {fileID: 2826808353855951599, guid: 8bd1f29a123174b7a933a6efb7d9c69c,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 2826808353855951599, guid: 8bd1f29a123174b7a933a6efb7d9c69c,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2826808353855951599, guid: 8bd1f29a123174b7a933a6efb7d9c69c,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2826808353855951599, guid: 8bd1f29a123174b7a933a6efb7d9c69c,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 2826808353855951599, guid: 8bd1f29a123174b7a933a6efb7d9c69c,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2826808353855951599, guid: 8bd1f29a123174b7a933a6efb7d9c69c,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2826808353855951599, guid: 8bd1f29a123174b7a933a6efb7d9c69c,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: -90
+      objectReference: {fileID: 0}
+    - target: {fileID: 2961730093905873822, guid: 8bd1f29a123174b7a933a6efb7d9c69c,
+        type: 3}
+      propertyPath: initialPosition.x
+      value: 2.24
+      objectReference: {fileID: 0}
+    - target: {fileID: 2961730093905873822, guid: 8bd1f29a123174b7a933a6efb7d9c69c,
+        type: 3}
+      propertyPath: initialPosition.y
+      value: 1.187
+      objectReference: {fileID: 0}
+    - target: {fileID: 2961730093905873822, guid: 8bd1f29a123174b7a933a6efb7d9c69c,
+        type: 3}
+      propertyPath: initialPosition.z
+      value: -3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3702530058029891643, guid: 8bd1f29a123174b7a933a6efb7d9c69c,
+        type: 3}
+      propertyPath: initialPosition.x
+      value: 0.06
+      objectReference: {fileID: 0}
+    - target: {fileID: 3702530058029891643, guid: 8bd1f29a123174b7a933a6efb7d9c69c,
+        type: 3}
+      propertyPath: initialPosition.y
+      value: 1.02
+      objectReference: {fileID: 0}
+    - target: {fileID: 3702530058029891643, guid: 8bd1f29a123174b7a933a6efb7d9c69c,
+        type: 3}
+      propertyPath: initialPosition.z
+      value: -3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3888045123569447902, guid: 8bd1f29a123174b7a933a6efb7d9c69c,
+        type: 3}
+      propertyPath: initialPosition.x
+      value: 1.26
+      objectReference: {fileID: 0}
+    - target: {fileID: 3888045123569447902, guid: 8bd1f29a123174b7a933a6efb7d9c69c,
+        type: 3}
+      propertyPath: initialPosition.y
+      value: 1.056
+      objectReference: {fileID: 0}
+    - target: {fileID: 3888045123569447902, guid: 8bd1f29a123174b7a933a6efb7d9c69c,
+        type: 3}
+      propertyPath: initialPosition.z
+      value: -3.271
+      objectReference: {fileID: 0}
+    - target: {fileID: 6071284475872037677, guid: 8bd1f29a123174b7a933a6efb7d9c69c,
+        type: 3}
+      propertyPath: initialPosition.x
+      value: 1.046
+      objectReference: {fileID: 0}
+    - target: {fileID: 6071284475872037677, guid: 8bd1f29a123174b7a933a6efb7d9c69c,
+        type: 3}
+      propertyPath: initialPosition.y
+      value: 1.071
+      objectReference: {fileID: 0}
+    - target: {fileID: 6071284475872037677, guid: 8bd1f29a123174b7a933a6efb7d9c69c,
+        type: 3}
+      propertyPath: initialPosition.z
+      value: -2.688
+      objectReference: {fileID: 0}
+    - target: {fileID: 7186145555440153444, guid: 8bd1f29a123174b7a933a6efb7d9c69c,
+        type: 3}
+      propertyPath: m_Name
+      value: "Coque arrie\u0300re Variant"
+      objectReference: {fileID: 0}
+    - target: {fileID: 8314425156421282660, guid: 8bd1f29a123174b7a933a6efb7d9c69c,
+        type: 3}
+      propertyPath: initialPosition.x
+      value: -1.73
+      objectReference: {fileID: 0}
+    - target: {fileID: 8314425156421282660, guid: 8bd1f29a123174b7a933a6efb7d9c69c,
+        type: 3}
+      propertyPath: initialPosition.y
+      value: 1.19
+      objectReference: {fileID: 0}
+    - target: {fileID: 8314425156421282660, guid: 8bd1f29a123174b7a933a6efb7d9c69c,
+        type: 3}
+      propertyPath: initialPosition.z
+      value: -3.04
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 8bd1f29a123174b7a933a6efb7d9c69c, type: 3}
