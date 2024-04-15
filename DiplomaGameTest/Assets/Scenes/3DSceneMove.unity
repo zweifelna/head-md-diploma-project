@@ -140,7 +140,10 @@ MonoBehaviour:
   animationDuration: 0.4
   initialPosition: {x: 0, y: 0, z: 0}
   rotateSpeed: 4000
-  selectedColor: {r: 0, g: 1, b: 0, a: 1}
+  validRotations: []
+  rotationThreshold: 5
+  requiredRotation: 360
+  highlightColor: {r: 0, g: 1, b: 0, a: 1}
   isRotating: 0
   destinationZoneName: 
   currentState: 0
@@ -182,7 +185,10 @@ MonoBehaviour:
   animationDuration: 0.4
   initialPosition: {x: 0, y: 0, z: 0}
   rotateSpeed: 4000
-  selectedColor: {r: 0, g: 1, b: 0, a: 1}
+  validRotations: []
+  rotationThreshold: 5
+  requiredRotation: 360
+  highlightColor: {r: 0, g: 1, b: 0, a: 1}
   isRotating: 0
   destinationZoneName: 
   currentState: 0
@@ -224,7 +230,10 @@ MonoBehaviour:
   animationDuration: 0.4
   initialPosition: {x: 0, y: 0, z: 0}
   rotateSpeed: 4000
-  selectedColor: {r: 0, g: 1, b: 0, a: 1}
+  validRotations: []
+  rotationThreshold: 5
+  requiredRotation: 360
+  highlightColor: {r: 0, g: 1, b: 0, a: 1}
   isRotating: 0
   destinationZoneName: 
   currentState: 0
@@ -266,7 +275,10 @@ MonoBehaviour:
   animationDuration: 0.4
   initialPosition: {x: 0, y: 0, z: 0}
   rotateSpeed: 4000
-  selectedColor: {r: 0, g: 1, b: 0, a: 1}
+  validRotations: []
+  rotationThreshold: 5
+  requiredRotation: 360
+  highlightColor: {r: 0, g: 1, b: 0, a: 1}
   isRotating: 0
   destinationZoneName: 
   currentState: 0
@@ -361,7 +373,10 @@ MonoBehaviour:
   animationDuration: 0.4
   initialPosition: {x: 0, y: 0, z: 0}
   rotateSpeed: 4000
-  selectedColor: {r: 0, g: 1, b: 0, a: 1}
+  validRotations: []
+  rotationThreshold: 5
+  requiredRotation: 360
+  highlightColor: {r: 0, g: 1, b: 0, a: 1}
   isRotating: 0
   destinationZoneName: 
   currentState: 0
@@ -403,7 +418,10 @@ MonoBehaviour:
   animationDuration: 0.4
   initialPosition: {x: 0, y: 0, z: 0}
   rotateSpeed: 4000
-  selectedColor: {r: 0, g: 1, b: 0, a: 1}
+  validRotations: []
+  rotationThreshold: 5
+  requiredRotation: 360
+  highlightColor: {r: 0, g: 1, b: 0, a: 1}
   isRotating: 0
   destinationZoneName: 
   currentState: 0
@@ -575,7 +593,10 @@ MonoBehaviour:
   animationDuration: 0.35
   initialPosition: {x: 0, y: 0, z: 0}
   rotateSpeed: 100
-  selectedColor: {r: 0, g: 1, b: 0, a: 1}
+  validRotations: []
+  rotationThreshold: 5
+  requiredRotation: 360
+  highlightColor: {r: 0, g: 1, b: 0, a: 1}
   isRotating: 0
   destinationZoneName: ZonePourCube
   currentState: 0
@@ -719,7 +740,10 @@ MonoBehaviour:
   animationDuration: 0.35
   initialPosition: {x: 0, y: 0, z: 0}
   rotateSpeed: 100
-  selectedColor: {r: 0, g: 1, b: 0, a: 1}
+  validRotations: []
+  rotationThreshold: 5
+  requiredRotation: 360
+  highlightColor: {r: 0, g: 1, b: 0, a: 1}
   isRotating: 0
   destinationZoneName: ZonePourSphere
   currentState: 0
@@ -740,7 +764,10 @@ MonoBehaviour:
   animationDuration: 0.4
   initialPosition: {x: 0, y: 0, z: 0}
   rotateSpeed: 4000
-  selectedColor: {r: 0, g: 1, b: 0, a: 1}
+  validRotations: []
+  rotationThreshold: 5
+  requiredRotation: 360
+  highlightColor: {r: 0, g: 1, b: 0, a: 1}
   isRotating: 0
   destinationZoneName: 
   currentState: 0
@@ -782,7 +809,10 @@ MonoBehaviour:
   animationDuration: 0.4
   initialPosition: {x: 0, y: 0, z: 0}
   rotateSpeed: 4000
-  selectedColor: {r: 0, g: 1, b: 0, a: 1}
+  validRotations: []
+  rotationThreshold: 5
+  requiredRotation: 360
+  highlightColor: {r: 0, g: 1, b: 0, a: 1}
   isRotating: 0
   destinationZoneName: 
   currentState: 0
@@ -824,7 +854,10 @@ MonoBehaviour:
   animationDuration: 0.4
   initialPosition: {x: 0, y: 0, z: 0}
   rotateSpeed: 4000
-  selectedColor: {r: 0, g: 1, b: 0, a: 1}
+  validRotations: []
+  rotationThreshold: 5
+  requiredRotation: 360
+  highlightColor: {r: 0, g: 1, b: 0, a: 1}
   isRotating: 0
   destinationZoneName: 
   currentState: 0
@@ -866,7 +899,10 @@ MonoBehaviour:
   animationDuration: 0.4
   initialPosition: {x: 0, y: 0, z: 0}
   rotateSpeed: 4000
-  selectedColor: {r: 0, g: 1, b: 0, a: 1}
+  validRotations: []
+  rotationThreshold: 5
+  requiredRotation: 360
+  highlightColor: {r: 0, g: 1, b: 0, a: 1}
   isRotating: 0
   destinationZoneName: 
   currentState: 0
@@ -908,7 +944,10 @@ MonoBehaviour:
   animationDuration: 0.4
   initialPosition: {x: 0, y: 0, z: 0}
   rotateSpeed: 4000
-  selectedColor: {r: 0, g: 1, b: 0, a: 1}
+  validRotations: []
+  rotationThreshold: 5
+  requiredRotation: 360
+  highlightColor: {r: 0, g: 1, b: 0, a: 1}
   isRotating: 0
   destinationZoneName: 
   currentState: 0
@@ -1056,7 +1095,10 @@ MonoBehaviour:
   animationDuration: 0.4
   initialPosition: {x: 0, y: 0, z: 0}
   rotateSpeed: 4000
-  selectedColor: {r: 0, g: 1, b: 0, a: 1}
+  validRotations: []
+  rotationThreshold: 5
+  requiredRotation: 360
+  highlightColor: {r: 0, g: 1, b: 0, a: 1}
   isRotating: 0
   destinationZoneName: 
   currentState: 0
@@ -1228,7 +1270,10 @@ MonoBehaviour:
   animationDuration: 0.35
   initialPosition: {x: 0, y: 0, z: 0}
   rotateSpeed: 100
-  selectedColor: {r: 0, g: 1, b: 0, a: 1}
+  validRotations: []
+  rotationThreshold: 5
+  requiredRotation: 360
+  highlightColor: {r: 0, g: 1, b: 0, a: 1}
   isRotating: 0
   destinationZoneName: ZonePourRectangle
   currentState: 0
@@ -1249,7 +1294,10 @@ MonoBehaviour:
   animationDuration: 0.4
   initialPosition: {x: 0, y: 0, z: 0}
   rotateSpeed: 4000
-  selectedColor: {r: 0, g: 1, b: 0, a: 1}
+  validRotations: []
+  rotationThreshold: 5
+  requiredRotation: 360
+  highlightColor: {r: 0, g: 1, b: 0, a: 1}
   isRotating: 0
   destinationZoneName: 
   currentState: 0
@@ -1291,7 +1339,10 @@ MonoBehaviour:
   animationDuration: 0.4
   initialPosition: {x: 0, y: 0, z: 0}
   rotateSpeed: 4000
-  selectedColor: {r: 0, g: 1, b: 0, a: 1}
+  validRotations: []
+  rotationThreshold: 5
+  requiredRotation: 360
+  highlightColor: {r: 0, g: 1, b: 0, a: 1}
   isRotating: 0
   destinationZoneName: 
   currentState: 0
@@ -1333,7 +1384,10 @@ MonoBehaviour:
   animationDuration: 0.4
   initialPosition: {x: 0, y: 0, z: 0}
   rotateSpeed: 4000
-  selectedColor: {r: 0, g: 1, b: 0, a: 1}
+  validRotations: []
+  rotationThreshold: 5
+  requiredRotation: 360
+  highlightColor: {r: 0, g: 1, b: 0, a: 1}
   isRotating: 0
   destinationZoneName: 
   currentState: 0
@@ -1375,7 +1429,10 @@ MonoBehaviour:
   animationDuration: 0.4
   initialPosition: {x: 0, y: 0, z: 0}
   rotateSpeed: 4000
-  selectedColor: {r: 0, g: 1, b: 0, a: 1}
+  validRotations: []
+  rotationThreshold: 5
+  requiredRotation: 360
+  highlightColor: {r: 0, g: 1, b: 0, a: 1}
   isRotating: 0
   destinationZoneName: 
   currentState: 0
@@ -1567,7 +1624,10 @@ MonoBehaviour:
   animationDuration: 0.4
   initialPosition: {x: 0, y: 0, z: 0}
   rotateSpeed: 4000
-  selectedColor: {r: 0, g: 1, b: 0, a: 1}
+  validRotations: []
+  rotationThreshold: 5
+  requiredRotation: 360
+  highlightColor: {r: 0, g: 1, b: 0, a: 1}
   isRotating: 0
   destinationZoneName: 
   currentState: 0
@@ -1609,7 +1669,10 @@ MonoBehaviour:
   animationDuration: 0.4
   initialPosition: {x: 0, y: 0, z: 0}
   rotateSpeed: 4000
-  selectedColor: {r: 0, g: 1, b: 0, a: 1}
+  validRotations: []
+  rotationThreshold: 5
+  requiredRotation: 360
+  highlightColor: {r: 0, g: 1, b: 0, a: 1}
   isRotating: 0
   destinationZoneName: 
   currentState: 0
@@ -1651,7 +1714,10 @@ MonoBehaviour:
   animationDuration: 0.4
   initialPosition: {x: 0, y: 0, z: 0}
   rotateSpeed: 4000
-  selectedColor: {r: 0, g: 1, b: 0, a: 1}
+  validRotations: []
+  rotationThreshold: 5
+  requiredRotation: 360
+  highlightColor: {r: 0, g: 1, b: 0, a: 1}
   isRotating: 0
   destinationZoneName: 
   currentState: 0
@@ -1811,7 +1877,10 @@ MonoBehaviour:
   animationDuration: 0.4
   initialPosition: {x: 0, y: 0, z: 0}
   rotateSpeed: 4000
-  selectedColor: {r: 0, g: 1, b: 0, a: 1}
+  validRotations: []
+  rotationThreshold: 5
+  requiredRotation: 360
+  highlightColor: {r: 0, g: 1, b: 0, a: 1}
   isRotating: 0
   destinationZoneName: 
   currentState: 0
@@ -1853,7 +1922,10 @@ MonoBehaviour:
   animationDuration: 0.4
   initialPosition: {x: 0, y: 0, z: 0}
   rotateSpeed: 4000
-  selectedColor: {r: 0, g: 1, b: 0, a: 1}
+  validRotations: []
+  rotationThreshold: 5
+  requiredRotation: 360
+  highlightColor: {r: 0, g: 1, b: 0, a: 1}
   isRotating: 0
   destinationZoneName: 
   currentState: 0
@@ -1948,7 +2020,10 @@ MonoBehaviour:
   animationDuration: 0.4
   initialPosition: {x: 0, y: 0, z: 0}
   rotateSpeed: 4000
-  selectedColor: {r: 0, g: 1, b: 0, a: 1}
+  validRotations: []
+  rotationThreshold: 5
+  requiredRotation: 360
+  highlightColor: {r: 0, g: 1, b: 0, a: 1}
   isRotating: 0
   destinationZoneName: 
   currentState: 0
@@ -2043,7 +2118,10 @@ MonoBehaviour:
   animationDuration: 0.4
   initialPosition: {x: 0, y: 0, z: 0}
   rotateSpeed: 4000
-  selectedColor: {r: 0, g: 1, b: 0, a: 1}
+  validRotations: []
+  rotationThreshold: 5
+  requiredRotation: 360
+  highlightColor: {r: 0, g: 1, b: 0, a: 1}
   isRotating: 0
   destinationZoneName: 
   currentState: 0
@@ -2085,7 +2163,10 @@ MonoBehaviour:
   animationDuration: 0.4
   initialPosition: {x: 0, y: 0, z: 0}
   rotateSpeed: 4000
-  selectedColor: {r: 0, g: 1, b: 0, a: 1}
+  validRotations: []
+  rotationThreshold: 5
+  requiredRotation: 360
+  highlightColor: {r: 0, g: 1, b: 0, a: 1}
   isRotating: 0
   destinationZoneName: 
   currentState: 0
@@ -4146,6 +4227,56 @@ PrefabInstance:
         type: 3}
       propertyPath: rotateSpeed
       value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 8012381190711121729, guid: 3e9c08658be5c49dab441dd6f86fbcb6,
+        type: 3}
+      propertyPath: rotationThreshold
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 8012381190711121729, guid: 3e9c08658be5c49dab441dd6f86fbcb6,
+        type: 3}
+      propertyPath: validRotations.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8012381190711121729, guid: 3e9c08658be5c49dab441dd6f86fbcb6,
+        type: 3}
+      propertyPath: validRotations.Array.data[0].w
+      value: -0.699611
+      objectReference: {fileID: 0}
+    - target: {fileID: 8012381190711121729, guid: 3e9c08658be5c49dab441dd6f86fbcb6,
+        type: 3}
+      propertyPath: validRotations.Array.data[0].x
+      value: -0.10268581
+      objectReference: {fileID: 0}
+    - target: {fileID: 8012381190711121729, guid: 3e9c08658be5c49dab441dd6f86fbcb6,
+        type: 3}
+      propertyPath: validRotations.Array.data[0].y
+      value: -0.10268581
+      objectReference: {fileID: 0}
+    - target: {fileID: 8012381190711121729, guid: 3e9c08658be5c49dab441dd6f86fbcb6,
+        type: 3}
+      propertyPath: validRotations.Array.data[0].z
+      value: 0.699611
+      objectReference: {fileID: 0}
+    - target: {fileID: 8012381190711121729, guid: 3e9c08658be5c49dab441dd6f86fbcb6,
+        type: 3}
+      propertyPath: validRotations.Array.data[1].w
+      value: -0.699611
+      objectReference: {fileID: 0}
+    - target: {fileID: 8012381190711121729, guid: 3e9c08658be5c49dab441dd6f86fbcb6,
+        type: 3}
+      propertyPath: validRotations.Array.data[1].x
+      value: -0.10268581
+      objectReference: {fileID: 0}
+    - target: {fileID: 8012381190711121729, guid: 3e9c08658be5c49dab441dd6f86fbcb6,
+        type: 3}
+      propertyPath: validRotations.Array.data[1].y
+      value: -0.10268581
+      objectReference: {fileID: 0}
+    - target: {fileID: 8012381190711121729, guid: 3e9c08658be5c49dab441dd6f86fbcb6,
+        type: 3}
+      propertyPath: validRotations.Array.data[1].z
+      value: 0.699611
       objectReference: {fileID: 0}
     - target: {fileID: 9216940795995049793, guid: 3e9c08658be5c49dab441dd6f86fbcb6,
         type: 3}

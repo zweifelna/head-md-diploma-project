@@ -12,7 +12,18 @@ public class InteractableObject : MonoBehaviour, IInteractable
     private Quaternion initialRotation;
     private bool isSelected = false;
     public float rotateSpeed = 100f; 
-    [SerializeField] private Color selectedColor = Color.green; // Couleur lors de la sélection
+    [SerializeField]
+    private List<Quaternion> validRotations = new List<Quaternion>();
+    public float rotationThreshold = 300.0f;
+    private bool _isInCorrectOrientation = false;
+    public bool isInCorrectOrientation
+    {
+        get { return _isInCorrectOrientation; }
+        set { _isInCorrectOrientation = value; }
+    }
+    public float requiredRotation = 10f; // Définissez combien de degrés sont nécessaires pour considérer le mouvement complet
+    private float rotationSum = 0f; // Somme accumulée de la rotation
+    [SerializeField] private Color highlightColor = Color.green; // Couleur lors de la sélection
     private Color originalColor; // Pour stocker la couleur originale
     private bool canRotate = true; // Contrôle si l'objet peut tourner
     public bool CanRotate
@@ -56,6 +67,17 @@ public class InteractableObject : MonoBehaviour, IInteractable
         //initialPosition = transform.position;
         initialRotation = transform.rotation;
         originalColor = GetComponent<Renderer>().material.color;
+
+        //Debug.Log("Valid rotations loaded: " + validRotations.Count + " | Threshold: " + rotationThreshold);
+
+        if (SystemInfo.supportsGyroscope)
+        {
+            Input.gyro.enabled = true;
+        }
+        else
+        {
+            Debug.Log("Gyroscope not supported on this device.");
+        }
     }
 
     public bool IsSelected()
@@ -127,6 +149,11 @@ public class InteractableObject : MonoBehaviour, IInteractable
             {
                 IsRotating = false;
             }
+            if (isInCorrectOrientation) // Assurez-vous que cette propriété est correctement définie ailleurs dans le script
+            {
+                Debug.Log("Appel la vérification du tour de smartphone");
+                CheckCircularMotion();
+            }
         }
     }
 
@@ -173,6 +200,55 @@ public class InteractableObject : MonoBehaviour, IInteractable
     {
         // Rétablit la couleur originale de l'objet
         GetComponent<Renderer>().material.color = originalColor;
+    }
+
+    public void CheckRotation()
+    {
+        Quaternion currentRotation = transform.rotation;
+        foreach (var validRotation in validRotations)
+        {
+            float angle = Quaternion.Angle(currentRotation, validRotation);
+
+            if (angle <= rotationThreshold)
+            {
+                isInCorrectOrientation = true;
+                PerformAction(); // Appelle une méthode quand la rotation est correcte
+                return;
+            }
+        }
+        isInCorrectOrientation = false;
+        GetComponent<Renderer>().material.color = originalColor;
+    }
+    private void PerformAction()
+    {
+        // Action à réaliser lorsque la rotation est correcte
+        //Debug.Log("Rotation correcte, action déclenchée.");
+        GetComponent<Renderer>().material.color = highlightColor;
+        TriggerVibration();
+    }
+    private void TriggerVibration()
+    {
+        #if UNITY_IOS
+        Handheld.Vibrate();
+        #endif
+    }
+
+    void CheckCircularMotion()
+    {
+        if (Input.gyro.enabled)
+        {
+            float rotationRate = Input.gyro.rotationRateUnbiased.y;
+            rotationSum += rotationRate * Time.deltaTime;
+
+            Debug.Log("Rotation Rate Y: " + rotationRate * Time.deltaTime + ", Current Rotation Sum: " + rotationSum);
+
+            if (Mathf.Abs(rotationSum) >= requiredRotation)
+            {
+                PerformAction();
+                rotationSum = 0;
+                Debug.Log("Tour complet du téléphone effectué");
+            }
+        }
     }
 }
 

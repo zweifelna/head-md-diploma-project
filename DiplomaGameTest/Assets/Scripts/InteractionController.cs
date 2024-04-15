@@ -38,6 +38,10 @@ public class InteractionController : MonoBehaviour
             }
             
         }
+        if (selectedObject != null)
+        {
+            selectedObject.CheckRotation();
+        }
         
     }
 
@@ -89,7 +93,6 @@ public class InteractionController : MonoBehaviour
             if (interactableObject != null && !interactableObject.IsSelected())
             {
                 isFollowing = true;
-                Debug.Log($"L'objet interactable détecté est : {interactableObject.gameObject.name}");
                 // Suspend la rotation de l'objet actuellement sélectionné
                 if (selectedObject != null)
                 {
@@ -187,14 +190,11 @@ public class InteractionController : MonoBehaviour
     private void HandleShortPress()
     {
         if (pressingObject != null)
-        {
-            Debug.Log($"Objet pressé: {pressingObject.name}");
-            
+        {   
             var interactableObject = GetHighestInteractableParent(pressingObject);
 
             if (interactableObject != null)
             {
-                Debug.Log($"{pressingObject.name} IsSnapped: {interactableObject.IsSnapped}");
                 // Vérifie si l'objet n'est pas snappé ou si c'est le fond qui est cliqué
                 if (!interactableObject.IsSnapped)
                 {
@@ -275,5 +275,7 @@ public class InteractionController : MonoBehaviour
 
         return highestFound;
     }
+
+    
 
 }
