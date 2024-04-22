@@ -69,6 +69,7 @@ public class InteractableObject : MonoBehaviour, IInteractable
         originalColor = GetComponent<Renderer>().material.color;
 
         //Debug.Log("Valid rotations loaded: " + validRotations.Count + " | Threshold: " + rotationThreshold);
+        currentState = ObjectState.Complete; // État initial défini comme complet
 
         if (SystemInfo.supportsGyroscope)
         {
@@ -248,6 +249,26 @@ public class InteractableObject : MonoBehaviour, IInteractable
                 rotationSum = 0;
                 Debug.Log("Tour complet du téléphone effectué");
             }
+        }
+    }
+
+    public void Dismantle()
+    {
+        if (currentState == ObjectState.Complete)
+        {
+            currentState = ObjectState.Dismantled;
+            Debug.Log($"{gameObject.name} has been dismantled.");
+            // Ajoutez ici toute logique supplémentaire pour l'effet visuel ou le déplacement de la pièce
+        }
+    }
+
+    public void Assemble()
+    {
+        if (currentState == ObjectState.Dismantled)
+        {
+            currentState = ObjectState.Complete;
+            Debug.Log($"{gameObject.name} has been reassembled.");
+            // Ajoutez ici toute logique supplémentaire pour l'animation ou le retour à la position initiale
         }
     }
 }
