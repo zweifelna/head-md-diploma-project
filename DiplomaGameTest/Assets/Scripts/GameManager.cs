@@ -24,7 +24,8 @@ public class GameManager : MonoBehaviour
     {
         State1,
         State2,
-        GameOver
+        GameOver,
+        Win
     }
 
     public State currentState { get; private set; }
@@ -32,6 +33,8 @@ public class GameManager : MonoBehaviour
     public bool timerIsRunning = false;
     public TextMeshProUGUI timerText;
     public TextMeshProUGUI scoreText;
+    public TextMeshProUGUI quotaText;
+    public int quota = 2;
     public int score = 0;
     public List<InteractableObject> allInteractableObjects = new List<InteractableObject>();
     public GameObject interactableObjectPrefab;
@@ -42,6 +45,7 @@ public class GameManager : MonoBehaviour
         timerIsRunning = true;
         SpawnNewObject();
         InitializeInteractableObjects();
+        UpdateQuotaDisplay();
     }
 
     void Update()
@@ -58,7 +62,7 @@ public class GameManager : MonoBehaviour
             {
                 timeRemaining = 0;
                 timerIsRunning = false;
-                TransitionToState(State.GameOver); // Transition vers GameOver au lieu de EndGame()
+                CheckQuota();  
             }
         }
     }
@@ -67,18 +71,21 @@ public class GameManager : MonoBehaviour
     {
         timerText.text = $"Temps: {Mathf.Ceil(timeRemaining)}";
     }
-
-    public void CheckActionSuccess()
+    private void UpdateQuotaDisplay()
     {
-        // Ici, vérifiez si les actions effectuées par le joueur avec l'objet correspondent aux critères de réussite
-        if (true) // Remplacez cela par votre condition réelle
+        quotaText.text = $"Quota: {quota}";
+    }
+    private void CheckQuota()
+    {
+        if (score >= quota)
         {
-            score++;
-            scoreText.text = $"Score: {score}";
-            SpawnNewObject();
+            TransitionToState(State.Win);  // Transition vers l'état de victoire
+        }
+        else
+        {
+            TransitionToState(State.GameOver);  // Transition vers l'état de défaite
         }
     }
-
     void SpawnNewObject()
     {
         // Logique pour détruire ou désactiver l'objet actuel et en créer un nouveau
@@ -109,8 +116,11 @@ public class GameManager : MonoBehaviour
                 timerIsRunning = false; // Arrêter le timer
                 break;
             case State.GameOver:
-            HandleGameOver();
-            break;
+                HandleGameOver();
+                break;
+            case State.Win:
+                HandleWin();
+                break;
         }
     }
         
@@ -133,8 +143,15 @@ public class GameManager : MonoBehaviour
     void HandleGameOver()
     {
         Debug.Log("Game Over!");
-        timerText.text = "Time's up!";
+        timerText.text = "You're fired!";
         // Afficher un écran de fin, enregistrer le score, etc.
+    }
+
+    void HandleWin()
+    {
+        Debug.Log("You Win!");
+        timerText.text = "You're not fired!";
+        // Ajoutez ici toute action de victoire, comme sauvegarder le score, afficher des animations, etc.
     }
 
     public void CheckIfAllDismantled() 
@@ -163,7 +180,7 @@ public class GameManager : MonoBehaviour
     private void IncreaseScoreAndLoadNewObject()
     {
         score++;
-        Debug.Log("Score: " + score);
+        scoreText.text = $"Score: {score}";
         LoadNewObject(); // Charge ou active un nouvel objet pour interaction
     }
 
@@ -179,7 +196,7 @@ public class GameManager : MonoBehaviour
 
     public void LoadNewObject()
     {
-        Vector3 spawnPosition = new Vector3(0, 8.5f, -6.5f); // Définissez la position de spawn
+        Vector3 spawnPosition = new Vector3(-1.73f, 1.19f, -3.04f); // Définissez la position de spawn
         Quaternion spawnRotation = Quaternion.Euler(0, 0, -90);
 
         GameObject newObject = Instantiate(interactableObjectPrefab, spawnPosition, spawnRotation);

@@ -114,6 +114,7 @@ public class InteractableObject : MonoBehaviour, IInteractable
 
     private IEnumerator MoveToPosition(Vector3 targetPosition, System.Action onComplete = null)
     {
+        currentState = ObjectState.Dismantled;
         float elapsedTime = 0f;
         Vector3 startPosition = transform.position;
         Quaternion startRotation = transform.rotation;
@@ -167,7 +168,7 @@ public class InteractableObject : MonoBehaviour, IInteractable
     public void Place()
     {
         // Logique pour "placer" l'objet, comme le déplacer à une position précise
-        currentState = ObjectState.Placed; // Met à jour l'état pour indiquer que l'objet a été correctement placé
+        currentState = ObjectState.Complete; // Met à jour l'état pour indiquer que l'objet a été correctement placé
         IsSnapped = true;
         // Debug.Log($"{gameObject.name} est maintenant snappé.");
         // Appliquer ici l'animation ou l'effet visuel de "placement réussi"

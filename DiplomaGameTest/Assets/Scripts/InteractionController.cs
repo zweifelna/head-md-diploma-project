@@ -26,6 +26,10 @@ public class InteractionController : MonoBehaviour
         instance = this;
     }
 
+    void Start() {
+        gameManager = FindObjectOfType<GameManager>();  // Trouver le GameManager dans la scène
+    }
+
     public void ClearReferences() {
         selectedObject = null;
         pressingObject = null;
@@ -33,6 +37,9 @@ public class InteractionController : MonoBehaviour
 
     void Update()
     {
+        if (gameManager.currentState == GameManager.State.GameOver) {
+            return;  // Si le jeu est en état de GameOver, ne rien faire
+        }
         HandleInput();
 
         if (isFollowing && pressingObject != null)
