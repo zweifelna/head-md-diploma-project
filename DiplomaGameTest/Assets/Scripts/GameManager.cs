@@ -5,6 +5,21 @@ using TMPro;
 
 public class GameManager : MonoBehaviour
 {
+    public static GameManager Instance { get; private set; }
+
+    void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);  // Optionnel, pour garder le manager actif entre les scènes
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
+
     public enum State
     {
         State1,
@@ -20,6 +35,7 @@ public class GameManager : MonoBehaviour
     public int score = 0;
     public List<InteractableObject> allInteractableObjects = new List<InteractableObject>();
     public GameObject interactableObjectPrefab;
+    public bool dismantlingCompleted = false;
 
     void Start()
     {
@@ -36,6 +52,7 @@ public class GameManager : MonoBehaviour
             {
                 timeRemaining -= Time.deltaTime;
                 UpdateTimerDisplay();
+                //CheckIfAllDismantled();
             }
             else
             {
@@ -120,16 +137,27 @@ public class GameManager : MonoBehaviour
         // Afficher un écran de fin, enregistrer le score, etc.
     }
 
-    public void CheckIfAllDismantled()
+    public void CheckIfAllDismantled() 
     {
-        foreach (InteractableObject obj in allInteractableObjects) // Assurez-vous de maintenir une liste des objets interactifs
-        {
-            if (obj.currentState != InteractableObject.ObjectState.Dismantled)
-                return;
+        if (dismantlingCompleted) return; // Maintenant que vous gérez cela mieux, assurez-vous que cette logique est toujours nécessaire.
+
+        bool allDismantled = true;
+        foreach (InteractableObject obj in allInteractableObjects) {
+            if (obj.currentState != InteractableObject.ObjectState.Dismantled) {
+                Debug.Log(obj.gameObject.name + " is not dismantled. Current state: " + obj.currentState);
+                allDismantled = false;
+                break; // Bonne utilisation du break pour optimiser la boucle
+            }
         }
-        // Si tous les objets sont démantelés
-        Debug.Log("All objects have been dismantled.");
-        IncreaseScoreAndLoadNewObject();
+
+        if (allDismantled) {
+            Debug.Log("All objects have been dismantled.");
+            dismantlingCompleted = true;
+            RemoveAllObjects();
+            IncreaseScoreAndLoadNewObject();
+        } else {
+            Debug.Log("Not all objects are dismantled.");
+        }
     }
 
     private void IncreaseScoreAndLoadNewObject()
@@ -149,13 +177,60 @@ public class GameManager : MonoBehaviour
         // Vous pouvez initialiser d'autres choses ici si nécessaire
     }
 
-    public void AddInteractableObject(InteractableObject newObj)
+    public void LoadNewObject()
     {
-        if (!allInteractableObjects.Contains(newObj))
+        Vector3 spawnPosition = new Vector3(0, 8.5f, -6.5f); // Définissez la position de spawn
+        Quaternion spawnRotation = Quaternion.Euler(0, 0, -90);
+
+        GameObject newObject = Instantiate(interactableObjectPrefab, spawnPosition, spawnRotation);
+        InteractableObject newInteractableObject = newObject.GetComponent<InteractableObject>();
+
+        if (newInteractableObject != null)
         {
-            allInteractableObjects.Add(newObj);
-            Debug.Log("Added new interactable object: " + newObj.name);
+            InitializeInteractableObjects();
+            Debug.Log("New interactable object loaded and initialized.");
+            dismantlingCompleted = false;
         }
+    }
+
+    public void PrintAllInteractableObjectNames()
+    {
+        Debug.Log("Currently " + allInteractableObjects.Count + " interactable objects in the scene:");
+        foreach (InteractableObject interactableObject in allInteractableObjects)
+        {
+            Debug.Log("Interactable Object: " + interactableObject.gameObject.name);
+        }
+    }
+
+    private void RemoveAllObjects()
+    {
+        if (InteractionController.instance != null) {
+            InteractionController.instance.ClearReferences();
+        }
+
+        foreach (InteractableObject obj in allInteractableObjects)
+        {
+            if (obj.isMainObject)
+            {
+                // Supprime ou désactive l'objet principal et tous ses enfants
+                DestroyEntireStructure(obj.gameObject);
+            }
+            else
+            {
+                // Supprime ou désactive les objets normalement
+                GameObject.Destroy(obj.gameObject);
+            }
+        }
+        allInteractableObjects.Clear(); // Nettoyer la liste
+    }
+
+    private void DestroyEntireStructure(GameObject mainObject)
+    {
+        foreach (Transform child in mainObject.transform)
+        {
+            GameObject.Destroy(child.gameObject); // Supprime tous les enfants
+        }
+        GameObject.Destroy(mainObject); // Supprime l'objet principal
     }
 
     public void RemoveInteractableObject(InteractableObject obj)
@@ -166,28 +241,4 @@ public class GameManager : MonoBehaviour
             Debug.Log("Removed interactable object: " + obj.name);
         }
     }
-
-    public void LoadNewObject()
-    {
-        Vector3 spawnPosition = new Vector3(0, 0, 0); // Définissez la position de spawn
-        Quaternion spawnRotation = Quaternion.identity; // Rotation initiale
-
-        GameObject newObject = Instantiate(interactableObjectPrefab, spawnPosition, spawnRotation);
-        InteractableObject newInteractableObject = newObject.GetComponent<InteractableObject>();
-
-        if (newInteractableObject != null)
-        {
-            allInteractableObjects.Add(newInteractableObject);
-            Debug.Log("New interactable object loaded and initialized.");
-        }
-    }
-
-    public void PrintAllInteractableObjectNames()
-{
-    Debug.Log("Currently " + allInteractableObjects.Count + " interactable objects in the scene:");
-    foreach (InteractableObject interactableObject in allInteractableObjects)
-    {
-        Debug.Log("Interactable Object: " + interactableObject.gameObject.name);
-    }
-}
 }

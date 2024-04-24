@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class InteractionController : MonoBehaviour
 {
+    public GameManager gameManager;
     public float longPressThreshold = 2f;
     [SerializeField]
     private float moveSpeed = 5f;
@@ -19,7 +20,16 @@ public class InteractionController : MonoBehaviour
     private float movementThreshold = 50f; // La distance maximale en pixels que le doigt peut bouger pendant un long press
     private Vector2 initialTouchPosition;
     //private bool isLongPressActive = false;
+    public static InteractionController instance;
 
+    void Awake() {
+        instance = this;
+    }
+
+    public void ClearReferences() {
+        selectedObject = null;
+        pressingObject = null;
+    }
 
     void Update()
     {
@@ -36,7 +46,6 @@ public class InteractionController : MonoBehaviour
                 bool canPlace = CheckPlacement(interactableObject, false); // Ne pas appliquer le placement, juste vérifier
                 interactableObject.ShowPlacementFeedback(canPlace);
             }
-            
         }
         if (selectedObject != null)
         {
@@ -185,6 +194,7 @@ public class InteractionController : MonoBehaviour
         }
 
         ResetPressState();
+        gameManager.CheckIfAllDismantled();
     }
 
     private void HandleShortPress()

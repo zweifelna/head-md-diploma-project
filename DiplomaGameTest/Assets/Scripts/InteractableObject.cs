@@ -69,8 +69,14 @@ public class InteractableObject : MonoBehaviour, IInteractable
         originalColor = GetComponent<Renderer>().material.color;
 
         //Debug.Log("Valid rotations loaded: " + validRotations.Count + " | Threshold: " + rotationThreshold);
-        currentState = ObjectState.Complete; // État initial défini comme complet
-
+        if(isMainObject)
+        {
+            currentState = ObjectState.Dismantled;
+        }
+        else{
+            currentState = ObjectState.Complete; // État initial défini comme complet
+        }
+        
         if (SystemInfo.supportsGyroscope)
         {
             Input.gyro.enabled = true;
@@ -163,7 +169,7 @@ public class InteractableObject : MonoBehaviour, IInteractable
         // Logique pour "placer" l'objet, comme le déplacer à une position précise
         currentState = ObjectState.Placed; // Met à jour l'état pour indiquer que l'objet a été correctement placé
         IsSnapped = true;
-        Debug.Log($"{gameObject.name} est maintenant snappé.");
+        // Debug.Log($"{gameObject.name} est maintenant snappé.");
         // Appliquer ici l'animation ou l'effet visuel de "placement réussi"
     }
 
@@ -172,7 +178,7 @@ public class InteractableObject : MonoBehaviour, IInteractable
         // Logique pour réinitialiser l'objet à sa position/état initial
         currentState = ObjectState.Dismantled;
         IsSnapped = false;
-        Debug.Log($"{gameObject.name} a été réinitialisé et n'est plus snappé.");
+        // Debug.Log($"{gameObject.name} a été réinitialisé et n'est plus snappé.");
         // Commence une coroutine pour déplacer l'objet à sa position initiale avec une animation
         StartCoroutine(MoveToPosition(initialPosition, () => {
             // Optionnel : Réinitialise la rotation ou d'autres propriétés si nécessaire
@@ -205,9 +211,12 @@ public class InteractableObject : MonoBehaviour, IInteractable
 
     public void CheckRotation()
     {
+        if (this == null || gameObject == null) return;
+
         Quaternion currentRotation = transform.rotation;
         foreach (var validRotation in validRotations)
         {
+            if (this == null || gameObject == null) return; // Vérifie encore une fois dans la boucle
             float angle = Quaternion.Angle(currentRotation, validRotation);
 
             if (angle <= rotationThreshold)
@@ -218,7 +227,8 @@ public class InteractableObject : MonoBehaviour, IInteractable
             }
         }
         isInCorrectOrientation = false;
-        GetComponent<Renderer>().material.color = originalColor;
+        if (GetComponent<Renderer>() != null) // Vérifie si le Renderer existe encore
+            GetComponent<Renderer>().material.color = originalColor;
     }
     private void PerformAction()
     {
@@ -254,11 +264,15 @@ public class InteractableObject : MonoBehaviour, IInteractable
 
     public void Dismantle()
     {
-        if (currentState == ObjectState.Complete)
+        if (currentState == ObjectState.Complete || currentState == ObjectState.Placed)
         {
             currentState = ObjectState.Dismantled;
-            Debug.Log($"{gameObject.name} has been dismantled.");
+            // Debug.Log($"{gameObject.name} has been dismantled.");
             // Ajoutez ici toute logique supplémentaire pour l'effet visuel ou le déplacement de la pièce
+        }
+        else
+        {
+            Debug.Log(gameObject.name + " is already in state: " + currentState);
         }
     }
 
@@ -267,8 +281,17 @@ public class InteractableObject : MonoBehaviour, IInteractable
         if (currentState == ObjectState.Dismantled)
         {
             currentState = ObjectState.Complete;
-            Debug.Log($"{gameObject.name} has been reassembled.");
+            // Debug.Log($"{gameObject.name} has been reassembled.");
             // Ajoutez ici toute logique supplémentaire pour l'animation ou le retour à la position initiale
+        }
+    }
+
+    void OnDestroy()
+    {
+        // Appeler une méthode dans le GameManager pour retirer cet objet de la liste
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.RemoveInteractableObject(this);
         }
     }
 }
