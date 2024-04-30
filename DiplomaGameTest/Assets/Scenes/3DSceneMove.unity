@@ -207,8 +207,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 300
-  m_fontSizeBase: 300
+  m_fontSize: 250
+  m_fontSizeBase: 250
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 0
@@ -409,8 +409,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 300
-  m_fontSizeBase: 300
+  m_fontSize: 250
+  m_fontSizeBase: 250
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 0
@@ -971,7 +971,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 650, y: -5100}
+  m_AnchoredPosition: {x: 650, y: -5150}
   m_SizeDelta: {x: 1000, y: 500}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1635018449
@@ -1021,8 +1021,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 300
-  m_fontSizeBase: 300
+  m_fontSize: 250
+  m_fontSizeBase: 250
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 0
@@ -1116,6 +1116,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c9b1412b02c62451b8a4eb68421943ae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  currentState: 0
+  currentSubState: 0
   timeRemaining: 60
   timerIsRunning: 0
   timerText: {fileID: 38056863}
@@ -1127,6 +1129,7 @@ MonoBehaviour:
   interactableObjectPrefab: {fileID: 4629754872543207314, guid: f0ae0cfe88a41445a9bfcb532c26c0f3,
     type: 3}
   dismantlingCompleted: 0
+  selectedPatternIndex: -1
 --- !u!114 &1914429377
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1203,11 +1206,36 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: -90
       objectReference: {fileID: 0}
+    - target: {fileID: 818218148857172267, guid: f0ae0cfe88a41445a9bfcb532c26c0f3,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 6a636f10c3514fc4192b46fae54e053a, type: 2}
+    - target: {fileID: 2328600990798065564, guid: f0ae0cfe88a41445a9bfcb532c26c0f3,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 85a11436c292444699a5752bd58f08d9, type: 2}
     - target: {fileID: 4629754872543207314, guid: f0ae0cfe88a41445a9bfcb532c26c0f3,
         type: 3}
       propertyPath: m_Name
       value: "Coque arrie\u0300re"
       objectReference: {fileID: 0}
+    - target: {fileID: 5807573590813345682, guid: f0ae0cfe88a41445a9bfcb532c26c0f3,
+        type: 3}
+      propertyPath: rotateSpeed
+      value: 4000
+      objectReference: {fileID: 0}
+    - target: {fileID: 8265894009299440899, guid: f0ae0cfe88a41445a9bfcb532c26c0f3,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: e9c3a8591c8924e0db0a5d9732c825f2, type: 2}
+    - target: {fileID: 9168576421851957626, guid: f0ae0cfe88a41445a9bfcb532c26c0f3,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: e9c3a8591c8924e0db0a5d9732c825f2, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

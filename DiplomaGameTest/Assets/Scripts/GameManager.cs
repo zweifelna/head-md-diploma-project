@@ -22,13 +22,26 @@ public class GameManager : MonoBehaviour
 
     public enum State
     {
-        State1,
-        State2,
+        GameActive,
+        GamePause,
         GameOver,
         Win
     }
 
-    public State currentState { get; private set; }
+    public enum SubState
+    {
+        None,
+        ObjectSelected,
+        PhoneShaking,
+        VibrationPatternPlaying,
+        ActionResponse,
+        RepairScreen,
+        ReplaceBatteries,
+        FullDismantle
+    }
+
+    public State currentState;
+    public SubState currentSubState;
     public float timeRemaining = 60;
     public bool timerIsRunning = false;
     public TextMeshProUGUI timerText;
@@ -39,12 +52,15 @@ public class GameManager : MonoBehaviour
     public List<InteractableObject> allInteractableObjects = new List<InteractableObject>();
     public GameObject interactableObjectPrefab;
     public bool dismantlingCompleted = false;
+    public List<List<float>> vibrationPatterns = new List<List<float>>();
+    public int selectedPatternIndex = -1;  // Indice du motif sélectionné
 
     void Start()
     {
         timerIsRunning = true;
         SpawnNewObject();
         InitializeInteractableObjects();
+        InitializeVibrationPatterns();
         UpdateQuotaDisplay();
     }
 
@@ -65,6 +81,17 @@ public class GameManager : MonoBehaviour
                 CheckQuota();  
             }
         }
+
+        switch (currentSubState)
+    {
+        case SubState.PhoneShaking:
+            // Logique de détection du secouement du téléphone
+            if (DetectPhoneShake())
+            {
+                SetSubState(SubState.VibrationPatternPlaying); // Méthode hypothétique pour gérer la suite des actions
+            }
+            break;
+    }
     }
 
     private void UpdateTimerDisplay()
@@ -106,12 +133,12 @@ public class GameManager : MonoBehaviour
     {
         switch (state)
         {
-            case State.State1:
+            case State.GameActive:
                 // Initialiser et démarrer le timer ici si nécessaire
                 timeRemaining = 60; // Réinitialiser le timer
                 timerIsRunning = true;
                 break;
-            case State.State2:
+            case State.GamePause:
                 // Actions spécifiques à l'entrée dans State2
                 timerIsRunning = false; // Arrêter le timer
                 break;
@@ -128,15 +155,53 @@ public class GameManager : MonoBehaviour
     {
         switch (state)
         {
-            case State.State1:
+            case State.GameActive:
                 // Nettoyage ou actions de fin d'état
                 break;
-            case State.State2:
+            case State.GamePause:
                 // Préparation à quitter State2
                 break;
             case State.GameOver:
             // Préparation à quitter GameOver, si nécessaire
             break;
+        }
+    }
+
+    private void SetSubState(SubState subState)
+    {
+        currentSubState = subState;
+        HandleSubStateEntry(subState);
+    }
+
+    private void HandleSubStateEntry(SubState subState)
+    {
+        switch (subState)
+        {
+            case SubState.ObjectSelected:
+                Debug.Log("Object has been selected. Ready for phone shaking.");
+                // Configurer le prochain sous-état après une certaine action ou un certain délai
+                Invoke("PrepareForPhoneShaking", 2.0f); // Exemple: attendre 2 secondes avant de passer à PhoneShaking
+                break;
+
+            case SubState.VibrationPatternPlaying:
+                PlayVibrationPattern();
+                TransitionToRepairSubState(selectedPatternIndex);
+                break;
+
+            case SubState.RepairScreen:
+                // Logique pour démonter et replacer l'écran
+                StartScreenRepair();
+                break;
+
+            case SubState.ReplaceBatteries:
+                // Logique pour remplacer les trois piles
+                StartBatteryReplacement();
+                break;
+
+            case SubState.FullDismantle:
+                // Logique pour démonter et remplacer tout
+                StartFullDismantle();
+                break;
         }
     }
 
@@ -189,7 +254,7 @@ public class GameManager : MonoBehaviour
         // Trouve tous les objets de type InteractableObject dans la scène
         allInteractableObjects = new List<InteractableObject>(FindObjectsOfType<InteractableObject>());
         Debug.Log("Found " + allInteractableObjects.Count + " interactable objects.");
-        PrintAllInteractableObjectNames();
+        //PrintAllInteractableObjectNames();
 
         // Vous pouvez initialiser d'autres choses ici si nécessaire
     }
@@ -210,14 +275,14 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void PrintAllInteractableObjectNames()
-    {
-        Debug.Log("Currently " + allInteractableObjects.Count + " interactable objects in the scene:");
-        foreach (InteractableObject interactableObject in allInteractableObjects)
-        {
-            Debug.Log("Interactable Object: " + interactableObject.gameObject.name);
-        }
-    }
+    // public void PrintAllInteractableObjectNames()
+    // {
+    //     Debug.Log("Currently " + allInteractableObjects.Count + " interactable objects in the scene:");
+    //     foreach (InteractableObject interactableObject in allInteractableObjects)
+    //     {
+    //         Debug.Log("Interactable Object: " + interactableObject.gameObject.name);
+    //     }
+    // }
 
     private void RemoveAllObjects()
     {
@@ -258,4 +323,154 @@ public class GameManager : MonoBehaviour
             Debug.Log("Removed interactable object: " + obj.name);
         }
     }
+
+    public void ObjectSelected()
+    {
+        SetSubState(SubState.ObjectSelected);
+    }
+
+
+    private void PrepareForPhoneShaking()
+    {
+        SetSubState(SubState.PhoneShaking);
+    }
+
+    private bool DetectPhoneShake()
+    {
+        // Seuil de secousse, ajustez cette valeur en fonction de la sensibilité désirée
+        float shakeDetectionThreshold = 2.5f;
+
+        // Accélération instantanée
+        Vector3 acceleration = Input.acceleration;
+
+        // Vérifier si l'accélération dépasse un certain seuil
+        if (acceleration.sqrMagnitude >= shakeDetectionThreshold * shakeDetectionThreshold) {
+            Debug.Log("Shake detected");
+            GameManager.Instance.SetSubState(GameManager.SubState.PhoneShaking); // Passer au substate suivant
+            return true;
+        }
+
+        // Simulation de secouement en appuyant sur le scoreText dans Unity Editor
+        #if UNITY_EDITOR
+        if (Input.GetMouseButtonDown(0)) {
+            Vector2 pos = Input.mousePosition;
+            if (RectTransformUtility.RectangleContainsScreenPoint(scoreText.rectTransform, pos, null)) {
+                Debug.Log("Shake simulated by clicking on scoreText");
+                GameManager.Instance.SetSubState(GameManager.SubState.PhoneShaking); // Passer au substate suivant
+                return true;
+            }
+        }
+        #endif
+
+        return false;
+    }
+
+    void InitializeVibrationPatterns() 
+    {
+        // Exemple de motifs de vibration
+        vibrationPatterns.Add(new List<float> { 0.1f, 0.1f, 0.1f });  // Vibre 0.1 sec, pause 0.1 sec, vibre 0.1 sec
+        vibrationPatterns.Add(new List<float> { 0.2f, 0.1f, 0.2f, 0.1f, 0.2f });
+        vibrationPatterns.Add(new List<float> { 0.3f, 0.15f, 0.3f });
+    }
+    private void PlayVibrationPattern() 
+    {
+        selectedPatternIndex = Random.Range(0, vibrationPatterns.Count);
+        StartCoroutine(PlayPattern(vibrationPatterns[selectedPatternIndex]));
+    }
+    IEnumerator PlayPattern(List<float> pattern) 
+    {
+        for (int i = 0; i < pattern.Count; i++) {
+            if (i % 2 == 0) {  // Indices pairs sont les vibrations
+                VibrateForDuration(pattern[i]);
+            } else {  // Indices impairs sont les pauses
+                yield return new WaitForSeconds(pattern[i]);
+            }
+        }
+    }
+
+    void VibrateForDuration(float duration) 
+    {
+        Debug.Log("Vibrating for: " + duration + " seconds");
+        // Utilisez la méthode appropriée pour déclencher une vibration sur le dispositif
+        #if UNITY_IOS || UNITY_ANDROID
+        Handheld.Vibrate();
+        #endif
+        // NOTE: Handheld.Vibrate() n'autorise pas des durées personnalisées sans accès natif sur iOS/Android
+        // Vous devrez utiliser des plugins ou des appels natifs pour des vibrations personnalisées.
+    }
+    
+    public void TransitionToRepairSubState(int patternIndex)
+    {
+        switch (patternIndex)
+        {
+            case 0:
+                SetSubState(SubState.RepairScreen);
+                break;
+            case 1:
+                SetSubState(SubState.ReplaceBatteries);
+                break;
+            case 2:
+                SetSubState(SubState.FullDismantle);
+                break;
+            default:
+                Debug.LogError("Unknown pattern index: " + patternIndex);
+                break;
+        }
+    }
+
+    void StartScreenRepair()
+    {
+        Debug.Log("Starting screen repair sequence.");
+        // Implémenter la logique de vérification des conditions de réparation
+        // if (CheckRepairCompletion()) // Supposons que cette méthode vérifie si la réparation est correcte
+        // {
+        //     CompleteRepairProcess();
+        // }
+    }
+
+    void StartBatteryReplacement()
+    {
+        Debug.Log("Starting battery replacement sequence.");
+        // Implémenter la logique de vérification des conditions de réparation
+        // if (CheckRepairCompletion())
+        // {
+        //     CompleteRepairProcess();
+        // }
+    }
+
+    void StartFullDismantle()
+    {
+        Debug.Log("Starting full dismantle sequence.");
+        // Implémenter la logique de vérification des conditions de réparation
+        // if (CheckRepairCompletion())
+        // {
+        //     CompleteRepairProcess();
+        // }
+    }
+
+    void CompleteRepairProcess()
+    {
+        score++;
+        scoreText.text = $"Score: {score}";
+        LoadNewObject(); // Charge un nouvel objet
+        SetSubState(SubState.ObjectSelected); // Retour à l'état initial pour sélectionner le nouvel objet
+    }
+
+    bool CheckRepairCompletion(InteractableObject targetObject)
+    {
+        if (targetObject.currentState == InteractableObject.ObjectState.Dismantled && !targetObject.IsSnapped)
+        {
+            Debug.Log($"{targetObject.gameObject.name} is removed.");
+            targetObject.currentState = InteractableObject.ObjectState.Following; // Marque l'étape intermédiaire
+            return false;
+        }
+        else if (targetObject.currentState == InteractableObject.ObjectState.Following && targetObject.IsSnapped)
+        {
+            Debug.Log($"{targetObject.gameObject.name} is replaced.");
+            targetObject.currentState = InteractableObject.ObjectState.Complete;
+            return true;
+        }
+        return false;
+    }
+
 }

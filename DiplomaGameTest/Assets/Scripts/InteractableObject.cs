@@ -5,6 +5,7 @@ using UnityEngine;
 public class InteractableObject : MonoBehaviour, IInteractable
 {
     public bool isMainObject = false;
+    private bool isFirstSelect = true;
     public Vector3 centerPosition = new Vector3(0, 0, 0);
     public float animationDuration = 0.4f;
     [SerializeField]
@@ -97,6 +98,12 @@ public class InteractableObject : MonoBehaviour, IInteractable
         StopAllCoroutines();
         StartCoroutine(MoveToPosition(centerPosition));
         isSelected = true;
+
+        if(isFirstSelect){
+            GameManager.Instance.ObjectSelected();
+            isFirstSelect = false;
+        }
+        
     }
 
     public void Deselect()
@@ -137,7 +144,6 @@ public class InteractableObject : MonoBehaviour, IInteractable
 
         onComplete?.Invoke();
     }
-
 
     void Update()
     {
