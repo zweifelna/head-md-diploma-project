@@ -66,6 +66,31 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
+        // if (Input.GetMouseButtonDown(0)) // Vérifie si le bouton gauche de la souris est cliqué
+        // {
+        //     Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        //     RaycastHit hit;
+
+        //     if (Physics.Raycast(ray, out hit, 100.0f)) // 100.0f est la distance maximale du raycast
+        //     {
+        //         Debug.Log("Hit: " + hit.collider.gameObject.name); // Log le nom de l'objet touché
+
+        //         if (hit.collider.gameObject.name == "Keyboard")
+        //         {
+        //             Debug.Log("Keyboard clicked");
+        //             // Change de caméra ou effectue l'action désirée
+        //         }
+        //         else if (hit.collider.gameObject.CompareTag("Interactable"))
+        //         {
+        //             Debug.Log("Interactable object selected: " + hit.collider.gameObject.name);
+        //         }
+        //     }
+        //     else
+        //     {
+        //         Debug.Log("No object hit by raycast");
+        //     }
+        // }
+
         if (timerIsRunning)
         {
             if (timeRemaining > 0)
@@ -83,15 +108,15 @@ public class GameManager : MonoBehaviour
         }
 
         switch (currentSubState)
-    {
-        case SubState.PhoneShaking:
-            // Logique de détection du secouement du téléphone
-            if (DetectPhoneShake())
-            {
-                SetSubState(SubState.VibrationPatternPlaying); // Méthode hypothétique pour gérer la suite des actions
-            }
-            break;
-    }
+        {
+            case SubState.PhoneShaking:
+                // Logique de détection du secouement du téléphone
+                if (DetectPhoneShake())
+                {
+                    SetSubState(SubState.VibrationPatternPlaying); // Méthode hypothétique pour gérer la suite des actions
+                }
+                break;
+        }
     }
 
     private void UpdateTimerDisplay()

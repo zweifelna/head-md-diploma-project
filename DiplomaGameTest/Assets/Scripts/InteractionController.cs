@@ -21,6 +21,7 @@ public class InteractionController : MonoBehaviour
     private Vector2 initialTouchPosition;
     //private bool isLongPressActive = false;
     public static InteractionController instance;
+    private float rotationSum = 0f;
 
     void Awake() {
         instance = this;
@@ -57,6 +58,7 @@ public class InteractionController : MonoBehaviour
         if (selectedObject != null)
         {
             selectedObject.CheckRotation();
+            CheckPhoneRotationForDismantle();
         }
         
     }
@@ -182,19 +184,16 @@ public class InteractionController : MonoBehaviour
                 {
                     selectedObject.CanRotate = true;
                 }
-
-                // Détermine la position de relâchement
-                if (Input.mousePosition.y > Screen.height / 2)
-                {
-                    // Si relâché dans la partie supérieure, l'objet retourne à sa place
-                    interactableObject.Deselect();
-                }
-                else if (!interactableObject.IsSelected() && selectedObject == null)
+          
+                if (!interactableObject.IsSelected() && selectedObject == null)
                 {
                     // Si relâché dans la partie inférieure et qu'il n'y a aucun objet sélectionné, l'objet est sélectionné et agrandi
                     selectedObject?.Deselect();
                     selectedObject = interactableObject;
                     selectedObject.Select();
+                }
+                else{
+                    interactableObject.Deselect();
                 }
             }
             interactableObject.ResetVisualFeedback();
@@ -291,6 +290,31 @@ public class InteractionController : MonoBehaviour
         }
 
         return highestFound;
+    }
+
+    private void CheckPhoneRotationForDismantle() 
+    {
+        if (Input.gyro.enabled) {
+            float rotateY = Input.gyro.rotationRateUnbiased.y;
+
+            // Supposons que -1.5 est notre seuil pour une rotation significative vers la gauche
+            if (rotateY < -1.5) {
+                rotationSum += rotateY * Time.deltaTime;
+                // Disons que -30 degrés est notre critère pour considérer le mouvement comme complet
+                if (rotationSum <= -30.0f) {
+                    PerformDismantle();
+                    rotationSum = 0;  // Réinitialiser la somme après démontage
+                }
+            }
+        }
+    }
+
+    private void PerformDismantle() 
+    {
+        if (selectedObject != null && selectedObject is InteractableObject interactableObject) {
+            Debug.Log("Dismantling " + interactableObject.gameObject.name);
+            interactableObject.ResetPosition();
+        }
     }
 
     

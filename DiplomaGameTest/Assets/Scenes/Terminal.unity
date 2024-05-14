@@ -197,7 +197,7 @@ GameObject:
   - component: {fileID: 378301503}
   - component: {fileID: 378301502}
   m_Layer: 5
-  m_Name: Canvas
+  m_Name: Canvas_Terminal
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -616,8 +616,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278236936
-  m_fontColor: {r: 0.03155993, g: 0.7169812, b: 0, a: 1}
+    rgba: 4294942298
+  m_fontColor: {r: 0.3537736, g: 0.62003225, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -634,8 +634,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 80
-  m_fontSizeBase: 80
+  m_fontSize: 90
+  m_fontSizeBase: 90
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18

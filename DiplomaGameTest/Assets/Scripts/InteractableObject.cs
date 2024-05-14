@@ -26,6 +26,7 @@ public class InteractableObject : MonoBehaviour, IInteractable
     private float rotationSum = 0f; // Somme accumulée de la rotation
     [SerializeField] private Color highlightColor = Color.green; // Couleur lors de la sélection
     private Color originalColor; // Pour stocker la couleur originale
+    private Color readyToDismantleColor;
     private bool canRotate = true; // Contrôle si l'objet peut tourner
     public bool CanRotate
     {
@@ -58,7 +59,8 @@ public class InteractableObject : MonoBehaviour, IInteractable
         Complete,
         Dismantled,
         Following,
-        Placed
+        Placed,
+        ReadyToDismantle
     }
 
     public ObjectState currentState;
@@ -108,6 +110,7 @@ public class InteractableObject : MonoBehaviour, IInteractable
 
     public void Deselect()
     {
+        Debug.Log("deselected");
         StopAllCoroutines();
         StartCoroutine(MoveToPosition(initialPosition, () => {
             // Réinitialise la rotation une fois que l'objet est de retour à sa position initiale
