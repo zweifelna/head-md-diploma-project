@@ -166,7 +166,7 @@ public class CameraManager : MonoBehaviour
         float timer = 0.0f;
         while (timer < transitionDuration / 2) {
             camera.transform.position = Vector3.Lerp(startTerminal, backPosition, timer / (transitionDuration / 2));
-            camera.transform.rotation = Quaternion.Lerp(startRotation, Quaternion.LookRotation(backPosition - startTerminal), timer / (transitionDuration / 2));
+            //camera.transform.rotation = Quaternion.Lerp(startRotation, Quaternion.LookRotation(backPosition - startTerminal), timer / (transitionDuration / 2));
             timer += Time.deltaTime;
             yield return null;
         }

@@ -6,6 +6,8 @@ public class InteractableObject : MonoBehaviour, IInteractable
 {
     public bool isMainObject = false;
     private bool isFirstSelect = true;
+    public bool isDisposable = false;
+    public bool isRepaired = false;
     public Vector3 centerPosition = new Vector3(0, 0, 0);
     public float animationDuration = 0.4f;
     [SerializeField]
@@ -26,7 +28,8 @@ public class InteractableObject : MonoBehaviour, IInteractable
     private float rotationSum = 0f; // Somme accumulée de la rotation
     [SerializeField] private Color highlightColor = Color.green; // Couleur lors de la sélection
     private Color originalColor; // Pour stocker la couleur originale
-    private Color readyToDismantleColor;
+    private Color readyToDismantleColor = Color.blue;
+    private Renderer objectRenderer;
     private bool canRotate = true; // Contrôle si l'objet peut tourner
     public bool CanRotate
     {
@@ -70,6 +73,7 @@ public class InteractableObject : MonoBehaviour, IInteractable
         //initialPosition = transform.position;
         initialRotation = transform.rotation;
         originalColor = GetComponent<Renderer>().material.color;
+        objectRenderer = GetComponent<Renderer>();
 
         //Debug.Log("Valid rotations loaded: " + validRotations.Count + " | Threshold: " + rotationThreshold);
         if(isMainObject)
@@ -120,6 +124,12 @@ public class InteractableObject : MonoBehaviour, IInteractable
 
         // Détacher cet objet de son parent actuel (le rendre à nouveau un objet de premier niveau dans la hiérarchie)
         this.transform.SetParent(null);
+    }
+
+    public void ChangeToReadyToDismantle()
+    {
+        currentState = ObjectState.ReadyToDismantle;
+        objectRenderer.material.color = readyToDismantleColor;
     }
 
     private IEnumerator MoveToPosition(Vector3 targetPosition, System.Action onComplete = null)
@@ -303,6 +313,33 @@ public class InteractableObject : MonoBehaviour, IInteractable
         {
             GameManager.Instance.RemoveInteractableObject(this);
         }
+    }
+
+    public void MarkAsDisposable()
+    {
+        isDisposable = true;
+        // Change le matériau ou autre indication visuelle pour montrer que l'objet est prêt à être jeté
+        GetComponent<Renderer>().material.color = Color.blue;  // Exemple de changement de couleur
+    }
+
+    public void Dispose()
+    {
+        // Logique pour déplacer l'objet au-dessus du bac et activer la gravité
+        Vector3 binPosition = new Vector3(-2.9392f, 4, 0.47321f); // Remplacez par la position du bac dans votre scène
+        transform.position = binPosition;
+        Rigidbody rb = gameObject.AddComponent<Rigidbody>();
+        rb.useGravity = true;
+    }
+
+    public void MarkAsRepaired()
+    {
+        isRepaired = true;
+        Debug.Log("the object is marked as repaired.");
+    }
+
+    public void MarkAsUnrepaired()
+    {
+        isRepaired = false;
     }
 }
 

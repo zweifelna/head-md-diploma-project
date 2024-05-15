@@ -41,6 +41,7 @@ public class InteractionController : MonoBehaviour
         if (gameManager.currentState == GameManager.State.GameOver) {
             return;  // Si le jeu est en état de GameOver, ne rien faire
         }
+        CheckBinClick();
         HandleInput();
 
         if (isFollowing && pressingObject != null)
@@ -58,8 +59,9 @@ public class InteractionController : MonoBehaviour
         if (selectedObject != null)
         {
             selectedObject.CheckRotation();
-            CheckPhoneRotationForDismantle();
+            CheckPhoneRotation();
         }
+
         
     }
 
@@ -234,6 +236,11 @@ public class InteractionController : MonoBehaviour
             {
                     selectedObject.Deselect();
             }
+
+            if (interactableObject != null && interactableObject.currentState == InteractableObject.ObjectState.Complete)
+            {
+                gameManager.CheckIfAllAssembled();
+            }
         }
         else if (selectedObject != null)
         {
@@ -292,31 +299,51 @@ public class InteractionController : MonoBehaviour
         return highestFound;
     }
 
-    private void CheckPhoneRotationForDismantle() 
+    private void CheckPhoneRotation()
     {
-        if (Input.gyro.enabled) {
-            float rotateY = Input.gyro.rotationRateUnbiased.y;
-
-            // Supposons que -1.5 est notre seuil pour une rotation significative vers la gauche
-            if (rotateY < -1.5) {
-                rotationSum += rotateY * Time.deltaTime;
-                // Disons que -30 degrés est notre critère pour considérer le mouvement comme complet
-                if (rotationSum <= -30.0f) {
-                    PerformDismantle();
-                    rotationSum = 0;  // Réinitialiser la somme après démontage
+        if (selectedObject is InteractableObject interactableObject && interactableObject.currentState == InteractableObject.ObjectState.ReadyToDismantle)
+        {
+            float rotationThreshold = 30.0f; // Ajustez cette valeur selon vos besoins
+            if (Input.gyro.enabled)
+            {
+                float rotationRate = Input.gyro.rotationRateUnbiased.z;
+                if (rotationRate > rotationThreshold)
+                {
+                    Debug.Log("Phone turned enough");
+                    interactableObject.ChangeToReadyToDismantle();
                 }
             }
         }
     }
 
-    private void PerformDismantle() 
+    private void CheckBinClick()
+{
+    if (Input.GetMouseButtonDown(0))
     {
-        if (selectedObject != null && selectedObject is InteractableObject interactableObject) {
-            Debug.Log("Dismantling " + interactableObject.gameObject.name);
-            interactableObject.ResetPosition();
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        Debug.Log("test bac début");
+        if (Physics.Raycast(ray, out RaycastHit hit))
+        {
+            if (hit.collider.gameObject.name == "bin" && selectedObject != null && selectedObject is InteractableObject interactableObject)
+            {
+                Debug.Log("clique sur le bac réussi");   
+                if (interactableObject.isDisposable && interactableObject.currentState == InteractableObject.ObjectState.Complete)
+                {
+                    Debug.Log("Etat pour bac complete");
+                    interactableObject.Dispose();  // Appeler la méthode Dispose de l'objet
+
+                    if (interactableObject.isRepaired)
+                    {
+                        gameManager.score++;
+                        Debug.Log("Score: " + gameManager.score);
+                    }
+
+                    gameManager.LoadNewObject();  // Faire apparaître un nouvel objet
+                }
+            }
         }
     }
-
+}
     
 
 }

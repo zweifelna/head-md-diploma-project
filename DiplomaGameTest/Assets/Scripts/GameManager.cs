@@ -257,13 +257,38 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        if (allDismantled) {
+        if (allDismantled)
+        {
             Debug.Log("All objects have been dismantled.");
-            dismantlingCompleted = true;
-            RemoveAllObjects();
-            IncreaseScoreAndLoadNewObject();
+            foreach (InteractableObject obj in allInteractableObjects)
+            {
+                obj.MarkAsRepaired();
+            }
         } else {
             Debug.Log("Not all objects are dismantled.");
+        }
+    }
+
+    public void CheckIfAllAssembled()
+    {
+        bool allAssembled = true;
+        foreach (InteractableObject obj in allInteractableObjects)
+        {
+            if (obj.currentState != InteractableObject.ObjectState.Complete)
+            {
+                allAssembled = false;
+                break;
+            }
+        }
+
+        if (allAssembled)
+        {
+            Debug.Log("All objects have been assembled.");
+            // Marquer l'objet comme prêt à être jeté
+            foreach (InteractableObject obj in allInteractableObjects)
+            {
+                obj.isDisposable = true;
+            }
         }
     }
 
@@ -286,7 +311,7 @@ public class GameManager : MonoBehaviour
 
     public void LoadNewObject()
     {
-        Vector3 spawnPosition = new Vector3(-1.73f, 1.19f, -3.04f); // Définissez la position de spawn
+        Vector3 spawnPosition = new Vector3(-1.73f, 1.19f, -3.04f);
         Quaternion spawnRotation = Quaternion.Euler(0, 0, -90);
 
         GameObject newObject = Instantiate(interactableObjectPrefab, spawnPosition, spawnRotation);
