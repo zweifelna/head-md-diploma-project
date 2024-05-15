@@ -15,7 +15,7 @@ public class InteractionController : MonoBehaviour
     private float selectHeight = 8.55f;
     private InteractableObject.ObjectState currentState = InteractableObject.ObjectState.Complete;
     [SerializeField]
-    private float placementThreshold = 1.0f; // La distance maximale pour considérer l'objet comme étant dans la zone cible
+    public float placementThreshold = 2.0f; // La distance maximale pour considérer l'objet comme étant dans la zone cible
     [SerializeField]
     private float movementThreshold = 50f; // La distance maximale en pixels que le doigt peut bouger pendant un long press
     private Vector2 initialTouchPosition;
@@ -133,7 +133,7 @@ public class InteractionController : MonoBehaviour
         if (pressingObject != null)
         {
             // Calcule la position cible basée sur la position actuelle de la souris/toucher
-            Vector3 targetPosition = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, selectHeight));
+            Vector3 targetPosition = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 4));
             
             // Utilisation de Lerp pour un mouvement fluide avec un retard
             pressingObject.transform.position = Vector3.Lerp(pressingObject.transform.position, targetPosition, Time.deltaTime * moveSpeed);
@@ -330,13 +330,13 @@ public class InteractionController : MonoBehaviour
                 if (interactableObject.isDisposable && interactableObject.currentState == InteractableObject.ObjectState.Complete)
                 {
                     Debug.Log("Etat pour bac complete");
-                    interactableObject.Dispose();  // Appeler la méthode Dispose de l'objet
 
                     if (interactableObject.isRepaired)
                     {
                         gameManager.score++;
                         Debug.Log("Score: " + gameManager.score);
                     }
+                    interactableObject.Dispose();  // Appeler la méthode Dispose de l'objet
 
                     gameManager.LoadNewObject();  // Faire apparaître un nouvel objet
                 }

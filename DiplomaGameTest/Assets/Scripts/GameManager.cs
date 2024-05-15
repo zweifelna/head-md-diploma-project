@@ -311,6 +311,7 @@ public class GameManager : MonoBehaviour
 
     public void LoadNewObject()
     {
+        RemoveAllObjects();
         Vector3 spawnPosition = new Vector3(-1.73f, 1.19f, -3.04f);
         Quaternion spawnRotation = Quaternion.Euler(0, 0, -90);
 
@@ -340,19 +341,19 @@ public class GameManager : MonoBehaviour
             InteractionController.instance.ClearReferences();
         }
 
-        foreach (InteractableObject obj in allInteractableObjects)
-        {
-            if (obj.isMainObject)
-            {
-                // Supprime ou désactive l'objet principal et tous ses enfants
-                DestroyEntireStructure(obj.gameObject);
-            }
-            else
-            {
-                // Supprime ou désactive les objets normalement
-                GameObject.Destroy(obj.gameObject);
-            }
-        }
+        // foreach (InteractableObject obj in allInteractableObjects)
+        // {
+        //     if (obj.isMainObject)
+        //     {
+        //         // Supprime ou désactive l'objet principal et tous ses enfants
+        //         DestroyEntireStructure(obj.gameObject);
+        //     }
+        //     else
+        //     {
+        //         // Supprime ou désactive les objets normalement
+        //         GameObject.Destroy(obj.gameObject);
+        //     }
+        // }
         allInteractableObjects.Clear(); // Nettoyer la liste
     }
 

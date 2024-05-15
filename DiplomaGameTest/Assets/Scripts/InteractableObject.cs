@@ -325,7 +325,7 @@ public class InteractableObject : MonoBehaviour, IInteractable
     public void Dispose()
     {
         // Logique pour déplacer l'objet au-dessus du bac et activer la gravité
-        Vector3 binPosition = new Vector3(-2.9392f, 4, 0.47321f); // Remplacez par la position du bac dans votre scène
+        Vector3 binPosition = new Vector3(-1.73f, 4.09f, 3.88f); // Remplacez par la position du bac dans votre scène
         transform.position = binPosition;
         Rigidbody rb = gameObject.AddComponent<Rigidbody>();
         rb.useGravity = true;
