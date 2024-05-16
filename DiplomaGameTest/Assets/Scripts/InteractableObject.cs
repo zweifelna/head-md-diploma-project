@@ -189,16 +189,23 @@ public class InteractableObject : MonoBehaviour, IInteractable
         // Logique pour "placer" l'objet, comme le déplacer à une position précise
         currentState = ObjectState.Complete; // Met à jour l'état pour indiquer que l'objet a été correctement placé
         IsSnapped = true;
-        // Debug.Log($"{gameObject.name} est maintenant snappé.");
+        Debug.Log($"{gameObject.name} est maintenant snappé.");
         // Appliquer ici l'animation ou l'effet visuel de "placement réussi"
+        // Forcer la mise à jour de la hiérarchie et de la position/rotation
+        transform.localPosition = Vector3.zero;
+        transform.localRotation = Quaternion.identity;
+
+        // Validation supplémentaire
+    Debug.Log($"Placed: Local Position = {transform.localPosition}, Local Rotation = {transform.localRotation}");
     }
 
     public void ResetPosition()
     {
+        Debug.Log("ResetPosition called for " + gameObject.name);
         // Logique pour réinitialiser l'objet à sa position/état initial
         currentState = ObjectState.Dismantled;
         IsSnapped = false;
-        // Debug.Log($"{gameObject.name} a été réinitialisé et n'est plus snappé.");
+        Debug.Log($"{gameObject.name} a été réinitialisé et n'est plus snappé.");
         // Commence une coroutine pour déplacer l'objet à sa position initiale avec une animation
         StartCoroutine(MoveToPosition(initialPosition, () => {
             // Optionnel : Réinitialise la rotation ou d'autres propriétés si nécessaire
@@ -210,7 +217,7 @@ public class InteractableObject : MonoBehaviour, IInteractable
         var renderer = GetComponent<Renderer>();
         if (canPlace)
         {
-            // Rendre la couleur un peu plus claire
+            Debug.Log($"{gameObject.name} can be placed.");
             // Lerp entre la couleur originale et le blanc pour éclaircir
             float lerpValue = 0.2f; // Ajuste cette valeur pour contrôler à quel point la couleur est plus claire (0 = couleur originale, 1 = vert)
             Color lighterColor = Color.Lerp(originalColor, Color.green, lerpValue);
@@ -218,6 +225,7 @@ public class InteractableObject : MonoBehaviour, IInteractable
         }
         else
         {
+            Debug.Log($"{gameObject.name} cannot be placed.");
             // Revenir à la couleur normale ou indiquer que le placement n'est pas possible
             ResetVisualFeedback();
         }
@@ -322,13 +330,40 @@ public class InteractableObject : MonoBehaviour, IInteractable
         GetComponent<Renderer>().material.color = Color.blue;  // Exemple de changement de couleur
     }
 
-    public void Dispose()
+    public void Dispose(InteractableObject interactableObject)
     {
         // Logique pour déplacer l'objet au-dessus du bac et activer la gravité
         Vector3 binPosition = new Vector3(-1.73f, 4.09f, 3.88f); // Remplacez par la position du bac dans votre scène
         transform.position = binPosition;
         Rigidbody rb = gameObject.AddComponent<Rigidbody>();
         rb.useGravity = true;
+        GameManager.Instance.discardedObjects.Add(interactableObject.gameObject);
+        RemoveAllInteractableComponents(interactableObject);
+    }
+
+    private void RemoveAllInteractableComponents(InteractableObject interactableObject)
+    {
+        // Supprime le composant InteractableObject de l'objet principal
+        Destroy(interactableObject);
+
+        // Supprime les composants InteractableObject des enfants récursivement
+        RemoveInteractableComponentsRecursively(interactableObject.transform);
+    }
+
+    private void RemoveInteractableComponentsRecursively(Transform parent)
+    {
+        foreach (Transform child in parent)
+        {
+            InteractableObject childInteractable = child.GetComponent<InteractableObject>();
+            if (childInteractable != null)
+            {
+                Destroy(childInteractable);
+                GameManager.Instance.allInteractableObjects.Remove(childInteractable);
+            }
+
+            // Appel récursif pour gérer tous les niveaux de la hiérarchie
+            RemoveInteractableComponentsRecursively(child);
+        }
     }
 
     public void MarkAsRepaired()

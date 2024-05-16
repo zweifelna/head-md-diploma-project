@@ -55,24 +55,24 @@ public class CameraManager : MonoBehaviour
 
             if (Physics.Raycast(ray, out hit))
             {
-                Debug.Log("Hit " + hit.collider.gameObject.name); // Affiche le nom de l'objet touché
+                //Debug.Log("Hit " + hit.collider.gameObject.name); // Affiche le nom de l'objet touché
 
                 // Vérifie si l'objet cliqué a le nom "keyboard"
                 if (hit.collider.gameObject.name == "keyboard") 
                 {
-                    Debug.Log("Keyboard clicked"); // Confirme que le clavier a été cliqué
+                    //Debug.Log("Keyboard clicked"); // Confirme que le clavier a été cliqué
                     SwitchToTerminalCamera();
                 }
                 // Vérifie si l'objet cliqué est le terminal
                 if (hit.collider.gameObject.name == "terminal" && camTerminal.enabled) 
                 {
-                    Debug.Log("Terminal clicked, returning to repair camera.");
+                    //Debug.Log("Terminal clicked, returning to repair camera.");
                     StartCoroutine(AnimateCameraInverse(camTerminal, terminalPosition.position, backPosition.position, camRepair.transform.position, terminalCamRotation, repairCamRotation));
                 }
             }
             else
             {
-                Debug.Log("No repair hit"); // Aucun objet touché
+                //Debug.Log("No repair hit"); // Aucun objet touché
             }
             
             Ray rayTerminal = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -80,24 +80,24 @@ public class CameraManager : MonoBehaviour
 
             if (Physics.Raycast(rayTerminal, out hitTerminal))
             {
-                Debug.Log("Hit " + hitTerminal.collider.gameObject.name); // Affiche le nom de l'objet touché
+                //Debug.Log("Hit " + hitTerminal.collider.gameObject.name); // Affiche le nom de l'objet touché
 
                 // Vérifie si l'objet cliqué a le nom "keyboard"
                 if (hitTerminal.collider.gameObject.name == "terminal") 
                 {
-                    Debug.Log("Terminal clicked"); // Confirme que le clavier a été cliqué
+                    //Debug.Log("Terminal clicked"); // Confirme que le clavier a été cliqué
                     StartCoroutine(AnimateCameraInverse(camTerminal, terminalPosition.position, backPosition.position, camRepair.transform.position, terminalCamRotation, repairCamRotation));
                 }
                 // Vérifie si l'objet cliqué est le terminal
                 if (hitTerminal.collider.gameObject.name == "terminal" && camTerminal.enabled) 
                 {
-                    Debug.Log("Terminal clicked, returning to repair camera.");
+                    //Debug.Log("Terminal clicked, returning to repair camera.");
                     StartCoroutine(AnimateCameraInverse(camTerminal, terminalPosition.position, backPosition.position, camRepair.transform.position, terminalCamRotation, repairCamRotation));
                 }
             }
             else
             {
-                Debug.Log("No terminal hit"); // Aucun objet touché
+                //Debug.Log("No terminal hit"); // Aucun objet touché
             }
         }
     }
@@ -129,32 +129,32 @@ public class CameraManager : MonoBehaviour
         camRepair.enabled = false;
         camTerminal.enabled = false;
 
-        Debug.Log($"Deactivating all cameras. Setting {newCamera.name} as active.");
+        //Debug.Log($"Deactivating all cameras. Setting {newCamera.name} as active.");
 
         // Active la nouvelle caméra
         newCamera.enabled = true;
 
         // Active/Désactive les canvas correspondants
-        Debug.Log($"Enabling canvas for {newCamera.name}");
+        //Debug.Log($"Enabling canvas for {newCamera.name}");
         canvasRepair.enabled = (newCamera == camRepair);
         canvasTerminal.enabled = (newCamera == camTerminal);
-        Debug.Log($"Canvas statuses: Repair Canvas = {canvasRepair.enabled}, Terminal Canvas = {canvasTerminal.enabled}");
+        //Debug.Log($"Canvas statuses: Repair Canvas = {canvasRepair.enabled}, Terminal Canvas = {canvasTerminal.enabled}");
     }
 
     // Méthodes pour changer spécifiquement de caméra
     public void SwitchToRepairCamera() {
-        Debug.Log("Switching back to repair camera.");
+        //Debug.Log("Switching back to repair camera.");
         SetActiveCamera(camRepair);
     }
 
     public void SwitchToTerminalCamera() {
-        Debug.Log("Switching to terminal camera.");
+        //Debug.Log("Switching to terminal camera.");
         StartCoroutine(AnimateCamera(camTerminal, camRepair.transform.position, backPosition.position, terminalPosition.position,repairCamRotation, terminalCamRotation));
     }
 
     IEnumerator AnimateCamera(Camera camera, Vector3 startPosition, Vector3 backPosition, Vector3 endPosition, Quaternion startRotation, Quaternion endRotation) 
     {
-        Debug.Log("Starting camera animation to terminal.");
+        //Debug.Log("Starting camera animation to terminal.");
         camera.enabled = true;
         float timer = 0.0f;
 
@@ -165,7 +165,7 @@ public class CameraManager : MonoBehaviour
             // Maintien de la rotation initiale
             camera.transform.rotation = startRotation;
             timer += Time.deltaTime;
-            Debug.Log($"Animating to back position: {camera.transform.position}, {camera.transform.rotation}");
+            //Debug.Log($"Animating to back position: {camera.transform.position}, {camera.transform.rotation}");
             yield return null;
         }
 
@@ -179,22 +179,22 @@ public class CameraManager : MonoBehaviour
             // Interpolation de la rotation de la position arrière vers la position finale
             camera.transform.rotation = Quaternion.Lerp(Quaternion.LookRotation(endPosition - backPosition), endRotation, progress);
             timer += Time.deltaTime;
-            Debug.Log($"Animating to end position: {camera.transform.position}, {camera.transform.rotation}");
+            //Debug.Log($"Animating to end position: {camera.transform.position}, {camera.transform.rotation}");
             yield return null;
         }
 
-        Debug.Log("Animation complete. Camera has reached the terminal.");
+        //Debug.Log("Animation complete. Camera has reached the terminal.");
         // S'assurer que la caméra est exactement à la position et à la rotation finale
         camera.transform.position = endPosition;
         camera.transform.rotation = endRotation;
-        Debug.Log($"Animation complete: {camera.transform.position}, {camera.transform.rotation}");
+        //Debug.Log($"Animation complete: {camera.transform.position}, {camera.transform.rotation}");
         OnCameraReachedTerminal();  // Cette fonction est appelée lorsque la caméra atteint la position finale
     }
 
 
 
     IEnumerator AnimateCameraInverse(Camera camera, Vector3 startTerminal, Vector3 backPosition, Vector3 repairPosition, Quaternion startRotation, Quaternion repairRotation) {
-        Debug.Log("Starting camera animation back to repair position.");
+        //Debug.Log("Starting camera animation back to repair position.");
         float timer = 0.0f;
         while (timer < transitionDuration / 2) {
             camera.transform.position = Vector3.Lerp(startTerminal, backPosition, timer / (transitionDuration / 2));
@@ -211,7 +211,7 @@ public class CameraManager : MonoBehaviour
             yield return null;
         }
 
-        Debug.Log("Animation back to repair position complete.");
+        //Debug.Log("Animation back to repair position complete.");
         camRepair.enabled = true;
         camera.enabled = false;
     }
@@ -219,7 +219,7 @@ public class CameraManager : MonoBehaviour
     void OnCameraReachedTerminal() {
         // Activez ici le canvas ou le texte pour le terminal
         SetActiveCamera(camTerminal);
-        Debug.Log("Camera has reached the terminal.");
+        //Debug.Log("Camera has reached the terminal.");
         
     }
 }

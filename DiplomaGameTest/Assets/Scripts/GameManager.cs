@@ -57,6 +57,7 @@ public class GameManager : MonoBehaviour
     public int selectedPatternIndex = -1;  // Indice du motif sélectionné
     private Dictionary<int, Action> dailyEvents;
     public int currentDay = 1;
+    public List<GameObject> discardedObjects = new List<GameObject>();
 
     void Start()
     {
@@ -261,7 +262,9 @@ public class GameManager : MonoBehaviour
         quota += 2; // Mettre à jour le quota pour le nouveau jour
         UpdateQuotaDisplay();
         DestroyObjects();
+        ClearDiscardedObjects();
         LoadNewObject(); // Charger un nouvel objet
+        AdvanceDay();
         TransitionToState(State.GameActive); // Retourner à l'état de jeu actif
     }
 
@@ -376,12 +379,14 @@ public class GameManager : MonoBehaviour
         //     }
         // }
         allInteractableObjects.Clear(); // Nettoyer la liste
+        Debug.Log("Found " + allInteractableObjects.Count + " interactable objects.");
     }
 
     private void DestroyObjects()
     {
         if (InteractionController.instance != null) {
             InteractionController.instance.ClearReferences();
+            Debug.Log("Les références sont cleared");
         }
 
         foreach (InteractableObject obj in allInteractableObjects)
@@ -390,14 +395,17 @@ public class GameManager : MonoBehaviour
             {
                 // Supprime ou désactive l'objet principal et tous ses enfants
                 DestroyEntireStructure(obj.gameObject);
+                Debug.Log("L'objet principal et ses enfants sont supprimés");
             }
             else
             {
                 // Supprime ou désactive les objets normalement
                 GameObject.Destroy(obj.gameObject);
+                Debug.Log("Un objet est supprimé");
             }
         }
         allInteractableObjects.Clear(); // Nettoyer la liste
+        Debug.Log("La liste d'objet est nettoyée");
     }
 
     private void DestroyEntireStructure(GameObject mainObject)
@@ -607,6 +615,15 @@ public class GameManager : MonoBehaviour
         // Logique pour déclencher un événement spécial
         Debug.Log("Événement spécial déclenché pour le jour " + currentDay);
         // Exemple : specialEventManager.TriggerEvent(specialEventID);
+    }
+
+    private void ClearDiscardedObjects()
+    {
+        foreach (GameObject discardedObject in discardedObjects)
+        {
+            Destroy(discardedObject);
+        }
+        discardedObjects.Clear();
     }
 
 }

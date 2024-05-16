@@ -102,6 +102,11 @@ public class InteractionController : MonoBehaviour
         if (Physics.Raycast(ray, out RaycastHit hit))
         {
             pressingObject = hit.collider.gameObject;
+            Debug.Log("Pressing Object: " + pressingObject.name);
+        }
+        else
+        {
+            Debug.Log("No object hit by raycast.");
         }
     }
 
@@ -160,6 +165,7 @@ public class InteractionController : MonoBehaviour
             
                 if (canPlace)
                 {
+                    Debug.Log("Snapping Object: " + interactableObject.name);
                     CheckPlacement(interactableObject, true);
                     GameObject destinationZone = GameObject.Find(interactableObject.GetDestinationZoneName());
                     if (destinationZone != null)
@@ -167,20 +173,24 @@ public class InteractionController : MonoBehaviour
                         // Snapper l'objet à la position de destinationZone
                         interactableObject.transform.position = destinationZone.transform.position;
 
-                        // Si un objet est sélectionné, récupère sa rotation et applique-la à l'objet snappé
-                        if (selectedObject != null && selectedObject is InteractableObject selectedInteractable)
-                        {
-                            Quaternion selectedObjectRotation = selectedInteractable.transform.rotation;
-                            interactableObject.transform.rotation = selectedObjectRotation;
-                        }
+                        interactableObject.transform.rotation = destinationZone.transform.rotation;
 
                         // Parente l'objet snappé à l'objet sélectionné
                         interactableObject.transform.SetParent(destinationZone.transform, true);
                         interactableObject.CanRotate = true; // Ou toute autre logique nécessaire après le snap
+
+                        // Vérifier et forcer la mise à jour de la hiérarchie et de la position/rotation
+                        Debug.Log($"{interactableObject.name} parented to {destinationZone.name}");
+                        interactableObject.transform.localPosition = Vector3.zero;
+                        interactableObject.transform.localRotation = Quaternion.identity;
+
+                        // Validation supplémentaire
+                        Debug.Log($"After snapping: Local Position = {interactableObject.transform.localPosition}, Local Rotation = {interactableObject.transform.localRotation}");
                     }
                 }
                 else
                 {
+                    Debug.Log("Reset object: " + interactableObject.name);
                     interactableObject.ResetPosition(); // Ou tout autre feedback nécessaire
                 }
 
@@ -189,16 +199,16 @@ public class InteractionController : MonoBehaviour
                     selectedObject.CanRotate = true;
                 }
           
-                if (!interactableObject.IsSelected() && selectedObject == null)
-                {
-                    // Si relâché dans la partie inférieure et qu'il n'y a aucun objet sélectionné, l'objet est sélectionné et agrandi
-                    selectedObject?.Deselect();
-                    selectedObject = interactableObject;
-                    selectedObject.Select();
-                }
-                else{
-                    interactableObject.Deselect();
-                }
+                // if (!interactableObject.IsSelected() && selectedObject == null)
+                // {
+                //     // Si relâché dans la partie inférieure et qu'il n'y a aucun objet sélectionné, l'objet est sélectionné et agrandi
+                //     selectedObject?.Deselect();
+                //     selectedObject = interactableObject;
+                //     selectedObject.Select();
+                // }
+                // else{
+                //     interactableObject.Deselect();
+                // }
             }
             interactableObject.ResetVisualFeedback();
         }
@@ -265,6 +275,7 @@ public class InteractionController : MonoBehaviour
         Collider[] hitColliders = Physics.OverlapSphere(interactableObject.transform.position, placementThreshold);
         foreach (var hitCollider in hitColliders)
         {
+            Debug.Log("Hit Collider: " + hitCollider.gameObject.name);
             if (hitCollider.gameObject.CompareTag("PlacementZone") && hitCollider.gameObject.name == interactableObject.GetDestinationZoneName())
             {
                 if (applyPlacement)
@@ -278,6 +289,7 @@ public class InteractionController : MonoBehaviour
         if (applyPlacement)
         {
             interactableObject.ResetPosition();
+            Debug.Log("1");
         }
         return false; // Placement non possible
     }
@@ -323,22 +335,23 @@ public class InteractionController : MonoBehaviour
     if (Input.GetMouseButtonDown(0))
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        Debug.Log("test bac début");
+        //Debug.Log("test bac début");
         if (Physics.Raycast(ray, out RaycastHit hit))
         {
             if (hit.collider.gameObject.name == "bin" && selectedObject != null && selectedObject is InteractableObject interactableObject)
             {
-                Debug.Log("clique sur le bac réussi");   
+                //Debug.Log("clique sur le bac réussi");   
                 if (interactableObject.isDisposable && interactableObject.currentState == InteractableObject.ObjectState.Complete)
                 {
-                    Debug.Log("Etat pour bac complete");
+                    //Debug.Log("Etat pour bac complete");
 
                     if (interactableObject.isRepaired)
                     {
                         gameManager.score++;
+                        gameManager.scoreText.text = $"Score: {gameManager.score}";
                         Debug.Log("Score: " + gameManager.score);
                     }
-                    interactableObject.Dispose();  // Appeler la méthode Dispose de l'objet
+                    interactableObject.Dispose(interactableObject);  // Appeler la méthode Dispose de l'objet
 
                     gameManager.LoadNewObject();  // Faire apparaître un nouvel objet
                 }
