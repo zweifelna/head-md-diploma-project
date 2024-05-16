@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class CameraManager : MonoBehaviour
 {
@@ -10,14 +11,17 @@ public class CameraManager : MonoBehaviour
 
     [SerializeField] private Canvas canvasRepair; // Canvas associé à camRepair
     [SerializeField] private Canvas canvasTerminal; // Canvas associé à camTerminal
+    [SerializeField] private Canvas canvasEndDay; // Canvas associé à camTerminal
 
     public Transform terminalPosition;  // Position devant le terminal
     public Transform backPosition;      // Position arrière pour l'effet de recul
 
     public float transitionDuration = 2.0f;  // Durée de l'animation de la caméra
+    public bool IsTerminalActive { get; private set; } = false;
     [SerializeField] private Quaternion repairCamRotation;
     [SerializeField] private Quaternion terminalCamRotation;
     [SerializeField] private Quaternion backPositionRotation;
+    [SerializeField] private TextMeshProUGUI terminalMessageText; // Assurez-vous que ceci est assigné dans l'éditeur
 
 
     // Singleton pattern pour un accès facile depuis d'autres scripts sans référence directe
@@ -36,6 +40,7 @@ public class CameraManager : MonoBehaviour
         SetActiveCamera(camRepair);  // Définir camRepair comme la caméra active au démarrage
         canvasRepair.enabled = true;
         canvasTerminal.enabled = false;
+        canvasEndDay.enabled = false;
         repairCamRotation = camRepair.transform.rotation; // Sauvegarder la rotation initiale
         terminalCamRotation = Quaternion.Euler(0, 19.915f, 0); // Définir une rotation face au terminal
         backPositionRotation = Quaternion.Euler(55.062f, 0, 0); // Définir une rotation pour la position arrière
@@ -97,6 +102,27 @@ public class CameraManager : MonoBehaviour
         }
     }
 
+    public void DisplayTerminalMessage(string message) {
+        terminalMessageText.text = message;
+        StartCoroutine(SwitchToTerminalCameraWithMessage());
+    }
+
+    private IEnumerator SwitchToTerminalCameraWithMessage() {
+        IsTerminalActive = true;
+        StartCoroutine(AnimateCamera(camTerminal, camRepair.transform.position, backPosition.position, terminalPosition.position,repairCamRotation, terminalCamRotation));
+        canvasRepair.enabled = false;
+        canvasEndDay.enabled = true;
+
+        // Attendre un certain temps pour lire le message
+        yield return new WaitForSeconds(3.0f);
+
+        // Retourner à la caméra de réparation
+        yield return AnimateCameraInverse(camTerminal, terminalPosition.position, backPosition.position, camRepair.transform.position, terminalCamRotation, repairCamRotation);
+        canvasRepair.enabled = true;
+        canvasEndDay.enabled = false;
+        IsTerminalActive = false;
+    }
+    
     // Méthode pour changer la caméra active
     public void SetActiveCamera(Camera newCamera) {
         // Désactive toutes les caméras
@@ -139,6 +165,7 @@ public class CameraManager : MonoBehaviour
             // Maintien de la rotation initiale
             camera.transform.rotation = startRotation;
             timer += Time.deltaTime;
+            Debug.Log($"Animating to back position: {camera.transform.position}, {camera.transform.rotation}");
             yield return null;
         }
 
@@ -152,10 +179,15 @@ public class CameraManager : MonoBehaviour
             // Interpolation de la rotation de la position arrière vers la position finale
             camera.transform.rotation = Quaternion.Lerp(Quaternion.LookRotation(endPosition - backPosition), endRotation, progress);
             timer += Time.deltaTime;
+            Debug.Log($"Animating to end position: {camera.transform.position}, {camera.transform.rotation}");
             yield return null;
         }
 
         Debug.Log("Animation complete. Camera has reached the terminal.");
+        // S'assurer que la caméra est exactement à la position et à la rotation finale
+        camera.transform.position = endPosition;
+        camera.transform.rotation = endRotation;
+        Debug.Log($"Animation complete: {camera.transform.position}, {camera.transform.rotation}");
         OnCameraReachedTerminal();  // Cette fonction est appelée lorsque la caméra atteint la position finale
     }
 

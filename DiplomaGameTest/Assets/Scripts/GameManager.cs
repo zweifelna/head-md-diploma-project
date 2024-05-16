@@ -231,25 +231,38 @@ public class GameManager : MonoBehaviour
     void HandleGameOver()
     {
         Debug.Log("Game Over!");
-        timerText.text = "You're fired!";
+        CameraManager.Instance.DisplayTerminalMessage($"You're fired!\nScore: {score}/{quota}");
         // Afficher un écran de fin, enregistrer le score, etc.
     }
 
     void HandleWin()
     {
         Debug.Log("You Win!");
-        timerText.text = "You're not fired!";
+        CameraManager.Instance.DisplayTerminalMessage($"Quota achieved!\nScore: {score}/{quota}");
         
         // Réinitialiser le timer et le score
-        timeRemaining = 60;  // ou une autre valeur selon vos besoins
-        score = 0;
-        scoreText.text = $"Score: {score}";
-        
-        // Appeler AdvanceDay pour progresser au jour suivant
-        AdvanceDay();
-        
-        // Redémarrer le jeu
-        TransitionToState(State.GameActive);
+        StartCoroutine(WaitForTerminalDisplay());
+    }
+
+    private IEnumerator WaitForTerminalDisplay()
+    {
+        // Attendre la fin de l'affichage du terminal
+        yield return new WaitUntil(() => !CameraManager.Instance.IsTerminalActive);
+
+        // Réinitialiser le timer, le score et charger un nouvel objet
+        ResetGameForNextDay();
+    }
+
+    private void ResetGameForNextDay()
+    {
+        timeRemaining = 60; // Réinitialiser le timer
+        timerIsRunning = true;
+        score = 0; // Réinitialiser le score
+        quota += 2; // Mettre à jour le quota pour le nouveau jour
+        UpdateQuotaDisplay();
+        DestroyObjects();
+        LoadNewObject(); // Charger un nouvel objet
+        TransitionToState(State.GameActive); // Retourner à l'état de jeu actif
     }
 
     public void CheckIfAllDismantled() 
@@ -362,6 +375,28 @@ public class GameManager : MonoBehaviour
         //         GameObject.Destroy(obj.gameObject);
         //     }
         // }
+        allInteractableObjects.Clear(); // Nettoyer la liste
+    }
+
+    private void DestroyObjects()
+    {
+        if (InteractionController.instance != null) {
+            InteractionController.instance.ClearReferences();
+        }
+
+        foreach (InteractableObject obj in allInteractableObjects)
+        {
+            if (obj.isMainObject)
+            {
+                // Supprime ou désactive l'objet principal et tous ses enfants
+                DestroyEntireStructure(obj.gameObject);
+            }
+            else
+            {
+                // Supprime ou désactive les objets normalement
+                GameObject.Destroy(obj.gameObject);
+            }
+        }
         allInteractableObjects.Clear(); // Nettoyer la liste
     }
 
