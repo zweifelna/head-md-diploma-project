@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -54,11 +55,13 @@ public class GameManager : MonoBehaviour
     public bool dismantlingCompleted = false;
     public List<List<float>> vibrationPatterns = new List<List<float>>();
     public int selectedPatternIndex = -1;  // Indice du motif sélectionné
+    private Dictionary<int, Action> dailyEvents;
+    public int currentDay = 1;
 
     void Start()
     {
+        InitializeDailyEvents();
         timerIsRunning = true;
-        SpawnNewObject();
         InitializeInteractableObjects();
         InitializeVibrationPatterns();
         UpdateQuotaDisplay();
@@ -66,31 +69,6 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
-        // if (Input.GetMouseButtonDown(0)) // Vérifie si le bouton gauche de la souris est cliqué
-        // {
-        //     Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        //     RaycastHit hit;
-
-        //     if (Physics.Raycast(ray, out hit, 100.0f)) // 100.0f est la distance maximale du raycast
-        //     {
-        //         Debug.Log("Hit: " + hit.collider.gameObject.name); // Log le nom de l'objet touché
-
-        //         if (hit.collider.gameObject.name == "Keyboard")
-        //         {
-        //             Debug.Log("Keyboard clicked");
-        //             // Change de caméra ou effectue l'action désirée
-        //         }
-        //         else if (hit.collider.gameObject.CompareTag("Interactable"))
-        //         {
-        //             Debug.Log("Interactable object selected: " + hit.collider.gameObject.name);
-        //         }
-        //     }
-        //     else
-        //     {
-        //         Debug.Log("No object hit by raycast");
-        //     }
-        // }
-
         if (timerIsRunning)
         {
             if (timeRemaining > 0)
@@ -119,6 +97,33 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    void InitializeDailyEvents()
+    {
+        dailyEvents = new Dictionary<int, Action>();
+
+        // Exemple d'ajout d'événements avec plusieurs actions
+        dailyEvents.Add(1, () =>
+        {
+            ShowMessage("Bienvenue au premier jour !");
+            AddSpecialObjectToScene();
+        });
+
+        dailyEvents.Add(2, () =>
+        {
+            ShowMessage("Deuxième jour, nouvelle tâche !");
+            AddAnotherSpecialObjectToScene();
+        });
+
+        dailyEvents.Add(3, () =>
+        {
+            ShowMessage("Un nouvel événement s'est produit le jour 3 !");
+            AddSpecialObjectToScene();
+            TriggerSpecialEvent();
+        });
+
+        // Ajoutez d'autres événements ici...
+    }
+
     private void UpdateTimerDisplay()
     {
         timerText.text = $"Temps: {Mathf.Ceil(timeRemaining)}";
@@ -138,13 +143,6 @@ public class GameManager : MonoBehaviour
             TransitionToState(State.GameOver);  // Transition vers l'état de défaite
         }
     }
-    void SpawnNewObject()
-    {
-        // Logique pour détruire ou désactiver l'objet actuel et en créer un nouveau
-        Debug.Log("Spawning new object");
-        // Assurez-vous d'initialiser correctement le nouvel objet ici
-    }
-
     public void TransitionToState(State newState)
     {
         State tmpInitialState = currentState;
@@ -241,7 +239,17 @@ public class GameManager : MonoBehaviour
     {
         Debug.Log("You Win!");
         timerText.text = "You're not fired!";
-        // Ajoutez ici toute action de victoire, comme sauvegarder le score, afficher des animations, etc.
+        
+        // Réinitialiser le timer et le score
+        timeRemaining = 60;  // ou une autre valeur selon vos besoins
+        score = 0;
+        scoreText.text = $"Score: {score}";
+        
+        // Appeler AdvanceDay pour progresser au jour suivant
+        AdvanceDay();
+        
+        // Redémarrer le jeu
+        TransitionToState(State.GameActive);
     }
 
     public void CheckIfAllDismantled() 
@@ -425,7 +433,7 @@ public class GameManager : MonoBehaviour
     }
     private void PlayVibrationPattern() 
     {
-        selectedPatternIndex = Random.Range(0, vibrationPatterns.Count);
+        selectedPatternIndex = UnityEngine.Random.Range(0, vibrationPatterns.Count);
         StartCoroutine(PlayPattern(vibrationPatterns[selectedPatternIndex]));
     }
     IEnumerator PlayPattern(List<float> pattern) 
@@ -522,6 +530,48 @@ public class GameManager : MonoBehaviour
             return true;
         }
         return false;
+    }
+
+    public void AdvanceDay()
+    {
+        currentDay++;
+        TriggerDailyEvent(currentDay);
+    }
+
+    void TriggerDailyEvent(int day)
+    {
+        if (dailyEvents.ContainsKey(day))
+        {
+            dailyEvents[day]?.Invoke();
+        }
+    }
+
+    void ShowMessage(string message)
+    {
+        // Affiche un message à l'écran
+        Debug.Log(message);
+        // Ajoutez ici votre logique pour afficher le message dans l'UI du jeu
+    }
+
+    void AddSpecialObjectToScene()
+    {
+        // Ajouter ici la logique pour ajouter un objet spécial à la scène
+        Debug.Log("Ajout d'un objet spécial à la scène pour le jour " + currentDay);
+        // Exemple : Instantiate(specialObjectPrefab, spawnPosition, Quaternion.identity);
+    }
+
+    void AddAnotherSpecialObjectToScene()
+    {
+        // Ajouter ici la logique pour ajouter un autre objet spécial à la scène
+        Debug.Log("Ajout d'un autre objet spécial à la scène pour le jour " + currentDay);
+        // Exemple : Instantiate(anotherSpecialObjectPrefab, anotherSpawnPosition, Quaternion.identity);
+    }
+
+    void TriggerSpecialEvent()
+    {
+        // Logique pour déclencher un événement spécial
+        Debug.Log("Événement spécial déclenché pour le jour " + currentDay);
+        // Exemple : specialEventManager.TriggerEvent(specialEventID);
     }
 
 }

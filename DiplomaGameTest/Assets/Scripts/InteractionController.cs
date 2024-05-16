@@ -22,6 +22,8 @@ public class InteractionController : MonoBehaviour
     //private bool isLongPressActive = false;
     public static InteractionController instance;
     private float rotationSum = 0f;
+    public int currentDay = 1;
+    
 
     void Awake() {
         instance = this;
