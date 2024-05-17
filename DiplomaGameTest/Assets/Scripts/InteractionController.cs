@@ -170,19 +170,18 @@ public class InteractionController : MonoBehaviour
                     GameObject destinationZone = GameObject.Find(interactableObject.GetDestinationZoneName());
                     if (destinationZone != null)
                     {
-                        // Snapper l'objet à la position de destinationZone
-                        interactableObject.transform.position = destinationZone.transform.position;
+                        // // Snapper l'objet à la position de destinationZone
+                        // interactableObject.transform.position = destinationZone.transform.position;
 
-                        interactableObject.transform.rotation = destinationZone.transform.rotation;
+                        // interactableObject.transform.rotation = destinationZone.transform.rotation;
 
-                        // Parente l'objet snappé à l'objet sélectionné
-                        interactableObject.transform.SetParent(destinationZone.transform, true);
+                        
                         interactableObject.CanRotate = true; // Ou toute autre logique nécessaire après le snap
 
-                        // Vérifier et forcer la mise à jour de la hiérarchie et de la position/rotation
-                        Debug.Log($"{interactableObject.name} parented to {destinationZone.name}");
-                        interactableObject.transform.localPosition = Vector3.zero;
-                        interactableObject.transform.localRotation = Quaternion.identity;
+                        // // Vérifier et forcer la mise à jour de la hiérarchie et de la position/rotation
+                        // Debug.Log($"{interactableObject.name} parented to {destinationZone.name}");
+                        // interactableObject.transform.localPosition = Vector3.zero;
+                        // interactableObject.transform.localRotation = Quaternion.identity;
 
                         // Validation supplémentaire
                         Debug.Log($"After snapping: Local Position = {interactableObject.transform.localPosition}, Local Rotation = {interactableObject.transform.localRotation}");
@@ -280,6 +279,7 @@ public class InteractionController : MonoBehaviour
             {
                 if (applyPlacement)
                 {
+                    interactableObject.transform.SetParent(hitCollider.transform, true);
                     interactableObject.Place();
                 }
                 return true; // Placement possible

@@ -193,10 +193,10 @@ public class InteractableObject : MonoBehaviour, IInteractable
         // Appliquer ici l'animation ou l'effet visuel de "placement réussi"
         // Forcer la mise à jour de la hiérarchie et de la position/rotation
         transform.localPosition = Vector3.zero;
-        transform.localRotation = Quaternion.identity;
-
+        transform.localRotation = Quaternion.Euler(0, 0, -90);
+    
         // Validation supplémentaire
-    Debug.Log($"Placed: Local Position = {transform.localPosition}, Local Rotation = {transform.localRotation}");
+        Debug.Log($"Placed: Local Position = {transform.localPosition}, Local Rotation = {transform.localRotation}");
     }
 
     public void ResetPosition()
@@ -206,6 +206,7 @@ public class InteractableObject : MonoBehaviour, IInteractable
         currentState = ObjectState.Dismantled;
         IsSnapped = false;
         Debug.Log($"{gameObject.name} a été réinitialisé et n'est plus snappé.");
+        transform.SetParent(null);
         // Commence une coroutine pour déplacer l'objet à sa position initiale avec une animation
         StartCoroutine(MoveToPosition(initialPosition, () => {
             // Optionnel : Réinitialise la rotation ou d'autres propriétés si nécessaire
