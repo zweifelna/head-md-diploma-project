@@ -83,6 +83,8 @@ public class InteractableObject : MonoBehaviour, IInteractable
         else{
             currentState = ObjectState.Complete; // État initial défini comme complet
         }
+
+        isRepaired = true; // Initialiser tous les objets comme réparés
         
         if (SystemInfo.supportsGyroscope)
         {
@@ -189,6 +191,7 @@ public class InteractableObject : MonoBehaviour, IInteractable
         // Logique pour "placer" l'objet, comme le déplacer à une position précise
         currentState = ObjectState.Complete; // Met à jour l'état pour indiquer que l'objet a été correctement placé
         IsSnapped = true;
+        MarkAsRepaired();
         Debug.Log($"{gameObject.name} est maintenant snappé.");
         // Appliquer ici l'animation ou l'effet visuel de "placement réussi"
         // Forcer la mise à jour de la hiérarchie et de la position/rotation

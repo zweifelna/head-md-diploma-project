@@ -102,11 +102,11 @@ public class InteractionController : MonoBehaviour
         if (Physics.Raycast(ray, out RaycastHit hit))
         {
             pressingObject = hit.collider.gameObject;
-            Debug.Log("Pressing Object: " + pressingObject.name);
+            //Debug.Log("Pressing Object: " + pressingObject.name);
         }
         else
         {
-            Debug.Log("No object hit by raycast.");
+            //Debug.Log("No object hit by raycast.");
         }
     }
 
@@ -213,7 +213,8 @@ public class InteractionController : MonoBehaviour
         }
 
         ResetPressState();
-        gameManager.CheckIfAllDismantled();
+        //gameManager.CheckIfAllDismantled();
+        gameManager.CheckIfAllAssembled(); // Vérifier si tous les objets sont assemblés
     }
 
     private void HandleShortPress()
@@ -274,7 +275,7 @@ public class InteractionController : MonoBehaviour
         Collider[] hitColliders = Physics.OverlapSphere(interactableObject.transform.position, placementThreshold);
         foreach (var hitCollider in hitColliders)
         {
-            Debug.Log("Hit Collider: " + hitCollider.gameObject.name);
+            //Debug.Log("Hit Collider: " + hitCollider.gameObject.name);
             if (hitCollider.gameObject.CompareTag("PlacementZone") && hitCollider.gameObject.name == interactableObject.GetDestinationZoneName())
             {
                 if (applyPlacement)
@@ -289,7 +290,7 @@ public class InteractionController : MonoBehaviour
         if (applyPlacement)
         {
             interactableObject.ResetPosition();
-            Debug.Log("1");
+            //Debug.Log("1");
         }
         return false; // Placement non possible
     }

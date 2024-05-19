@@ -2466,7 +2466,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentState: 0
   currentSubState: 0
-  timeRemaining: 60
+  timeRemaining: 180
   timerIsRunning: 0
   timerText: {fileID: 38056863}
   scoreText: {fileID: 1635018449}
@@ -3477,7 +3477,7 @@ Transform:
   m_GameObject: {fileID: 919132147894690914}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 2.26, y: 1.33, z: 1.13}
+  m_LocalPosition: {x: 14.19, y: 1.33, z: 1.13}
   m_LocalScale: {x: 0.23102, y: 0.23102, z: 0.23102}
   m_ConstrainProportionsScale: 1
   m_Children:
@@ -3744,7 +3744,7 @@ Transform:
   m_GameObject: {fileID: 5025475571926624412}
   serializedVersion: 2
   m_LocalRotation: {x: 0.00000008940696, y: -0, z: -0.42243537, w: 0.90639305}
-  m_LocalPosition: {x: -2.9, y: 3.1, z: 0}
+  m_LocalPosition: {x: -7.76, y: -0.98, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -10744,6 +10744,7 @@ GameObject:
   - component: {fileID: 8190514482783889343}
   - component: {fileID: 8190514482783889342}
   - component: {fileID: 8190514482783889341}
+  - component: {fileID: 8190514482783889344}
   m_Layer: 0
   m_Name: bin
   m_TagString: Untagged
@@ -11170,6 +11171,36 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: "Coque arrie\u0300re"
+      objectReference: {fileID: 0}
+    - target: {fileID: 5329397794590546590, guid: f0ae0cfe88a41445a9bfcb532c26c0f3,
+        type: 3}
+      propertyPath: m_Size.x
+      value: 1.4186709
+      objectReference: {fileID: 0}
+    - target: {fileID: 5329397794590546590, guid: f0ae0cfe88a41445a9bfcb532c26c0f3,
+        type: 3}
+      propertyPath: m_Size.y
+      value: 5.4800005
+      objectReference: {fileID: 0}
+    - target: {fileID: 5329397794590546590, guid: f0ae0cfe88a41445a9bfcb532c26c0f3,
+        type: 3}
+      propertyPath: m_Size.z
+      value: 6.975209
+      objectReference: {fileID: 0}
+    - target: {fileID: 5329397794590546590, guid: f0ae0cfe88a41445a9bfcb532c26c0f3,
+        type: 3}
+      propertyPath: m_Center.x
+      value: -0.20933811
+      objectReference: {fileID: 0}
+    - target: {fileID: 5329397794590546590, guid: f0ae0cfe88a41445a9bfcb532c26c0f3,
+        type: 3}
+      propertyPath: m_Center.y
+      value: 0.00000004991006
+      objectReference: {fileID: 0}
+    - target: {fileID: 5329397794590546590, guid: f0ae0cfe88a41445a9bfcb532c26c0f3,
+        type: 3}
+      propertyPath: m_Center.z
+      value: -0.17759089
       objectReference: {fileID: 0}
     - target: {fileID: 5807573590813345682, guid: f0ae0cfe88a41445a9bfcb532c26c0f3,
         type: 3}
@@ -14118,7 +14149,7 @@ Transform:
   m_GameObject: {fileID: 6198634170767833085}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 2.15, y: 1.33, z: 2.79}
+  m_LocalPosition: {x: 14.92, y: 1.33, z: 2.79}
   m_LocalScale: {x: 0.23102, y: 0.23102, z: 0.23102}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -16904,6 +16935,27 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1.6105349, y: 21.00002, z: 9.500007}
   m_Center: {x: -0.3052542, y: 10.000002, z: 4.749998}
+--- !u!65 &8190514482783889344
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5025475571926624412}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 13.500163, y: 21.000015, z: 0.20147751}
+  m_Center: {x: -6.2500854, y: 10.00003, z: 0.100742444}
 --- !u!23 &8192430215989498160
 MeshRenderer:
   m_ObjectHideFlags: 0

@@ -298,20 +298,36 @@ public class GameManager : MonoBehaviour
         bool allAssembled = true;
         foreach (InteractableObject obj in allInteractableObjects)
         {
+            Debug.Log("1");
             if (obj.currentState != InteractableObject.ObjectState.Complete)
             {
-                allAssembled = false;
-                break;
+                if (!obj.isMainObject)
+                {
+                    Debug.Log("2");
+                    Debug.Log(obj.gameObject.name + " is not assembled. Current state: " + obj.currentState);
+                    allAssembled = false;
+                    obj.isDisposable = false;
+                    obj.currentState = InteractableObject.ObjectState.Dismantled;
+                    break;
+                }
             }
         }
-
+        Debug.Log("3");
         if (allAssembled)
         {
+            Debug.Log("4");
             Debug.Log("All objects have been assembled.");
             // Marquer l'objet comme prêt à être jeté
             foreach (InteractableObject obj in allInteractableObjects)
             {
                 obj.isDisposable = true;
+                if (obj.isMainObject)
+                {
+                    obj.currentState = InteractableObject.ObjectState.Complete;
+                    obj.isDisposable = true;
+                    obj.isRepaired = true;
+                    Debug.Log("Main object marked as disposable and repaired.");
+                }
             }
         }
     }
