@@ -63,6 +63,12 @@ public class GameManager : MonoBehaviour
     public GameObject battery2ReplacementPrefab;
     public GameObject battery3ReplacementPrefab;
     public float batteryZOffset = 0.4f;
+    public Light mainLight;
+    public Light deskLamp;
+    public Renderer dayLightZoneRenderer;
+    public Gradient dayLightColor; // Dégradé de couleur pour la lumière du jour
+    private float elapsedTime = 0f;
+    private bool isNight = false;
 
     void Start()
     {
@@ -71,24 +77,25 @@ public class GameManager : MonoBehaviour
         InitializeInteractableObjects();
         InitializeVibrationPatterns();
         UpdateQuotaDisplay();
+        deskLamp.enabled = false;
+        deskLamp.intensity = 100f;
     }
 
     void Update()
     {
         if (timerIsRunning)
         {
-            if (timeRemaining > 0)
+            elapsedTime += Time.deltaTime;
+
+            if (elapsedTime >= timeRemaining)
             {
-                timeRemaining -= Time.deltaTime;
-                UpdateTimerDisplay();
-                //CheckIfAllDismantled();
-            }
-            else
-            {
-                timeRemaining = 0;
+                elapsedTime = timeRemaining;
                 timerIsRunning = false;
-                CheckQuota();  
+                CheckQuota();
             }
+
+            UpdateDayLightZone();
+            UpdateTimerDisplay();
         }
 
         switch (currentSubState)
@@ -132,7 +139,7 @@ public class GameManager : MonoBehaviour
 
     private void UpdateTimerDisplay()
     {
-        timerText.text = $"Temps: {Mathf.Ceil(timeRemaining)}";
+        timerText.text = $"Temps: {Mathf.Ceil(elapsedTime)}";
     }
     private void UpdateQuotaDisplay()
     {
@@ -508,13 +515,13 @@ public class GameManager : MonoBehaviour
         // Exemple de motifs de vibration
         vibrationPatterns.Add(new List<float> { 0.1f, 0.1f, 0.1f });  // Vibre 0.1 sec, pause 0.1 sec, vibre 0.1 sec
         vibrationPatterns.Add(new List<float> { 0.2f, 0.1f, 0.2f, 0.1f, 0.2f });
-        vibrationPatterns.Add(new List<float> { 0.3f, 0.15f, 0.3f });
     }
     private void PlayVibrationPattern() 
     {
-        //selectedPatternIndex = UnityEngine.Random.Range(0, vibrationPatterns.Count);
-        selectedPatternIndex = 1;
-        StartCoroutine(PlayPattern(vibrationPatterns[selectedPatternIndex]));
+        selectedPatternIndex = UnityEngine.Random.Range(0, vibrationPatterns.Count);
+        //selectedPatternIndex = 1;
+        AudioManager.Instance.Play(AudioManager.Instance.sounds[selectedPatternIndex].name);
+        //StartCoroutine(PlayPattern(vibrationPatterns[selectedPatternIndex]));
     }
     IEnumerator PlayPattern(List<float> pattern) 
     {
@@ -765,6 +772,33 @@ public class GameManager : MonoBehaviour
     public void InitializeObjectSelection()
     {
         SetSubState(SubState.ObjectSelected);
+    }
+
+     void UpdateDayLightZone()
+    {
+        float dayProgress = elapsedTime / timeRemaining;
+
+        // Modifier la couleur de la zone lumineuse en fonction de l'heure
+        dayLightZoneRenderer.material.color = dayLightColor.Evaluate(dayProgress);
+
+        // Gérer la diminution de l'intensité de la lumière principale vers la fin
+        if (dayProgress >= 0.8f)
+        {
+            float remainingTimeFraction = (timeRemaining - elapsedTime) / (timeRemaining * 0.2f); // Fraction du temps restant
+            mainLight.intensity = Mathf.Lerp(0.5f, 1f, remainingTimeFraction); // Diminuer l'intensité de 1 à 0.5
+        }
+
+        // Gérer l'allumage de la lampe de bureau
+        if (dayProgress >= 0.8f && !isNight)
+        {
+            deskLamp.enabled = true;
+            isNight = true;
+        }
+        else if (dayProgress < 0.8f && isNight)
+        {
+            deskLamp.enabled = false;
+            isNight = false;
+        }
     }
 
 }

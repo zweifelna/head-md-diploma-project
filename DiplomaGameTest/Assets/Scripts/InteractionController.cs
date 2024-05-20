@@ -23,6 +23,9 @@ public class InteractionController : MonoBehaviour
     public static InteractionController instance;
     private float rotationSum = 0f;
     public int currentDay = 1;
+    private InteractableObject selectedObjectByClick; // Pour stocker l'objet sélectionné par clic
+    private float rotateThreshold = 30f; // Seuil de rotation pour assembler ou démonter
+
     
 
     void Awake() {
@@ -182,14 +185,10 @@ public class InteractionController : MonoBehaviour
                         // Debug.Log($"{interactableObject.name} parented to {destinationZone.name}");
                         // interactableObject.transform.localPosition = Vector3.zero;
                         // interactableObject.transform.localRotation = Quaternion.identity;
-
-                        // Validation supplémentaire
-                        Debug.Log($"After snapping: Local Position = {interactableObject.transform.localPosition}, Local Rotation = {interactableObject.transform.localRotation}");
                     }
                 }
                 else
-                {
-                    Debug.Log("Reset object: " + interactableObject.name);
+                {;
                     interactableObject.ResetPosition(); // Ou tout autre feedback nécessaire
                 }
 
@@ -332,34 +331,76 @@ public class InteractionController : MonoBehaviour
     }
 
     private void CheckBinClick()
-{
-    if (Input.GetMouseButtonDown(0))
     {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        //Debug.Log("test bac début");
-        if (Physics.Raycast(ray, out RaycastHit hit))
+        if (Input.GetMouseButtonDown(0))
         {
-            if (hit.collider.gameObject.name == "bin" && selectedObject != null && selectedObject is InteractableObject interactableObject)
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            //Debug.Log("test bac début");
+            if (Physics.Raycast(ray, out RaycastHit hit))
             {
-                //Debug.Log("clique sur le bac réussi");   
-                if (interactableObject.isDisposable && interactableObject.currentState == InteractableObject.ObjectState.Complete)
+                if (hit.collider.gameObject.name == "bin" && selectedObject != null && selectedObject is InteractableObject interactableObject)
                 {
-                    //Debug.Log("Etat pour bac complete");
-
-                    if (interactableObject.isRepaired)
+                    //Debug.Log("clique sur le bac réussi");   
+                    if (interactableObject.isDisposable && interactableObject.currentState == InteractableObject.ObjectState.Complete)
                     {
-                        gameManager.score++;
-                        gameManager.scoreText.text = $"Score: {gameManager.score}";
-                        Debug.Log("Score: " + gameManager.score);
-                    }
-                    interactableObject.Dispose(interactableObject);  // Appeler la méthode Dispose de l'objet
+                        //Debug.Log("Etat pour bac complete");
 
-                    gameManager.LoadNewObject();  // Faire apparaître un nouvel objet
+                        if (interactableObject.isRepaired)
+                        {
+                            gameManager.score++;
+                            gameManager.scoreText.text = $"Score: {gameManager.score}";
+                            Debug.Log("Score: " + gameManager.score);
+                        }
+                        interactableObject.Dispose(interactableObject);  // Appeler la méthode Dispose de l'objet
+
+                        gameManager.LoadNewObject();  // Faire apparaître un nouvel objet
+                    }
                 }
             }
         }
     }
-}
+
+    private void HandleObjectSelectionByClick()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(ray, out RaycastHit hit))
+            {
+                InteractableObject interactableObject = hit.collider.GetComponent<InteractableObject>();
+                if (interactableObject != null)
+                {
+                    if (selectedObjectByClick != null && selectedObjectByClick != interactableObject)
+                    {
+                        selectedObjectByClick.Deselect();
+                    }
+                    selectedObjectByClick = interactableObject;
+                    selectedObjectByClick.Select();
+                }
+            }
+        }
+    }
+
+    private void HandleObjectRotation()
+    {
+        if (selectedObjectByClick != null)
+        {
+            float rotationRate = Input.gyro.rotationRateUnbiased.z;
+            if (Mathf.Abs(rotationRate) > rotateThreshold)
+            {
+                if (rotationRate > rotateThreshold)
+                {
+                    selectedObjectByClick.Assemble(); // Appeler la méthode pour assembler
+                }
+                else if (rotationRate < -rotateThreshold)
+                {
+                    selectedObjectByClick.Dismantle(); // Appeler la méthode pour démonter
+                }
+                selectedObjectByClick.Deselect(); // Désélectionner l'objet après l'action
+                selectedObjectByClick = null; // Réinitialiser la sélection
+            }
+        }
+    }
     
 
 }
