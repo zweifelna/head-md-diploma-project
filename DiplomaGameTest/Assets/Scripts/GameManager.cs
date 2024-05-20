@@ -800,5 +800,4 @@ public class GameManager : MonoBehaviour
             isNight = false;
         }
     }
-
 }
