@@ -58,6 +58,11 @@ public class GameManager : MonoBehaviour
     private Dictionary<int, Action> dailyEvents;
     public int currentDay = 1;
     public List<GameObject> discardedObjects = new List<GameObject>();
+    public GameObject screenReplacementPrefab;
+    public GameObject battery1ReplacementPrefab;
+    public GameObject battery2ReplacementPrefab;
+    public GameObject battery3ReplacementPrefab;
+    public float batteryZOffset = 0.4f;
 
     void Start()
     {
@@ -298,10 +303,10 @@ public class GameManager : MonoBehaviour
         bool allAssembled = true;
         foreach (InteractableObject obj in allInteractableObjects)
         {
-            Debug.Log("1");
-            if (obj.currentState != InteractableObject.ObjectState.Complete)
+            if(!obj.isMainObject)
             {
-                if (!obj.isMainObject)
+                Debug.Log("1");
+                if (!obj.isMainObject && !obj.IsSnapped && obj.isBeingRepaired)
                 {
                     Debug.Log("2");
                     Debug.Log(obj.gameObject.name + " is not assembled. Current state: " + obj.currentState);
@@ -312,10 +317,9 @@ public class GameManager : MonoBehaviour
                 }
             }
         }
-        Debug.Log("3");
         if (allAssembled)
         {
-            Debug.Log("4");
+            Debug.Log("3");
             Debug.Log("All objects have been assembled.");
             // Marquer l'objet comme prêt à être jeté
             foreach (InteractableObject obj in allInteractableObjects)
@@ -344,9 +348,17 @@ public class GameManager : MonoBehaviour
         // Trouve tous les objets de type InteractableObject dans la scène
         allInteractableObjects = new List<InteractableObject>(FindObjectsOfType<InteractableObject>());
         Debug.Log("Found " + allInteractableObjects.Count + " interactable objects.");
-        //PrintAllInteractableObjectNames();
-
-        // Vous pouvez initialiser d'autres choses ici si nécessaire
+        foreach (InteractableObject obj in allInteractableObjects)
+        {
+            if (obj.transform.parent != null)
+            {
+                obj.IsSnapped = true;  // Initialiser isSnapped à true si l'objet a un parent InteractableObject
+            }
+            else
+            {
+                obj.IsSnapped = false;
+            }
+        }
     }
 
     public void LoadNewObject()
@@ -480,6 +492,14 @@ public class GameManager : MonoBehaviour
         }
         #endif
 
+        // Simulation de secouement en appuyant sur la touche "S"
+        if (Input.GetKeyDown(KeyCode.S))
+        {
+            Debug.Log("Shake simulated by pressing 'S' key");
+            GameManager.Instance.SetSubState(GameManager.SubState.PhoneShaking); // Passer au substate suivant
+            return true;
+        }
+
         return false;
     }
 
@@ -492,7 +512,8 @@ public class GameManager : MonoBehaviour
     }
     private void PlayVibrationPattern() 
     {
-        selectedPatternIndex = UnityEngine.Random.Range(0, vibrationPatterns.Count);
+        //selectedPatternIndex = UnityEngine.Random.Range(0, vibrationPatterns.Count);
+        selectedPatternIndex = 1;
         StartCoroutine(PlayPattern(vibrationPatterns[selectedPatternIndex]));
     }
     IEnumerator PlayPattern(List<float> pattern) 
@@ -539,21 +560,120 @@ public class GameManager : MonoBehaviour
     void StartScreenRepair()
     {
         Debug.Log("Starting screen repair sequence.");
-        // Implémenter la logique de vérification des conditions de réparation
-        // if (CheckRepairCompletion()) // Supposons que cette méthode vérifie si la réparation est correcte
-        // {
-        //     CompleteRepairProcess();
-        // }
+        InteractableObject oldScreen = FindScreenObject();
+        if (oldScreen != null)
+        {
+            // Définir isRepaired à false pour l'écran initial
+            oldScreen.isRepaired = false;
+            oldScreen.isBeingRepaired = true;
+            // Instancier le nouvel écran à remplacer
+            GameObject newScreen = Instantiate(screenReplacementPrefab, oldScreen.initialPosition, oldScreen.initialRotation);
+            InteractableObject newScreenInteractable = newScreen.GetComponent<InteractableObject>();
+
+            if (newScreenInteractable != null)
+            {
+                newScreenInteractable.isRepaired = true; // Le nouvel écran est marqué comme réparé
+            }
+
+            // Ajouter le nouvel écran à la liste des objets interactables
+            allInteractableObjects.Add(newScreenInteractable);
+
+            newScreenInteractable.OnSnapped += () =>
+        {
+            oldScreen.isBeingRepaired = false;
+            oldScreen.isDisposable = false;
+            oldScreen.currentState = InteractableObject.ObjectState.Dismantled;
+            Debug.Log("Old screen marked as dismantled.");
+            CheckIfAllAssembled();
+        };
+        }
+        else
+        {
+            Debug.LogError("Screen object not found!");
+        }
+    }
+
+    InteractableObject FindScreenObject()
+    {
+        foreach (InteractableObject obj in allInteractableObjects)
+        {
+            if (obj.gameObject.name == "Ecran")
+            {
+                return obj;
+            }
+        }
+        return null;
     }
 
     void StartBatteryReplacement()
     {
-        Debug.Log("Starting battery replacement sequence.");
-        // Implémenter la logique de vérification des conditions de réparation
-        // if (CheckRepairCompletion())
-        // {
-        //     CompleteRepairProcess();
-        // }
+         Debug.Log("Starting battery replacement sequence.");
+        List<InteractableObject> oldBatteries = FindBatteryObjects();
+        if (oldBatteries.Count == 3)
+        {
+            for (int i = 0; i < oldBatteries.Count; i++)
+            {
+                InteractableObject oldBattery = oldBatteries[i];
+                oldBattery.isRepaired = false;
+                oldBattery.isBeingRepaired = true;
+
+                GameObject newBatteryPrefab = null;
+                switch (i)
+                {
+                    case 0:
+                        newBatteryPrefab = battery1ReplacementPrefab;
+                        break;
+                    case 1:
+                        newBatteryPrefab = battery2ReplacementPrefab;
+                        break;
+                    case 2:
+                        newBatteryPrefab = battery3ReplacementPrefab;
+                        break;
+                }
+
+                if (newBatteryPrefab != null)
+                {
+                    Vector3 newPosition = oldBattery.initialPosition + new Vector3(0, 0, batteryZOffset);
+                    GameObject newBattery = Instantiate(newBatteryPrefab, newPosition, oldBattery.initialRotation);
+                    InteractableObject newBatteryInteractable = newBattery.GetComponent<InteractableObject>();
+
+                    if (newBatteryInteractable != null)
+                    {
+                        newBatteryInteractable.isRepaired = true;
+                        newBatteryInteractable.initialPosition = newBattery.transform.position;
+                        newBatteryInteractable.initialRotation = newBattery.transform.rotation;
+                    }
+
+                    allInteractableObjects.Add(newBatteryInteractable);
+
+                    newBatteryInteractable.OnSnapped += () =>
+                    {
+                        oldBattery.isBeingRepaired = false;
+                        oldBattery.isDisposable = false;
+                        oldBattery.currentState = InteractableObject.ObjectState.Dismantled;
+                        Debug.Log("Old battery marked as dismantled.");
+                        CheckIfAllAssembled();
+                    };
+                }
+            }
+        }
+        else
+        {
+            Debug.LogError("Not enough batteries found!");
+        }
+    }
+
+    List<InteractableObject> FindBatteryObjects()
+    {
+        List<InteractableObject> batteries = new List<InteractableObject>();
+        foreach (InteractableObject obj in allInteractableObjects)
+        {
+            if (obj.gameObject.name.Contains("Pile"))
+            {
+                batteries.Add(obj);
+            }
+        }
+        return batteries;
     }
 
     void StartFullDismantle()
@@ -640,6 +760,11 @@ public class GameManager : MonoBehaviour
             Destroy(discardedObject);
         }
         discardedObjects.Clear();
+    }
+
+    public void InitializeObjectSelection()
+    {
+        SetSubState(SubState.ObjectSelected);
     }
 
 }

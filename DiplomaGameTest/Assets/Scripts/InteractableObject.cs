@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,11 +9,12 @@ public class InteractableObject : MonoBehaviour, IInteractable
     private bool isFirstSelect = true;
     public bool isDisposable = false;
     public bool isRepaired = false;
+    public bool isBeingRepaired = false;
     public Vector3 centerPosition = new Vector3(0, 0, 0);
     public float animationDuration = 0.4f;
     [SerializeField]
-    private Vector3 initialPosition;
-    private Quaternion initialRotation;
+    public Vector3 initialPosition;
+    public Quaternion initialRotation;
     private bool isSelected = false;
     public float rotateSpeed = 100f; 
     [SerializeField]
@@ -54,7 +56,9 @@ public class InteractableObject : MonoBehaviour, IInteractable
     {
         return destinationZoneName;
     }
-    public bool IsSnapped { get; set; } = false;
+    [SerializeField]
+    public bool IsSnapped = false;
+    public event Action OnSnapped;
 
 
     public enum ObjectState
@@ -74,6 +78,7 @@ public class InteractableObject : MonoBehaviour, IInteractable
         initialRotation = transform.rotation;
         originalColor = GetComponent<Renderer>().material.color;
         objectRenderer = GetComponent<Renderer>();
+        isBeingRepaired = true;
 
         //Debug.Log("Valid rotations loaded: " + validRotations.Count + " | Threshold: " + rotationThreshold);
         if(isMainObject)
@@ -190,8 +195,11 @@ public class InteractableObject : MonoBehaviour, IInteractable
     {
         // Logique pour "placer" l'objet, comme le déplacer à une position précise
         currentState = ObjectState.Complete; // Met à jour l'état pour indiquer que l'objet a été correctement placé
+        Debug.Log($"{gameObject.name} current state after placing: {currentState}");
         IsSnapped = true;
+        OnSnapped?.Invoke();
         MarkAsRepaired();
+        Debug.Log($"{gameObject.name} current state after placing: {currentState}");
         Debug.Log($"{gameObject.name} est maintenant snappé.");
         // Appliquer ici l'animation ou l'effet visuel de "placement réussi"
         // Forcer la mise à jour de la hiérarchie et de la position/rotation
