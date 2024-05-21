@@ -61,7 +61,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 6379573017464538175, guid: 4b3542228faaa44e9bb54ffb8fca9b01, type: 3}
+  - {fileID: 2100000, guid: c2da4396cb11d45cabcef96398e5dabc, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -166,6 +166,7 @@ MonoBehaviour:
   highlightColor: {r: 0, g: 1, b: 0, a: 1}
   isRotating: 0
   destinationZoneName: ZonePourPile1
+  IsSnapped: 0
   currentState: 3
 --- !u!23 &8483591380988708139
 MeshRenderer:
@@ -187,7 +188,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 0}
+  - {fileID: 2100000, guid: c2da4396cb11d45cabcef96398e5dabc, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

@@ -244,6 +244,7 @@ public class GameManager : MonoBehaviour
     void HandleGameOver()
     {
         Debug.Log("Game Over!");
+        StartCoroutine(WaitForTerminalDisplay());
         CameraManager.Instance.DisplayTerminalMessage($"You're fired!\nScore: {score}/{quota}");
         // Afficher un écran de fin, enregistrer le score, etc.
     }
@@ -251,10 +252,11 @@ public class GameManager : MonoBehaviour
     void HandleWin()
     {
         Debug.Log("You Win!");
-        CameraManager.Instance.DisplayTerminalMessage($"Quota achieved!\nScore: {score}/{quota}");
         
         // Réinitialiser le timer et le score
         StartCoroutine(WaitForTerminalDisplay());
+        CameraManager.Instance.DisplayTerminalMessage($"Quota achieved!\nScore: {score}/{quota}");
+        
     }
 
     private IEnumerator WaitForTerminalDisplay()
@@ -277,6 +279,7 @@ public class GameManager : MonoBehaviour
         ClearDiscardedObjects();
         LoadNewObject(); // Charger un nouvel objet
         AdvanceDay();
+        ResetLighting();
         TransitionToState(State.GameActive); // Retourner à l'état de jeu actif
     }
 
@@ -519,7 +522,7 @@ public class GameManager : MonoBehaviour
     private void PlayVibrationPattern() 
     {
         selectedPatternIndex = UnityEngine.Random.Range(0, vibrationPatterns.Count);
-        //selectedPatternIndex = 1;
+        //selectedPatternIndex = 0;
         AudioManager.Instance.Play(AudioManager.Instance.sounds[selectedPatternIndex].name);
         //StartCoroutine(PlayPattern(vibrationPatterns[selectedPatternIndex]));
     }
@@ -574,7 +577,8 @@ public class GameManager : MonoBehaviour
             oldScreen.isRepaired = false;
             oldScreen.isBeingRepaired = true;
             // Instancier le nouvel écran à remplacer
-            GameObject newScreen = Instantiate(screenReplacementPrefab, oldScreen.initialPosition, oldScreen.initialRotation);
+            Vector3 newPosition = oldScreen.initialPosition - new Vector3(0, 0, (batteryZOffset*3));
+            GameObject newScreen = Instantiate(screenReplacementPrefab, newPosition, oldScreen.initialRotation);
             InteractableObject newScreenInteractable = newScreen.GetComponent<InteractableObject>();
 
             if (newScreenInteractable != null)
@@ -799,5 +803,14 @@ public class GameManager : MonoBehaviour
             deskLamp.enabled = false;
             isNight = false;
         }
+    }
+
+    private void ResetLighting()
+    {
+        elapsedTime = 0f; // Réinitialise le temps écoulé
+        isNight = false; // Réinitialise l'état de nuit
+        mainLight.intensity = 1f; // Réinitialise l'intensité de la lumière principale
+        deskLamp.enabled = false; // Désactive la lampe de bureau
+        dayLightZoneRenderer.material.color = dayLightColor.Evaluate(0f); // Réinitialise la couleur de la zone lumineuse
     }
 }

@@ -23,9 +23,6 @@ public class InteractionController : MonoBehaviour
     public static InteractionController instance;
     private float rotationSum = 0f;
     public int currentDay = 1;
-    private InteractableObject selectedObjectByClick; // Pour stocker l'objet sélectionné par clic
-    private float rotateThreshold = 30f; // Seuil de rotation pour assembler ou démonter
-
     
 
     void Awake() {
@@ -331,76 +328,34 @@ public class InteractionController : MonoBehaviour
     }
 
     private void CheckBinClick()
+{
+    if (Input.GetMouseButtonDown(0))
     {
-        if (Input.GetMouseButtonDown(0))
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        //Debug.Log("test bac début");
+        if (Physics.Raycast(ray, out RaycastHit hit))
         {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            //Debug.Log("test bac début");
-            if (Physics.Raycast(ray, out RaycastHit hit))
+            if (hit.collider.gameObject.name == "bin" && selectedObject != null && selectedObject is InteractableObject interactableObject)
             {
-                if (hit.collider.gameObject.name == "bin" && selectedObject != null && selectedObject is InteractableObject interactableObject)
+                //Debug.Log("clique sur le bac réussi");   
+                if (interactableObject.isDisposable && interactableObject.currentState == InteractableObject.ObjectState.Complete)
                 {
-                    //Debug.Log("clique sur le bac réussi");   
-                    if (interactableObject.isDisposable && interactableObject.currentState == InteractableObject.ObjectState.Complete)
+                    //Debug.Log("Etat pour bac complete");
+
+                    if (interactableObject.isRepaired)
                     {
-                        //Debug.Log("Etat pour bac complete");
-
-                        if (interactableObject.isRepaired)
-                        {
-                            gameManager.score++;
-                            gameManager.scoreText.text = $"Score: {gameManager.score}";
-                            Debug.Log("Score: " + gameManager.score);
-                        }
-                        interactableObject.Dispose(interactableObject);  // Appeler la méthode Dispose de l'objet
-
-                        gameManager.LoadNewObject();  // Faire apparaître un nouvel objet
+                        gameManager.score++;
+                        gameManager.scoreText.text = $"Score: {gameManager.score}";
+                        Debug.Log("Score: " + gameManager.score);
                     }
-                }
-            }
-        }
-    }
+                    interactableObject.Dispose(interactableObject);  // Appeler la méthode Dispose de l'objet
 
-    private void HandleObjectSelectionByClick()
-    {
-        if (Input.GetMouseButtonDown(0))
-        {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out RaycastHit hit))
-            {
-                InteractableObject interactableObject = hit.collider.GetComponent<InteractableObject>();
-                if (interactableObject != null)
-                {
-                    if (selectedObjectByClick != null && selectedObjectByClick != interactableObject)
-                    {
-                        selectedObjectByClick.Deselect();
-                    }
-                    selectedObjectByClick = interactableObject;
-                    selectedObjectByClick.Select();
+                    gameManager.LoadNewObject();  // Faire apparaître un nouvel objet
                 }
             }
         }
     }
-
-    private void HandleObjectRotation()
-    {
-        if (selectedObjectByClick != null)
-        {
-            float rotationRate = Input.gyro.rotationRateUnbiased.z;
-            if (Mathf.Abs(rotationRate) > rotateThreshold)
-            {
-                if (rotationRate > rotateThreshold)
-                {
-                    selectedObjectByClick.Assemble(); // Appeler la méthode pour assembler
-                }
-                else if (rotationRate < -rotateThreshold)
-                {
-                    selectedObjectByClick.Dismantle(); // Appeler la méthode pour démonter
-                }
-                selectedObjectByClick.Deselect(); // Désélectionner l'objet après l'action
-                selectedObjectByClick = null; // Réinitialiser la sélection
-            }
-        }
-    }
+}
     
 
 }

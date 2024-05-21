@@ -22,6 +22,7 @@ public class CameraManager : MonoBehaviour
     [SerializeField] private Quaternion terminalCamRotation;
     [SerializeField] private Quaternion backPositionRotation;
     [SerializeField] private TextMeshProUGUI terminalMessageText; // Assurez-vous que ceci est assigné dans l'éditeur
+    [SerializeField] private ScrollingText scrollingText; // Référence au script ScrollingText
 
 
     // Singleton pattern pour un accès facile depuis d'autres scripts sans référence directe
@@ -63,42 +64,42 @@ public class CameraManager : MonoBehaviour
                     //Debug.Log("Keyboard clicked"); // Confirme que le clavier a été cliqué
                     SwitchToTerminalCamera();
                 }
-                // Vérifie si l'objet cliqué est le terminal
-                if (hit.collider.gameObject.name == "terminal" && camTerminal.enabled) 
-                {
-                    //Debug.Log("Terminal clicked, returning to repair camera.");
-                    StartCoroutine(AnimateCameraInverse(camTerminal, terminalPosition.position, backPosition.position, camRepair.transform.position, terminalCamRotation, repairCamRotation));
-                }
+                // // Vérifie si l'objet cliqué est le terminal
+                // if (hit.collider.gameObject.name == "terminal" && camTerminal.enabled) 
+                // {
+                //     //Debug.Log("Terminal clicked, returning to repair camera.");
+                //     SwitchToRepairCamera();
+                // }
             }
             else
             {
                 //Debug.Log("No repair hit"); // Aucun objet touché
             }
             
-            Ray rayTerminal = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hitTerminal;
+            // Ray rayTerminal = Camera.main.ScreenPointToRay(Input.mousePosition);
+            // RaycastHit hitTerminal;
 
-            if (Physics.Raycast(rayTerminal, out hitTerminal))
-            {
-                //Debug.Log("Hit " + hitTerminal.collider.gameObject.name); // Affiche le nom de l'objet touché
+            // if (Physics.Raycast(rayTerminal, out hitTerminal))
+            // {
+            //     //Debug.Log("Hit " + hitTerminal.collider.gameObject.name); // Affiche le nom de l'objet touché
 
-                // Vérifie si l'objet cliqué a le nom "keyboard"
-                if (hitTerminal.collider.gameObject.name == "terminal") 
-                {
-                    //Debug.Log("Terminal clicked"); // Confirme que le clavier a été cliqué
-                    StartCoroutine(AnimateCameraInverse(camTerminal, terminalPosition.position, backPosition.position, camRepair.transform.position, terminalCamRotation, repairCamRotation));
-                }
-                // Vérifie si l'objet cliqué est le terminal
-                if (hitTerminal.collider.gameObject.name == "terminal" && camTerminal.enabled) 
-                {
-                    //Debug.Log("Terminal clicked, returning to repair camera.");
-                    StartCoroutine(AnimateCameraInverse(camTerminal, terminalPosition.position, backPosition.position, camRepair.transform.position, terminalCamRotation, repairCamRotation));
-                }
-            }
-            else
-            {
-                //Debug.Log("No terminal hit"); // Aucun objet touché
-            }
+            //     // Vérifie si l'objet cliqué a le nom "keyboard"
+            //     if (hitTerminal.collider.gameObject.name == "terminal") 
+            //     {
+            //         //Debug.Log("Terminal clicked"); // Confirme que le clavier a été cliqué
+            //         StartCoroutine(AnimateCameraInverse(camTerminal, terminalPosition.position, backPosition.position, camRepair.transform.position, terminalCamRotation, repairCamRotation));
+            //     }
+            //     // Vérifie si l'objet cliqué est le terminal
+            //     if (hitTerminal.collider.gameObject.name == "terminal" && camTerminal.enabled) 
+            //     {
+            //         //Debug.Log("Terminal clicked, returning to repair camera.");
+            //         StartCoroutine(AnimateCameraInverse(camTerminal, terminalPosition.position, backPosition.position, camRepair.transform.position, terminalCamRotation, repairCamRotation));
+            //     }
+            // }
+            // else
+            // {
+            //     //Debug.Log("No terminal hit"); // Aucun objet touché
+            // }
         }
     }
 
@@ -108,9 +109,11 @@ public class CameraManager : MonoBehaviour
     }
 
     private IEnumerator SwitchToTerminalCameraWithMessage() {
-        IsTerminalActive = true;
         StartCoroutine(AnimateCamera(camTerminal, camRepair.transform.position, backPosition.position, terminalPosition.position,repairCamRotation, terminalCamRotation));
+        yield return new WaitForSeconds(transitionDuration);
+        IsTerminalActive = true;
         canvasRepair.enabled = false;
+        canvasTerminal.enabled = false;
         canvasEndDay.enabled = true;
 
         // Attendre un certain temps pour lire le message
@@ -144,12 +147,16 @@ public class CameraManager : MonoBehaviour
     // Méthodes pour changer spécifiquement de caméra
     public void SwitchToRepairCamera() {
         //Debug.Log("Switching back to repair camera.");
-        SetActiveCamera(camRepair);
+        StartCoroutine(AnimateCameraInverse(camTerminal, terminalPosition.position, backPosition.position, camRepair.transform.position, terminalCamRotation, repairCamRotation));
+        canvasRepair.enabled = true;
+        canvasTerminal.enabled = false;
     }
 
     public void SwitchToTerminalCamera() {
         //Debug.Log("Switching to terminal camera.");
+        scrollingText.ResetTextIndex();
         StartCoroutine(AnimateCamera(camTerminal, camRepair.transform.position, backPosition.position, terminalPosition.position,repairCamRotation, terminalCamRotation));
+        StartCoroutine(StartTextAfterAnimation());
     }
 
     IEnumerator AnimateCamera(Camera camera, Vector3 startPosition, Vector3 backPosition, Vector3 endPosition, Quaternion startRotation, Quaternion endRotation) 
@@ -198,6 +205,7 @@ public class CameraManager : MonoBehaviour
         float timer = 0.0f;
         while (timer < transitionDuration / 2) {
             camera.transform.position = Vector3.Lerp(startTerminal, backPosition, timer / (transitionDuration / 2));
+            camera.transform.rotation = startRotation;
             //camera.transform.rotation = Quaternion.Lerp(startRotation, Quaternion.LookRotation(backPosition - startTerminal), timer / (transitionDuration / 2));
             timer += Time.deltaTime;
             yield return null;
@@ -206,7 +214,7 @@ public class CameraManager : MonoBehaviour
         timer = 0.0f;
         while (timer < transitionDuration / 2) {
             camera.transform.position = Vector3.Lerp(backPosition, repairPosition, timer / (transitionDuration / 2));
-            camera.transform.rotation = Quaternion.Lerp(Quaternion.LookRotation(backPosition - repairPosition), repairRotation, timer / (transitionDuration / 2));
+            camera.transform.rotation = Quaternion.Lerp(startRotation, repairRotation, timer / (transitionDuration / 2));
             timer += Time.deltaTime;
             yield return null;
         }
@@ -221,5 +229,22 @@ public class CameraManager : MonoBehaviour
         SetActiveCamera(camTerminal);
         //Debug.Log("Camera has reached the terminal.");
         
+    }
+    private IEnumerator StartTextAfterAnimation() 
+    {
+        yield return new WaitForSeconds(transitionDuration); // Assurez-vous que cela correspond à la durée totale de l'animation de la caméra
+        scrollingText.NextText();
+    }
+
+    public void DisplayTerminalMessageAfterTraveling(string message)
+    {
+        StartCoroutine(DisplayMessageAfterTraveling(message));
+    }
+
+    private IEnumerator DisplayMessageAfterTraveling(string message)
+    {
+        // Attendre la fin de l'animation de la caméra vers le terminal
+        yield return new WaitForSeconds(transitionDuration); // Assurez-vous que cela correspond à la durée totale de l'animation de la caméra
+        DisplayTerminalMessage(message);
     }
 }
