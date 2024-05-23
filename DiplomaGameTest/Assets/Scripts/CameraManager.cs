@@ -12,6 +12,7 @@ public class CameraManager : MonoBehaviour
     [SerializeField] private Canvas canvasRepair; // Canvas associé à camRepair
     [SerializeField] private Canvas canvasTerminal; // Canvas associé à camTerminal
     [SerializeField] private Canvas canvasEndDay; // Canvas associé à camTerminal
+    [SerializeField] private Canvas canvasStory; // Canvas associé à camTerminal
 
     public Transform terminalPosition;  // Position devant le terminal
     public Transform backPosition;      // Position arrière pour l'effet de recul
@@ -40,7 +41,7 @@ public class CameraManager : MonoBehaviour
     void Start() {
         SetActiveCamera(camRepair);  // Définir camRepair comme la caméra active au démarrage
         canvasRepair.enabled = true;
-        canvasTerminal.enabled = false;
+        canvasStory.enabled = false;
         canvasEndDay.enabled = false;
         repairCamRotation = camRepair.transform.rotation; // Sauvegarder la rotation initiale
         terminalCamRotation = Quaternion.Euler(0, 19.915f, 0); // Définir une rotation face au terminal
@@ -107,13 +108,17 @@ public class CameraManager : MonoBehaviour
         terminalMessageText.text = message;
         StartCoroutine(SwitchToTerminalCameraWithMessage());
     }
+    public void DisplayTerminalMessageGameOver(string message) {
+        terminalMessageText.text = message;
+        StartCoroutine(SwitchToTerminalCameraWithMessageGameOver());
+    }
 
     private IEnumerator SwitchToTerminalCameraWithMessage() {
         StartCoroutine(AnimateCamera(camTerminal, camRepair.transform.position, backPosition.position, terminalPosition.position,repairCamRotation, terminalCamRotation));
         yield return new WaitForSeconds(transitionDuration);
         IsTerminalActive = true;
         canvasRepair.enabled = false;
-        canvasTerminal.enabled = false;
+        canvasStory.enabled = false;
         canvasEndDay.enabled = true;
 
         // Attendre un certain temps pour lire le message
@@ -124,6 +129,15 @@ public class CameraManager : MonoBehaviour
         canvasRepair.enabled = true;
         canvasEndDay.enabled = false;
         IsTerminalActive = false;
+    }
+
+    private IEnumerator SwitchToTerminalCameraWithMessageGameOver() {
+        StartCoroutine(AnimateCamera(camTerminal, camRepair.transform.position, backPosition.position, terminalPosition.position,repairCamRotation, terminalCamRotation));
+        yield return new WaitForSeconds(transitionDuration);
+        IsTerminalActive = true;
+        canvasRepair.enabled = false;
+        canvasStory.enabled = false;
+        canvasEndDay.enabled = true;
     }
     
     // Méthode pour changer la caméra active
@@ -140,8 +154,8 @@ public class CameraManager : MonoBehaviour
         // Active/Désactive les canvas correspondants
         //Debug.Log($"Enabling canvas for {newCamera.name}");
         canvasRepair.enabled = (newCamera == camRepair);
-        canvasTerminal.enabled = (newCamera == camTerminal);
-        //Debug.Log($"Canvas statuses: Repair Canvas = {canvasRepair.enabled}, Terminal Canvas = {canvasTerminal.enabled}");
+        canvasStory.enabled = (newCamera == camTerminal);
+        //Debug.Log($"Canvas statuses: Repair Canvas = {canvasRepair.enabled}, Terminal Canvas = {canvasStory.enabled}");
     }
 
     // Méthodes pour changer spécifiquement de caméra
@@ -149,14 +163,14 @@ public class CameraManager : MonoBehaviour
         //Debug.Log("Switching back to repair camera.");
         StartCoroutine(AnimateCameraInverse(camTerminal, terminalPosition.position, backPosition.position, camRepair.transform.position, terminalCamRotation, repairCamRotation));
         canvasRepair.enabled = true;
-        canvasTerminal.enabled = false;
+        canvasStory.enabled = false;
     }
 
     public void SwitchToTerminalCamera() {
         //Debug.Log("Switching to terminal camera.");
-        scrollingText.ResetTextIndex();
+        //scrollingText.ResetTextIndex();
         StartCoroutine(AnimateCamera(camTerminal, camRepair.transform.position, backPosition.position, terminalPosition.position,repairCamRotation, terminalCamRotation));
-        StartCoroutine(StartTextAfterAnimation());
+        //StartCoroutine(StartTextAfterAnimation());
     }
 
     IEnumerator AnimateCamera(Camera camera, Vector3 startPosition, Vector3 backPosition, Vector3 endPosition, Quaternion startRotation, Quaternion endRotation) 

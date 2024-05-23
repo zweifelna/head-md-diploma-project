@@ -69,6 +69,7 @@ public class GameManager : MonoBehaviour
     public Gradient dayLightColor; // Dégradé de couleur pour la lumière du jour
     private float elapsedTime = 0f;
     private bool isNight = false;
+    public BasicInkExample2 inkStoryManager; // Référence au script Ink
 
     void Start()
     {
@@ -79,6 +80,8 @@ public class GameManager : MonoBehaviour
         UpdateQuotaDisplay();
         deskLamp.enabled = false;
         deskLamp.intensity = 100f;
+        Debug.Log("Starting new day with currentDay: " + currentDay);
+        inkStoryManager.StartStory(currentDay);
     }
 
     void Update()
@@ -245,7 +248,7 @@ public class GameManager : MonoBehaviour
     {
         Debug.Log("Game Over!");
         StartCoroutine(WaitForTerminalDisplay());
-        CameraManager.Instance.DisplayTerminalMessage($"You're fired!\nScore: {score}/{quota}");
+        CameraManager.Instance.DisplayTerminalMessageGameOver($"You're fired!\nScore: {score}/{quota}");
         // Afficher un écran de fin, enregistrer le score, etc.
     }
 
@@ -725,6 +728,8 @@ public class GameManager : MonoBehaviour
     public void AdvanceDay()
     {
         currentDay++;
+        Debug.Log("Ending day. New currentDay: " + currentDay);
+        inkStoryManager.StartStory(currentDay);
         TriggerDailyEvent(currentDay);
     }
 
@@ -795,12 +800,12 @@ public class GameManager : MonoBehaviour
         // Gérer l'allumage de la lampe de bureau
         if (dayProgress >= 0.8f && !isNight)
         {
-            deskLamp.enabled = true;
+            //deskLamp.enabled = true;
             isNight = true;
         }
         else if (dayProgress < 0.8f && isNight)
         {
-            deskLamp.enabled = false;
+            //deskLamp.enabled = false;
             isNight = false;
         }
     }
