@@ -12,21 +12,21 @@ VAR currentDay = 1
 
 === day_1 ===
 Bienvenue au premier jour !
-* [Continuer] -> continue_story
+* [>] -> continue_story
 * [Terminer le jeu] -> END
 * [Autre] -> END
 
 === day_2 ===
 Bienvenue au deuxième jour !
-* [Continuer] -> continue_story
+* [>] -> continue_story
 
 === day_3 ===
 Bienvenue au troisième jour !
-* [Continuer] -> continue_story
+* [>] -> continue_story
 
 === generic_day ===
 Bienvenue à un nouveau jour !
-* [Continuer] -> continue_story
+* [>] -> continue_story
 
 === continue_story ===
 Vous vous tenez devant une porte. Que faites-vous ?
@@ -35,6 +35,7 @@ Vous vous tenez devant une porte. Que faites-vous ?
 
 === open_door ===
 La porte s'ouvre avec un grincement.
+# END_KNOT
 -> END
 
 === look_around ===

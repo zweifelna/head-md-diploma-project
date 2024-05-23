@@ -3,6 +3,7 @@ using Ink.Runtime;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.Collections;
 
 public class BasicInkExample2 : MonoBehaviour {
     public static event Action<Story> OnCreateStory;
@@ -19,6 +20,8 @@ public class BasicInkExample2 : MonoBehaviour {
     private TextMeshProUGUI textPrefab = null;
     [SerializeField]
     private Button buttonPrefab = null;
+    [SerializeField]
+    private float textSpeed = 0.05f; // Vitesse d'affichage du texte
 
     void Awake () {
         RemoveChildren();
@@ -40,43 +43,52 @@ public class BasicInkExample2 : MonoBehaviour {
         // Remove all the UI on screen
         RemoveChildren ();
         
-        // Read all the content until we can't continue any more
-        while (story.canContinue) {
-            // Continue gets the next line of the story
-            string text = story.Continue ();    
-            Debug.Log("Story text: " + text);
+    // Start coroutine to handle text display
+    StartCoroutine(DisplayTextAndChoices());
+}
 
-            // Check for debug tags
-            foreach (string tag in story.currentTags) {
-                Debug.Log("Tag: " + tag);
-            }        
+// Coroutine to handle text display and choices
+IEnumerator DisplayTextAndChoices() {
+    // Read all the content until we can't continue any more
+    while (story.canContinue) {
+        // Continue gets the next line of the story
+        string text = story.Continue();
+        Debug.Log("Story text: " + text);
 
-            // This removes any white space from the text.
-            text = text.Trim();
-            // Display the text on screen!
-            CreateContentView(text);
+        // This removes any white space from the text.
+        text = text.Trim();
+        // Display the text on screen!
+        yield return StartCoroutine(AnimateText(CreateTextView(text), text));
+    }
+
+    // Check for end of knot tag
+    foreach (string tag in story.currentTags) {
+        if (tag == "END_KNOT") {
+            CameraManager.Instance.SwitchToRepairCamera();
         }
+    }
 
-        // Display all the choices, if there are any!
-        if(story.currentChoices.Count > 0) {
-            for (int i = 0; i < story.currentChoices.Count; i++) {
-                Choice choice = story.currentChoices [i];
-                Button button = CreateChoiceView (choice.text.Trim ());
-                // Tell the button what to do when we press it
-                button.onClick.AddListener (delegate {
-                    OnClickChoiceButton (choice);
-                });
-            }
-        }
-        // If we've read all the content and there's no choices, the story is finished!
-        else {
-            Debug.Log("No more choices, end of story.");
-            Button choice = CreateChoiceView("End of story.\nRestart?");
-            choice.onClick.AddListener(delegate{
-                StartStory(GameManager.Instance.currentDay); // Restart story with currentDay
+    // Display all the choices, if there are any!
+    if (story.currentChoices.Count > 0) {
+        for (int i = 0; i < story.currentChoices.Count; i++) {
+            Choice choice = story.currentChoices[i];
+            Button button = CreateChoiceView(choice.text.Trim());
+            // Tell the button what to do when we press it
+            button.onClick.AddListener(delegate {
+                OnClickChoiceButton(choice);
             });
         }
     }
+    // If we've read all the content and there's no choices, the story is finished!
+    else {
+        Debug.Log("No more choices, end of story.");
+        Button choice = CreateChoiceView("End of story.\nRestart?");
+        choice.onClick.AddListener(delegate {
+            StartStory(GameManager.Instance.currentDay); // Restart story with currentDay
+        });
+    }
+}
+    
 
     // When we click the choice button, tell the story to choose that choice!
     void OnClickChoiceButton (Choice choice) {
@@ -94,6 +106,28 @@ public class BasicInkExample2 : MonoBehaviour {
         TextMeshProUGUI storyText = Instantiate (textPrefab) as TextMeshProUGUI;
         storyText.text = text;
         storyText.transform.SetParent (canvas.transform, false);
+        StartCoroutine(AnimateText(storyText, text));
+    }
+
+    TextMeshProUGUI CreateTextView(string text) {
+    if (textPrefab == null) {
+        Debug.LogError("textPrefab is not assigned in the inspector");
+        return null;
+    }
+
+    TextMeshProUGUI storyText = Instantiate(textPrefab) as TextMeshProUGUI;
+    storyText.text = "";
+    storyText.transform.SetParent(canvas.transform, false);
+    return storyText;
+}
+
+    // Coroutine for animating the text
+    IEnumerator AnimateText(TextMeshProUGUI textComponent, string text) {
+        textComponent.text = "";
+        foreach (char c in text) {
+            textComponent.text += c;
+            yield return new WaitForSeconds(textSpeed);
+        }
     }
 
     // Creates a button showing the choice text
