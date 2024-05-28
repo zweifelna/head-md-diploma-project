@@ -32,10 +32,6 @@ public class GameManager : MonoBehaviour
     public enum SubState
     {
         None,
-        ObjectSelected,
-        PhoneShaking,
-        VibrationPatternPlaying,
-        ActionResponse,
         RepairScreen,
         ReplaceBatteries,
         FullDismantle
@@ -71,17 +67,29 @@ public class GameManager : MonoBehaviour
     private bool isNight = false;
     public BasicInkExample2 inkStoryManager; // Référence au script Ink
 
+    private List<(string, SubState)> repairPlan;
+    private int currentRepairIndex;
+    private InteractableObject currentObject;
+    private Dictionary<int, List<(string, SubState)>> dailyRepairPlans;
+
+
     void Start()
     {
+        Debug.Log("Starting new day with currentDay: " + currentDay);
+        InitializeGame();
+        StartWithTerminal();
+    }
+
+    void InitializeGame()
+    {
+        InitializeDailyRepairPlans();
+        PrepareRepairPlan();
+        LoadNextObject();
         InitializeDailyEvents();
-        timerIsRunning = true;
         InitializeInteractableObjects();
-        InitializeVibrationPatterns();
         UpdateQuotaDisplay();
         deskLamp.enabled = false;
         deskLamp.intensity = 100f;
-        Debug.Log("Starting new day with currentDay: " + currentDay);
-        inkStoryManager.StartStory(currentDay);
     }
 
     void Update()
@@ -101,16 +109,6 @@ public class GameManager : MonoBehaviour
             UpdateTimerDisplay();
         }
 
-        switch (currentSubState)
-        {
-            case SubState.PhoneShaking:
-                // Logique de détection du secouement du téléphone
-                if (DetectPhoneShake())
-                {
-                    SetSubState(SubState.VibrationPatternPlaying); // Méthode hypothétique pour gérer la suite des actions
-                }
-                break;
-        }
     }
 
     void InitializeDailyEvents()
@@ -140,6 +138,41 @@ public class GameManager : MonoBehaviour
         // Ajoutez d'autres événements ici...
     }
 
+    void InitializeDailyRepairPlans()
+    {
+        dailyRepairPlans = new Dictionary<int, List<(string, SubState)>>()
+        {
+            { 1, new List<(string, SubState)> 
+                { 
+                    ("Objet 1", SubState.RepairScreen),
+                    ("Objet 2", SubState.RepairScreen)
+                } 
+            },
+            { 2, new List<(string, SubState)> 
+                { 
+                    ("Objet 1", SubState.RepairScreen),
+                    ("Objet 2", SubState.RepairScreen),
+                    ("Objet 3", SubState.RepairScreen)
+                } 
+            },
+            { 3, new List<(string, SubState)> 
+                { 
+                    ("Objet 1", SubState.ReplaceBatteries),
+                    ("Objet 2", SubState.RepairScreen),
+                    ("Objet 3", SubState.RepairScreen)
+                } 
+            },
+            { 4, new List<(string, SubState)> 
+                { 
+                    ("Objet 1", SubState.RepairScreen),
+                    ("Objet 2", SubState.ReplaceBatteries),
+                    ("Objet 3", SubState.RepairScreen)
+                } 
+            },
+            // Ajoutez d'autres jours ici...
+        };
+    }
+
     private void UpdateTimerDisplay()
     {
         timerText.text = $"Temps: {Mathf.Ceil(elapsedTime)}";
@@ -152,6 +185,7 @@ public class GameManager : MonoBehaviour
     {
         if (score >= quota)
         {
+            Debug.Log("quota checked and win");
             TransitionToState(State.Win);  // Transition vers l'état de victoire
         }
         else
@@ -216,59 +250,61 @@ public class GameManager : MonoBehaviour
     {
         switch (subState)
         {
-            case SubState.ObjectSelected:
-                Debug.Log("Object has been selected. Ready for phone shaking.");
-                // Configurer le prochain sous-état après une certaine action ou un certain délai
-                Invoke("PrepareForPhoneShaking", 2.0f); // Exemple: attendre 2 secondes avant de passer à PhoneShaking
-                break;
-
-            case SubState.VibrationPatternPlaying:
-                PlayVibrationPattern();
-                TransitionToRepairSubState(selectedPatternIndex);
-                break;
-
             case SubState.RepairScreen:
-                // Logique pour démonter et replacer l'écran
+                Debug.Log("Entering RepairScreen substate.");
                 StartScreenRepair();
+                // Logique pour l'état de réparation de l'écran
                 break;
-
             case SubState.ReplaceBatteries:
-                // Logique pour remplacer les trois piles
+                Debug.Log("Entering ReplaceBatteries substate.");
                 StartBatteryReplacement();
+                // Logique pour l'état de remplacement des batteries
                 break;
-
             case SubState.FullDismantle:
-                // Logique pour démonter et remplacer tout
-                StartFullDismantle();
+                Debug.Log("Entering FullDismantle substate.");
+                // Logique pour l'état de démontage complet
                 break;
+            // Supprimez les autres cas de substate qui ne sont plus nécessaires
         }
     }
 
     void HandleGameOver()
     {
         Debug.Log("Game Over!");
-        StartCoroutine(WaitForTerminalDisplay());
-        CameraManager.Instance.DisplayTerminalMessageGameOver($"You're fired!\nScore: {score}/{quota}");
-        // Afficher un écran de fin, enregistrer le score, etc.
+        StartCoroutine(EndOfDayRoutine("game_over"));
     }
 
     void HandleWin()
     {
         Debug.Log("You Win!");
-        
-        // Réinitialiser le timer et le score
-        StartCoroutine(WaitForTerminalDisplay());
-        CameraManager.Instance.DisplayTerminalMessage($"Quota achieved!\nScore: {score}/{quota}");
-        
+        StartCoroutine(EndOfDayRoutine("quota_achieved"));
+        // Passer à la journée suivante
+        ResetGameForNextDay();
+        //inkStoryManager.RestartStory();
     }
 
-    private IEnumerator WaitForTerminalDisplay()
+    private IEnumerator EndOfDayRoutine(string knotName)
     {
-        // Attendre la fin de l'affichage du terminal
-        yield return new WaitUntil(() => !CameraManager.Instance.IsTerminalActive);
+        // Passer à la caméra du terminal
+        CameraManager.Instance.SwitchToTerminalCamera();
+        // Mettre à jour le score dans Ink
+        inkStoryManager.SetInkVariable("current_score", score);
+        AdvanceDay();
+        inkStoryManager.SetInkVariable("currentDay", currentDay);
+        // Commencer l'histoire Ink à partir du nœud spécifié
+        Debug.Log("Envoie la demande Ink de commencer à "+knotName);
+        if(knotName == "game_over")
+        {
+            inkStoryManager.StartStoryFromKnot(knotName);
+        }else{
+            inkStoryManager.StartStory(currentDay);
+        }
+        
 
-        // Réinitialiser le timer, le score et charger un nouvel objet
-        ResetGameForNextDay();
+
+        // Attendre que la caméra du terminal soit active
+        yield return new WaitUntil(() => CameraManager.Instance.IsTerminalActive);
+
     }
 
     private void ResetGameForNextDay()
@@ -276,12 +312,13 @@ public class GameManager : MonoBehaviour
         timeRemaining = 60; // Réinitialiser le timer
         timerIsRunning = true;
         score = 0; // Réinitialiser le score
-        quota += 2; // Mettre à jour le quota pour le nouveau jour
         UpdateQuotaDisplay();
         DestroyObjects();
         ClearDiscardedObjects();
-        LoadNewObject(); // Charger un nouvel objet
-        AdvanceDay();
+        //AdvanceDay();
+        PrepareRepairPlan();
+        Debug.Log("charge un nouvel objet jour 2");
+        LoadNextObject(); // Charger un nouvel objet
         ResetLighting();
         TransitionToState(State.GameActive); // Retourner à l'état de jeu actif
     }
@@ -353,11 +390,12 @@ public class GameManager : MonoBehaviour
     {
         score++;
         scoreText.text = $"Score: {score}";
-        LoadNewObject(); // Charge ou active un nouvel objet pour interaction
+        //LoadNewObject(); // Charge ou active un nouvel objet pour interaction
     }
 
     void InitializeInteractableObjects()
     {
+        allInteractableObjects.Clear();
         // Trouve tous les objets de type InteractableObject dans la scène
         allInteractableObjects = new List<InteractableObject>(FindObjectsOfType<InteractableObject>());
         Debug.Log("Found " + allInteractableObjects.Count + " interactable objects.");
@@ -374,22 +412,22 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void LoadNewObject()
-    {
-        RemoveAllObjects();
-        Vector3 spawnPosition = new Vector3(-1.73f, 1.19f, -3.04f);
-        Quaternion spawnRotation = Quaternion.Euler(0, 0, -90);
+    // public void LoadNewObject()
+    // {
+    //     RemoveAllObjects();
+    //     Vector3 spawnPosition = new Vector3(-1.73f, 1.19f, -3.04f);
+    //     Quaternion spawnRotation = Quaternion.Euler(0, 0, -90);
 
-        GameObject newObject = Instantiate(interactableObjectPrefab, spawnPosition, spawnRotation);
-        InteractableObject newInteractableObject = newObject.GetComponent<InteractableObject>();
+    //     GameObject newObject = Instantiate(interactableObjectPrefab, spawnPosition, spawnRotation);
+    //     InteractableObject newInteractableObject = newObject.GetComponent<InteractableObject>();
 
-        if (newInteractableObject != null)
-        {
-            InitializeInteractableObjects();
-            Debug.Log("New interactable object loaded and initialized.");
-            dismantlingCompleted = false;
-        }
-    }
+    //     if (newInteractableObject != null)
+    //     {
+    //         InitializeInteractableObjects();
+    //         Debug.Log("New interactable object loaded and initialized.");
+    //         dismantlingCompleted = false;
+    //     }
+    // }
 
     // public void PrintAllInteractableObjectNames()
     // {
@@ -467,54 +505,54 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void ObjectSelected()
-    {
-        SetSubState(SubState.ObjectSelected);
-    }
+    // public void ObjectSelected()
+    // {
+    //     SetSubState(SubState.ObjectSelected);
+    // }
 
 
-    private void PrepareForPhoneShaking()
-    {
-        SetSubState(SubState.PhoneShaking);
-    }
+    // private void PrepareForPhoneShaking()
+    // {
+    //     SetSubState(SubState.PhoneShaking);
+    // }
 
-    private bool DetectPhoneShake()
-    {
-        // Seuil de secousse, ajustez cette valeur en fonction de la sensibilité désirée
-        float shakeDetectionThreshold = 2.5f;
+    // private bool DetectPhoneShake()
+    // {
+    //     // Seuil de secousse, ajustez cette valeur en fonction de la sensibilité désirée
+    //     float shakeDetectionThreshold = 2.5f;
 
-        // Accélération instantanée
-        Vector3 acceleration = Input.acceleration;
+    //     // Accélération instantanée
+    //     Vector3 acceleration = Input.acceleration;
 
-        // Vérifier si l'accélération dépasse un certain seuil
-        if (acceleration.sqrMagnitude >= shakeDetectionThreshold * shakeDetectionThreshold) {
-            Debug.Log("Shake detected");
-            GameManager.Instance.SetSubState(GameManager.SubState.PhoneShaking); // Passer au substate suivant
-            return true;
-        }
+    //     // Vérifier si l'accélération dépasse un certain seuil
+    //     if (acceleration.sqrMagnitude >= shakeDetectionThreshold * shakeDetectionThreshold) {
+    //         Debug.Log("Shake detected");
+    //         GameManager.Instance.SetSubState(GameManager.SubState.PhoneShaking); // Passer au substate suivant
+    //         return true;
+    //     }
 
-        // Simulation de secouement en appuyant sur le scoreText dans Unity Editor
-        #if UNITY_EDITOR
-        if (Input.GetMouseButtonDown(0)) {
-            Vector2 pos = Input.mousePosition;
-            if (RectTransformUtility.RectangleContainsScreenPoint(scoreText.rectTransform, pos, null)) {
-                Debug.Log("Shake simulated by clicking on scoreText");
-                GameManager.Instance.SetSubState(GameManager.SubState.PhoneShaking); // Passer au substate suivant
-                return true;
-            }
-        }
-        #endif
+    //     // Simulation de secouement en appuyant sur le scoreText dans Unity Editor
+    //     #if UNITY_EDITOR
+    //     if (Input.GetMouseButtonDown(0)) {
+    //         Vector2 pos = Input.mousePosition;
+    //         if (RectTransformUtility.RectangleContainsScreenPoint(scoreText.rectTransform, pos, null)) {
+    //             Debug.Log("Shake simulated by clicking on scoreText");
+    //             GameManager.Instance.SetSubState(GameManager.SubState.PhoneShaking); // Passer au substate suivant
+    //             return true;
+    //         }
+    //     }
+    //     #endif
 
-        // Simulation de secouement en appuyant sur la touche "S"
-        if (Input.GetKeyDown(KeyCode.S))
-        {
-            Debug.Log("Shake simulated by pressing 'S' key");
-            GameManager.Instance.SetSubState(GameManager.SubState.PhoneShaking); // Passer au substate suivant
-            return true;
-        }
+    //     // Simulation de secouement en appuyant sur la touche "S"
+    //     if (Input.GetKeyDown(KeyCode.S))
+    //     {
+    //         Debug.Log("Shake simulated by pressing 'S' key");
+    //         GameManager.Instance.SetSubState(GameManager.SubState.PhoneShaking); // Passer au substate suivant
+    //         return true;
+    //     }
 
-        return false;
-    }
+    //     return false;
+    // }
 
     void InitializeVibrationPatterns() 
     {
@@ -576,6 +614,7 @@ public class GameManager : MonoBehaviour
         InteractableObject oldScreen = FindScreenObject();
         if (oldScreen != null)
         {
+            Debug.Log("oldscreen found");
             // Définir isRepaired à false pour l'écran initial
             oldScreen.isRepaired = false;
             oldScreen.isBeingRepaired = true;
@@ -621,9 +660,10 @@ public class GameManager : MonoBehaviour
 
     void StartBatteryReplacement()
     {
-         Debug.Log("Starting battery replacement sequence.");
+        Debug.Log("Starting battery replacement sequence.");
         List<InteractableObject> oldBatteries = FindBatteryObjects();
-        if (oldBatteries.Count == 3)
+        Debug.Log(oldBatteries.Count);
+        if (oldBatteries.Count >= 3)
         {
             for (int i = 0; i < oldBatteries.Count; i++)
             {
@@ -700,12 +740,11 @@ public class GameManager : MonoBehaviour
         // }
     }
 
-    void CompleteRepairProcess()
+    public void CompleteRepairProcess()
     {
         score++;
-        scoreText.text = $"Score: {score}";
-        LoadNewObject(); // Charge un nouvel objet
-        SetSubState(SubState.ObjectSelected); // Retour à l'état initial pour sélectionner le nouvel objet
+        Debug.Log("LE SCORE EST DE "+score);
+        LoadNextObject();
     }
 
     bool CheckRepairCompletion(InteractableObject targetObject)
@@ -729,7 +768,7 @@ public class GameManager : MonoBehaviour
     {
         currentDay++;
         Debug.Log("Ending day. New currentDay: " + currentDay);
-        inkStoryManager.StartStory(currentDay);
+        //inkStoryManager.StartStory(currentDay);
         TriggerDailyEvent(currentDay);
     }
 
@@ -778,10 +817,10 @@ public class GameManager : MonoBehaviour
         discardedObjects.Clear();
     }
 
-    public void InitializeObjectSelection()
-    {
-        SetSubState(SubState.ObjectSelected);
-    }
+    // public void InitializeObjectSelection()
+    // {
+    //     SetSubState(SubState.ObjectSelected);
+    // }
 
      void UpdateDayLightZone()
     {
@@ -817,5 +856,63 @@ public class GameManager : MonoBehaviour
         mainLight.intensity = 1f; // Réinitialise l'intensité de la lumière principale
         deskLamp.enabled = false; // Désactive la lampe de bureau
         dayLightZoneRenderer.material.color = dayLightColor.Evaluate(0f); // Réinitialise la couleur de la zone lumineuse
+    }
+
+    public void StartWithTerminal()
+    {
+        // Afficher le terminal avec le texte du jour basé sur currentDay
+        CameraManager.Instance.StartWithTerminalCamera();
+        inkStoryManager.StartStory(currentDay);
+    }
+
+
+    public void StartTimer()
+    {
+        timerIsRunning = true;
+    }
+
+    void PrepareRepairPlan()
+    {
+        if (dailyRepairPlans.ContainsKey(currentDay))
+        {
+            repairPlan = dailyRepairPlans[currentDay];
+            currentRepairIndex = 0;
+        }
+        else
+        {
+            Debug.LogError($"No repair plan found for day {currentDay}");
+        }
+    }
+
+    InteractableObject CreateInteractableObject(string name)
+    {
+        // Logique pour créer et initialiser un objet interactif
+        GameObject newObject = Instantiate(interactableObjectPrefab);
+        InteractableObject interactableObject = newObject.GetComponent<InteractableObject>();
+        interactableObject.name = name;
+        return interactableObject;
+    }
+
+    void LoadNextObject()
+    {
+        if (currentRepairIndex < repairPlan.Count)
+        {
+            allInteractableObjects.Remove(currentObject); // Supprimer l'objet de la liste
+            
+            var nextRepair = repairPlan[currentRepairIndex];
+            currentObject = CreateInteractableObject(nextRepair.Item1);
+            SubState subState = nextRepair.Item2;
+
+            currentObject.gameObject.SetActive(true); // Activez le prochain objet
+            InitializeInteractableObjects();
+
+            currentRepairIndex++;
+            SetSubState(subState);
+        }
+        else
+        {
+            // Quota atteint, passez à la fin de la journée ou autre logique
+            CheckQuota();
+        }
     }
 }

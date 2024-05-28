@@ -112,25 +112,28 @@ public class InteractableObject : MonoBehaviour, IInteractable
         StartCoroutine(MoveToPosition(centerPosition));
         isSelected = true;
 
-        if(isFirstSelect){
-            GameManager.Instance.ObjectSelected();
-            isFirstSelect = false;
-        }
+        // if(isFirstSelect){
+        //     GameManager.Instance.ObjectSelected();
+        //     isFirstSelect = false;
+        // }
         
     }
 
     public void Deselect()
     {
-        Debug.Log("deselected");
-        StopAllCoroutines();
-        StartCoroutine(MoveToPosition(initialPosition, () => {
-            // Réinitialise la rotation une fois que l'objet est de retour à sa position initiale
-            transform.rotation = initialRotation;
-        }));
-        isSelected = false;
+        if (this != null)
+        {
+            //Debug.Log("deselected");
+            StopAllCoroutines();
+            StartCoroutine(MoveToPosition(initialPosition, () => {
+                // Réinitialise la rotation une fois que l'objet est de retour à sa position initiale
+                transform.rotation = initialRotation;
+            }));
+            isSelected = false;
 
-        // Détacher cet objet de son parent actuel (le rendre à nouveau un objet de premier niveau dans la hiérarchie)
-        this.transform.SetParent(null);
+            // Détacher cet objet de son parent actuel (le rendre à nouveau un objet de premier niveau dans la hiérarchie)
+            this.transform.SetParent(null);
+        }
     }
 
     public void ChangeToReadyToDismantle()
@@ -185,7 +188,7 @@ public class InteractableObject : MonoBehaviour, IInteractable
             }
             if (isInCorrectOrientation) // Assurez-vous que cette propriété est correctement définie ailleurs dans le script
             {
-                Debug.Log("Appel la vérification du tour de smartphone");
+                //Debug.Log("Appel la vérification du tour de smartphone");
                 CheckCircularMotion();
             }
         }
@@ -195,28 +198,28 @@ public class InteractableObject : MonoBehaviour, IInteractable
     {
         // Logique pour "placer" l'objet, comme le déplacer à une position précise
         currentState = ObjectState.Complete; // Met à jour l'état pour indiquer que l'objet a été correctement placé
-        Debug.Log($"{gameObject.name} current state after placing: {currentState}");
+        //Debug.Log($"{gameObject.name} current state after placing: {currentState}");
         IsSnapped = true;
         OnSnapped?.Invoke();
         MarkAsRepaired();
-        Debug.Log($"{gameObject.name} current state after placing: {currentState}");
-        Debug.Log($"{gameObject.name} est maintenant snappé.");
+        //Debug.Log($"{gameObject.name} current state after placing: {currentState}");
+        //Debug.Log($"{gameObject.name} est maintenant snappé.");
         // Appliquer ici l'animation ou l'effet visuel de "placement réussi"
         // Forcer la mise à jour de la hiérarchie et de la position/rotation
         transform.localPosition = Vector3.zero;
         transform.localRotation = Quaternion.Euler(0, 0, -90);
     
         // Validation supplémentaire
-        Debug.Log($"Placed: Local Position = {transform.localPosition}, Local Rotation = {transform.localRotation}");
+        //Debug.Log($"Placed: Local Position = {transform.localPosition}, Local Rotation = {transform.localRotation}");
     }
 
     public void ResetPosition()
     {
-        Debug.Log("ResetPosition called for " + gameObject.name);
+        //Debug.Log("ResetPosition called for " + gameObject.name);
         // Logique pour réinitialiser l'objet à sa position/état initial
         currentState = ObjectState.Dismantled;
         IsSnapped = false;
-        Debug.Log($"{gameObject.name} a été réinitialisé et n'est plus snappé.");
+        //Debug.Log($"{gameObject.name} a été réinitialisé et n'est plus snappé.");
         transform.SetParent(null);
         // Commence une coroutine pour déplacer l'objet à sa position initiale avec une animation
         StartCoroutine(MoveToPosition(initialPosition, () => {
@@ -229,7 +232,7 @@ public class InteractableObject : MonoBehaviour, IInteractable
         var renderer = GetComponent<Renderer>();
         if (canPlace)
         {
-            Debug.Log($"{gameObject.name} can be placed.");
+            //Debug.Log($"{gameObject.name} can be placed.");
             // Lerp entre la couleur originale et le blanc pour éclaircir
             float lerpValue = 0.2f; // Ajuste cette valeur pour contrôler à quel point la couleur est plus claire (0 = couleur originale, 1 = vert)
             Color lighterColor = Color.Lerp(originalColor, Color.green, lerpValue);
@@ -237,7 +240,7 @@ public class InteractableObject : MonoBehaviour, IInteractable
         }
         else
         {
-            Debug.Log($"{gameObject.name} cannot be placed.");
+            //Debug.Log($"{gameObject.name} cannot be placed.");
             // Revenir à la couleur normale ou indiquer que le placement n'est pas possible
             ResetVisualFeedback();
         }
@@ -291,13 +294,13 @@ public class InteractableObject : MonoBehaviour, IInteractable
             float rotationRate = Input.gyro.rotationRateUnbiased.y;
             rotationSum += rotationRate * Time.deltaTime;
 
-            Debug.Log("Rotation Rate Y: " + rotationRate * Time.deltaTime + ", Current Rotation Sum: " + rotationSum);
+            //Debug.Log("Rotation Rate Y: " + rotationRate * Time.deltaTime + ", Current Rotation Sum: " + rotationSum);
 
             if (Mathf.Abs(rotationSum) >= requiredRotation)
             {
                 PerformAction();
                 rotationSum = 0;
-                Debug.Log("Tour complet du téléphone effectué");
+                //Debug.Log("Tour complet du téléphone effectué");
             }
         }
     }
@@ -312,7 +315,7 @@ public class InteractableObject : MonoBehaviour, IInteractable
         }
         else
         {
-            Debug.Log(gameObject.name + " is already in state: " + currentState);
+            //Debug.Log(gameObject.name + " is already in state: " + currentState);
         }
     }
 

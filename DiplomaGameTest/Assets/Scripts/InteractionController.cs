@@ -165,7 +165,7 @@ public class InteractionController : MonoBehaviour
             
                 if (canPlace)
                 {
-                    Debug.Log("Snapping Object: " + interactableObject.name);
+                    //Debug.Log("Snapping Object: " + interactableObject.name);
                     CheckPlacement(interactableObject, true);
                     GameObject destinationZone = GameObject.Find(interactableObject.GetDestinationZoneName());
                     if (destinationZone != null)
@@ -320,7 +320,7 @@ public class InteractionController : MonoBehaviour
                 float rotationRate = Input.gyro.rotationRateUnbiased.z;
                 if (rotationRate > rotationThreshold)
                 {
-                    Debug.Log("Phone turned enough");
+                    //Debug.Log("Phone turned enough");
                     interactableObject.ChangeToReadyToDismantle();
                 }
             }
@@ -344,13 +344,14 @@ public class InteractionController : MonoBehaviour
 
                     if (interactableObject.isRepaired)
                     {
-                        gameManager.score++;
+                        //gameManager.score++;
                         gameManager.scoreText.text = $"Score: {gameManager.score}";
                         Debug.Log("Score: " + gameManager.score);
                     }
+                    gameManager.CompleteRepairProcess();
                     interactableObject.Dispose(interactableObject);  // Appeler la méthode Dispose de l'objet
 
-                    gameManager.LoadNewObject();  // Faire apparaître un nouvel objet
+                      // Faire apparaître un nouvel objet
                 }
             }
         }

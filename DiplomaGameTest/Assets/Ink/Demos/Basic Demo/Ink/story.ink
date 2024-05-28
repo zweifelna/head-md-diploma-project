@@ -1,4 +1,5 @@
-- I looked at Monsieur Fish 
+- I looked at Monsieur Fish
+Do I ?
 *   ... and I could contain myself no longer.
     'What is the purpose of our journey, Monsieur?'
     'A wager,' he replied.

@@ -10,7 +10,7 @@ public class CameraManager : MonoBehaviour
     [SerializeField] private Camera camTerminal; // Caméra pour le terminal
 
     [SerializeField] private Canvas canvasRepair; // Canvas associé à camRepair
-    [SerializeField] private Canvas canvasTerminal; // Canvas associé à camTerminal
+    //[SerializeField] private Canvas canvasTerminal; // Canvas associé à camTerminal
     [SerializeField] private Canvas canvasEndDay; // Canvas associé à camTerminal
     [SerializeField] private Canvas canvasStory; // Canvas associé à camTerminal
 
@@ -136,8 +136,8 @@ public class CameraManager : MonoBehaviour
         yield return new WaitForSeconds(transitionDuration);
         IsTerminalActive = true;
         canvasRepair.enabled = false;
-        canvasStory.enabled = false;
-        canvasEndDay.enabled = true;
+        canvasStory.enabled = true;
+        canvasEndDay.enabled = false;
     }
     
     // Méthode pour changer la caméra active
@@ -260,5 +260,11 @@ public class CameraManager : MonoBehaviour
         // Attendre la fin de l'animation de la caméra vers le terminal
         yield return new WaitForSeconds(transitionDuration); // Assurez-vous que cela correspond à la durée totale de l'animation de la caméra
         DisplayTerminalMessage(message);
+    }
+
+    public void StartWithTerminalCamera() {
+        SetActiveCamera(camTerminal);
+        canvasRepair.enabled = false;
+        canvasStory.enabled = true;
     }
 }

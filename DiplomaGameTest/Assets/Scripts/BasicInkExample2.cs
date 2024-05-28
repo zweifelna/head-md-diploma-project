@@ -43,13 +43,14 @@ public class BasicInkExample2 : MonoBehaviour {
         // Remove all the UI on screen
         RemoveChildren ();
         
-    // Start coroutine to handle text display
-    StartCoroutine(DisplayTextAndChoices());
-}
+        // Start coroutine to handle text display
+        StartCoroutine(DisplayTextAndChoices());
+    }
 
 // Coroutine to handle text display and choices
 IEnumerator DisplayTextAndChoices() {
     // Read all the content until we can't continue any more
+    Debug.Log("DisplayTextAndChoices started.");
     while (story.canContinue) {
         // Continue gets the next line of the story
         string text = story.Continue();
@@ -65,6 +66,7 @@ IEnumerator DisplayTextAndChoices() {
     foreach (string tag in story.currentTags) {
         if (tag == "END_KNOT") {
             CameraManager.Instance.SwitchToRepairCamera();
+            GameManager.Instance.StartTimer();
         }
     }
 
@@ -87,6 +89,9 @@ IEnumerator DisplayTextAndChoices() {
             StartStory(GameManager.Instance.currentDay); // Restart story with currentDay
         });
     }
+
+    yield return null;
+    Debug.Log("DisplayTextAndChoices finished.");
 }
     
 
@@ -162,5 +167,33 @@ IEnumerator DisplayTextAndChoices() {
         for (int i = childCount - 1; i >= 0; --i) {
             Destroy (canvas.transform.GetChild (i).gameObject);
         }
+    }
+
+    public void StartStoryFromKnot(string knotName)
+    {
+        Debug.Log("Ink commence l'histoire au noeud"+knotName);
+        story.ChoosePathString(knotName);
+        RefreshView();
+    }
+
+    public void SetInkVariable(string variableName, object value)
+    {
+        Debug.Log("Ink définit la variable état comme"+value);
+        if (story != null && story.variablesState != null)
+        {
+            story.variablesState[variableName] = value;
+        }
+    }
+
+    public void RestartStory()
+    {
+        Debug.Log("Restarting Ink story.");
+        story = new Story(inkJSONAsset.text);
+        story.onError += (message, type) => {
+            Debug.LogError($"Ink Error: {message} (Type: {type})");
+        };
+
+        if (OnCreateStory != null) OnCreateStory(story);
+        RefreshView();
     }
 }
