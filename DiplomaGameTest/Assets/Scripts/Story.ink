@@ -1,5 +1,5 @@
 VAR currentDay = 1
-VAR current_score = 0
+VAR usbPlugged = true
 
 -> start
 
@@ -13,18 +13,38 @@ VAR current_score = 0
 }
 
 === day_1_1 ===
-Welcome to the company.
+Welcome to the company. 
+As a repairer, your role is crucial to the continued operation of the FixFox. 
 
 * [>] -> day_1_2
 
 === day_1_2 ===
-Day 1 tasks:
-object n1 - change the screen
-object n2 - change the screen
+
+Instructions:
+
+1. Read the error codes for each object
+2. Access your workshop
+3. Replace faulty parts
+4. Place the item in the bin.
+
 * [>] -> day_1_3
 
 === day_1_3 ===
-End
+Please respect the daily quotas. Failure to do so will result in your suspension. 
+
+Yours sincerely 
+
+The company
+
+* [>] -> day_1_4
+
+=== day_1_4 ===
+Day 1 tasks:
+
+object \#1 - change the screen
+* [>] -> day_1_5
+
+=== day_1_5 ===
 # END_KNOT
 * [>] -> day_2
 
@@ -35,14 +55,12 @@ Welcome to day 2!
 
 === day_2_2 ===
 Day 2 tasks:
-object n1 - change the screen
-object n2 - change the screen
-object n3 - change the screen
+
+object \#1 - replace batteries
 
 * [>] -> day_2_3
 
 === day_2_3 ===
-End
 # END_KNOT
 * [>] -> day_3
 
@@ -53,14 +71,13 @@ Welcome to day 3!
 
 === day_3_2 ===
 Day 3 tasks:
-object n1 - replace batteries
-object n2 - change the screen
-object n3 - change the screen
+
+object \#1 - replace batteries
+object \#2 - change the screen
 
 * [>] -> day_3_3
 
 === day_3_3 ===
-End
 # END_KNOT
 * [>] -> day_4
 
@@ -71,15 +88,40 @@ Welcome to day 4!
 
 === day_4_2 ===
 Day 4 tasks:
-object n1 - change the screen
-object n2 - replace batteries
-object n3 - change the screen
+
+object \#1 - change the screen
+object \#2 - change the screen
 
 * [>] -> day_4_3
 
 === day_4_3 ===
-End
 # END_KNOT
+* [>] -> day_10
+
+=== day_10 ===
+Welcome to day 10! (pirate batteries)
+* [>] -> day_10_2
+
+=== day_10_2 ===
+Day 10 tasks:
+
+object \#1 - change the screen
+object \#2 - /!\ analysis error
+object \#3 - change the screen
+
+* [>] -> day_17
+
+=== day_17 ===
+Welcome to day 17! (pirate screen)
+* [>] -> day_17_2
+
+=== day_17_2 ===
+Day 17 tasks:
+object \#1 - change the screen
+object \#2 - change the screen
+object \#3 - replace batteries
+object \#4 - /!\ analysis error
+
 * [>] -> day_20
 
 === day_20 ===
@@ -90,76 +132,170 @@ Welcome to day 20!
 === day_20_2 ===
 Dear repairers,
 
-We are delighted to announce that our company has reached a major milestone: the [Group name] investment group has acquired 50% of our shares. This new strategic alliance will enable us to expand our ambitions with [name of object].
+We are delighted to announce that our company has reached a major milestone: the [Group name] investment group has acquired 50% of our shares. This new strategic alliance will enable us to expand our ambitions with FixFox.
 
 Yours sincerely
 
 The Management
 
+* [>] -> day_23
+
+=== day_23 ===
+Welcome to day 23!
+Remember to follow the instructions.
+
+* [>] -> day_23_2
+
+=== day_23_2 ===
+Dear repairers,
+We have observed an increase in unauthorised modules, compromising the safety and integrity of our products. A zero-tolerance policy is now in force: any infringement will result in severe measures being taken, without exception.
+
+Yours sincerely
+
+The Management
+
+* [>] -> day_23_3
+
+=== day_23_3 ===
+Day 23 tasks:
+object \#1 - change the screen
+object \#2 - /!\ analysis error
+object \#3 - /!\ analysis error
+object \#4 - change the screen
+
 * [>] -> day_25
 
 === day_25 ===
-Welcome to day 25! (paper)
+Welcome to day 25!
+Remember to follow the instructions.
 
 * [>] -> day_25_2
 
 === day_25_2 ===
-Welcome to day 25! (paper)
+We are the Open Resilience group, and we are contacting you to let you know that we do not accept the new direction of the company. The FixFox was originally about sustainability, community and innovation. We will not tolerate this great object becoming a monopoly solely focused on profit.
+
+* [>] -> day_25_3
+
+=== day_25_3 ===
+We repeat to all repairers, custom parts are not "pirates", they simply symbolise our freedom to use the product.
+
+Sincerely, Open Resilience
+
+* [>] -> day_30
+
+=== day_30 ===
+Welcome to day 30! (capteurs)
+Remember to follow the instructions.
+
+* [>] -> day_30_2
+
+=== day_30_2 ===
+Dear repairers,
+As part of our ongoing commitment to innovation and safety, we are now integrating data sensors into repaired modules. These sensors are essential for collecting vital information to improve the user experience and ensure product compliance. Your cooperation in installing these sensors on all repaired modules is imperative and will be closely monitored.
+
+Yours sincerely
+
+The Management
 
 * [>] -> day_35
 
 === day_35 ===
-Welcome to day 35! (usb key)
+Welcome to day 35!
+Remember to follow the instructions.
 
 * [>] -> day_35_2
 
 === day_35_2 ===
-Welcome to day 35! (usb key)
+{usbPlugged:
+(message qui s'affiche si la clé usb est branchée)
+        Alert to all employees,
+
+We have discovered that the company is installing bugs in repaired modules under the pretext of improvements and security. This is a flagrant violation of our right to confidentiality and free use of our devices. We cannot allow this secret surveillance to continue. 
+    - else:
+        FARzkabQvOzSaEa1BZf1v++tuuNa4e+V+Ltoj7tFHxDdD0TXljsxdlyi3rIgITExITjANEr+8ngSsMEhMzMhsx78zYJo+SE5ISrdWI97GI4EKkQRuY29ZSE5IZA/toy+m9x8CK95BqbwmjjAmcMorHO0/0rmYvoE5RzcmynDHddyb03LnSQqVgPveFEhOSHH68EjO4ta17pLE4gU1yE5IbRPITMzIeHOrzfIITkhxWo/BuFYrszMITM5ISExMyF7O4MYFTXOTFwYhel7iXRnyNgf+1LIkGNZGNvDNx0hMTMh9vyTk4eGfVCcl
+        }
+
+* [>] -> day_35_3
+
+=== day_35_3 ===
+(message qui s'affiche si la clé usb est branchée)
+{ usbPlugged:
+We call on all repairers to refuse to participate in this practice and to join us in our fight for transparency and a return to the company's core values.
+
+Yours sincerely, Open Resilience
+    - else:
+V+zE2xjkyExMiGhLG52ITEwIaWGNwcDJcj9jz2p67ffi8BDfOH0JSaLjNueWasjdsXI1vlUM235cc0jcp3/KP/fNo2OVq1TuB23ytG8fGRTwqwejSEzMyFEeovDIHRC/hyWHSiqahtV3ZHfHeGzJC4d4/JEXMVDjCiLcA/1RagdPLwpuOjwTSCzxnVOEb
+}
 
 * [>] -> day_45
-
 === day_45 ===
-Welcome to day 45! (clear terminal)
+Welcome to day 45!
 
 * [>] -> day_45_2
 
 === day_45_2 ===
-Welcome to day 45! (clear terminal)
+Request to all repairers,
 
-* [>] -> day_55
+We're getting close. Thanks to your help, the company is teetering on the brink, and more and more of you are getting involved. We have high-placed contacts, enabling us to contact you directly on your terminals. We need you one last time to force the company to honour its commitments: send us your data.
+
+We will be transparent: this action will be traced by the company's security and you risk immediate suspension. Nevertheless, every repairer's data counts, and we ask you, in the name of your ethics, to help us make the company comply.
+
+Sincerely, Open Resilience
+
+* [>] -> day_45_3
+
+=== day_45_3 ===
+
+We will be transparent: this action will be traced by the company's security and you risk immediate suspension. Nevertheless, every repairer's data counts, and we ask you, in the name of your ethics, to help us make the company comply.
+
+Sincerely, Open Resilience
+
+* [Send all repair datas] -> day_55
+* [Don't send anything] -> day_55_bis
 
 === day_55 ===
-Welcome to day 55! (choice)
+Welcome to day 46!
 
 * [>] -> day_55_2
 
 === day_55_2 ===
-Welcome to day 55! (choice)
+Information to all repairers,
+
+We have reached our goal. Thanks to your unwavering support, the investors have given up control, and the company has been officially taken over by Open Resilience. Your dedication and efforts have made this possible, and more of you joined our cause each day.
+
+We extend our deepest gratitude for your help. With your support, we have successfully steered the company towards a more transparent and ethical future. This is a victory for all of us who believe in the right to repair, technological independence, and sustainable practices.
+
+* [>] -> day_55_3
+
+=== day_55_3 ===
+Thank you for standing with us and for your commitment to making a difference. Together, we will continue to promote these values and build a future where repairability and independence are at the forefront.
+
+Sincerely,
+Open Resilience
+
+* [>] -> END
+
+=== day_55_bis ===
+Welcome to day 46!
+
+* [>] -> day_55_2_bis
+
+=== day_55_2_bis ===
+Dear employees,
+
+We are pleased to announce that we have identified and dismissed the individuals involved in recent unauthorized activities. Your loyalty and hard work have been instrumental in maintaining the company's stability during this time.
+
+* [>] -> day_55_3_bis
+
+=== day_55_3_bis ===
+We extend our sincere thanks to all dedicated employees whose efforts have contributed to our continued success. Your commitment to excellence is recognized and appreciated. We encourage you to keep up the great work as we move forward together.
+
+Yours sincerely,
+
+The Management
 
 * [>] -> END
 
 === generic_day ===
 Bienvenue à un nouveau jour !
-* [>] -> continue_story
-
-=== continue_story ===
-Vous vous tenez devant une porte. Que faites-vous ?
-* [Ouvrir la porte] -> open_door
-* [Regarder autour] -> look_around
-
-=== open_door ===
-La porte s'ouvre avec un grincement.
-# END_KNOT
--> END
-
-=== look_around ===
-Vous ne voyez rien d'intéressant.
--> continue_story
-
-== game_over ==
-Vous avez perdu! Votre score était de {current_score}
-* [>] -> END
-
-== quota_achieved ==
-Bravo! Vous avez atteint votre quota avec un score de {current_score}.
-* [>] -> day_1_1
+* [>] -> start
