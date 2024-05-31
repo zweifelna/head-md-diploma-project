@@ -126,6 +126,7 @@ MonoBehaviour:
   highlightColor: {r: 0, g: 1, b: 0, a: 1}
   isRotating: 0
   destinationZoneName: ZonePourCoqueAvant
+  IsSnapped: 0
   currentState: 3
 --- !u!1 &1652717253232971267
 GameObject:
@@ -777,6 +778,7 @@ MonoBehaviour:
   highlightColor: {r: 0, g: 1, b: 0, a: 1}
   isRotating: 0
   destinationZoneName: 
+  IsSnapped: 0
   currentState: 0
 --- !u!1 &9022718397290695499
 GameObject:

@@ -148,15 +148,15 @@ public class GameManager : MonoBehaviour
         {
             { 1, new List<(string, SubState)> 
                 { 
-                    ("Objet 1", SubState.RepairScreen),
+                    ("Objet 1", SubState.ReplaceBatteries),
                     ("Objet 2", SubState.RepairScreen)
                 } 
             },
             { 2, new List<(string, SubState)> 
                 { 
                     ("Objet 1", SubState.ReplaceBatteries),
-                    ("Objet 2", SubState.ReplaceBatteries),
-                    ("Objet 3", SubState.ReplaceBatteries)
+                    ("Objet 2", SubState.RepairScreen),
+                    ("Objet 3", SubState.RepairScreen)
                 } 
             },
             { 3, new List<(string, SubState)> 
@@ -410,6 +410,8 @@ public class GameManager : MonoBehaviour
         // Trouve tous les objets de type InteractableObject dans la scène
         allInteractableObjects = new List<InteractableObject>(FindObjectsOfType<InteractableObject>());
         Debug.Log("Found " + allInteractableObjects.Count + " interactable objects.");
+        // Filtrer pour exclure les objets nommés "usbkey"
+        allInteractableObjects = allInteractableObjects.FindAll(obj => !obj.gameObject.name.ToLower().Contains("usbkey"));
         foreach (InteractableObject obj in allInteractableObjects)
         {
             if (obj.transform.parent != null)
@@ -679,7 +681,7 @@ public class GameManager : MonoBehaviour
             // Vérifiez si c'est le jour 35 et le premier objet est réparé
             Debug.Log("C'est le "+currentDay+" jour");
             Debug.Log("Repair Index : "+ currentRepairIndex);
-            if (currentDay == 2)
+            if (currentDay == 1)
             {
                 
                 SpawnUSBKey(oldBatteries[0].transform.parent);
@@ -950,7 +952,7 @@ public class GameManager : MonoBehaviour
     {
         GameObject usbKey = Instantiate(usbKeyPrefab, parent);
         usbKey.transform.localPosition = new Vector3(0, 0, 0); // Ajustez cette position en fonction de vos besoins
-        usbKey.transform.localRotation = Quaternion.identity;
+        //usbKey.transform.localRotation = Quaternion.identity;
         usbKey.GetComponent<InteractableObject>().isDisposable = true; // Assurez-vous que la clé USB peut être ramassée
     }
 
