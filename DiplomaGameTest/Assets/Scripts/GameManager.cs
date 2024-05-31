@@ -67,6 +67,8 @@ public class GameManager : MonoBehaviour
     private bool isNight = false;
     public BasicInkExample2 inkStoryManager; // Référence au script Ink
 
+    public GameObject usbKeyPrefab;
+
     private List<(string, SubState)> repairPlan;
     private int currentRepairIndex;
     private InteractableObject currentObject;
@@ -90,10 +92,12 @@ public class GameManager : MonoBehaviour
         UpdateQuotaDisplay();
         deskLamp.enabled = false;
         deskLamp.intensity = 100f;
+        SetQuotaForCurrentDay();
     }
 
     void Update()
     {
+        Debug.Log(currentDay);
         if (timerIsRunning)
         {
             elapsedTime += Time.deltaTime;
@@ -150,9 +154,9 @@ public class GameManager : MonoBehaviour
             },
             { 2, new List<(string, SubState)> 
                 { 
-                    ("Objet 1", SubState.RepairScreen),
-                    ("Objet 2", SubState.RepairScreen),
-                    ("Objet 3", SubState.RepairScreen)
+                    ("Objet 1", SubState.ReplaceBatteries),
+                    ("Objet 2", SubState.ReplaceBatteries),
+                    ("Objet 3", SubState.ReplaceBatteries)
                 } 
             },
             { 3, new List<(string, SubState)> 
@@ -169,7 +173,14 @@ public class GameManager : MonoBehaviour
                     ("Objet 3", SubState.RepairScreen)
                 } 
             },
-            // Ajoutez d'autres jours ici...
+            { 35, new List<(string, SubState)> 
+                { 
+                    ("ObjetAvecUSB", SubState.ReplaceBatteries), // Premier objet contient la clé USB
+                    ("Objet 2", SubState.RepairScreen),
+                    ("Objet 3", SubState.RepairScreen)
+                } 
+            },
+            // Ajouter d'autres jours ici...
         };
     }
 
@@ -289,7 +300,6 @@ public class GameManager : MonoBehaviour
         CameraManager.Instance.SwitchToTerminalCamera();
         // Mettre à jour le score dans Ink
         inkStoryManager.SetInkVariable("current_score", score);
-        AdvanceDay();
         inkStoryManager.SetInkVariable("currentDay", currentDay);
         // Commencer l'histoire Ink à partir du nœud spécifié
         Debug.Log("Envoie la demande Ink de commencer à "+knotName);
@@ -315,7 +325,8 @@ public class GameManager : MonoBehaviour
         UpdateQuotaDisplay();
         DestroyObjects();
         ClearDiscardedObjects();
-        //AdvanceDay();
+        AdvanceDay();
+        SetQuotaForCurrentDay();
         PrepareRepairPlan();
         Debug.Log("charge un nouvel objet jour 2");
         LoadNextObject(); // Charger un nouvel objet
@@ -665,6 +676,16 @@ public class GameManager : MonoBehaviour
         Debug.Log(oldBatteries.Count);
         if (oldBatteries.Count >= 3)
         {
+            // Vérifiez si c'est le jour 35 et le premier objet est réparé
+            Debug.Log("C'est le "+currentDay+" jour");
+            Debug.Log("Repair Index : "+ currentRepairIndex);
+            if (currentDay == 2)
+            {
+                
+                SpawnUSBKey(oldBatteries[0].transform.parent);
+                Debug.Log("USB spawned");
+            }
+            Debug.Log("On continue avec la boucle for");
             for (int i = 0; i < oldBatteries.Count; i++)
             {
                 InteractableObject oldBattery = oldBatteries[i];
@@ -743,8 +764,17 @@ public class GameManager : MonoBehaviour
     public void CompleteRepairProcess()
     {
         score++;
-        Debug.Log("LE SCORE EST DE "+score);
-        LoadNextObject();
+        Debug.Log("LE SCORE EST DE " + score);
+
+        // Vérifiez si le score est inférieur au quota avant d'appeler LoadNextObject
+        Debug.Log("Score : "+score+" et quota : "+quota);
+        if (score < quota)
+        {
+            LoadNextObject();
+        }
+        else{
+            CheckQuota();
+        }
     }
 
     bool CheckRepairCompletion(InteractableObject targetObject)
@@ -913,6 +943,27 @@ public class GameManager : MonoBehaviour
         {
             // Quota atteint, passez à la fin de la journée ou autre logique
             CheckQuota();
+        }
+    }
+
+    void SpawnUSBKey(Transform parent)
+    {
+        GameObject usbKey = Instantiate(usbKeyPrefab, parent);
+        usbKey.transform.localPosition = new Vector3(0, 0, 0); // Ajustez cette position en fonction de vos besoins
+        usbKey.transform.localRotation = Quaternion.identity;
+        usbKey.GetComponent<InteractableObject>().isDisposable = true; // Assurez-vous que la clé USB peut être ramassée
+    }
+
+    void SetQuotaForCurrentDay()
+    {
+        if (dailyRepairPlans.ContainsKey(currentDay))
+        {
+            Debug.Log("Set du quota : "+dailyRepairPlans[currentDay].Count);
+            quota = dailyRepairPlans[currentDay].Count;
+        }
+        else
+        {
+            quota = 0;
         }
     }
 }

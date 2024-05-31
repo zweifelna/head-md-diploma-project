@@ -15,7 +15,7 @@ VAR usbPlugged = true
 === day_1_1 ===
 Welcome to the company. 
 As a repairer, your role is crucial to the continued operation of the FixFox. 
-
+# END_KNOT
 * [>] -> day_1_2
 
 === day_1_2 ===
