@@ -10,7 +10,7 @@ public class InteractionController : MonoBehaviour
     private GameObject pressingObject;
     private float pressTime = 0f;
     private bool isPressing = false;
-    private bool isFollowing = false;
+    public bool isFollowing { get; set; }
     [SerializeField]
     private float selectHeight = 8.55f;
     private InteractableObject.ObjectState currentState = InteractableObject.ObjectState.Complete;
