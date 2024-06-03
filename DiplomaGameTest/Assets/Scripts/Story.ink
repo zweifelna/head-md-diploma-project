@@ -1,5 +1,7 @@
 VAR currentDay = 1
 VAR isUSBPlugged = false
+VAR skipTutorial = false
+EXTERNAL EndTutorial()
 
 -> start
 
@@ -13,17 +15,15 @@ VAR isUSBPlugged = false
 }
 
 === day_1_1 ===
-Welcome to the company. 
-As a repairer, your role is crucial to the continued operation of the FixFox. 
-# END_KNOT
+Welcome to your first day of work 
+As a repairer, your role is crucial to the continued operation of the FixFox.   
 * [>] -> day_1_2
 
 === day_1_2 ===
 
 Instructions:
 
-1. Read the error codes for each object
-2. Access your workshop
+1. Read the diagnostic for each object on the terminal
 3. Replace faulty parts
 4. Place the item in the bin.
 
@@ -42,6 +42,7 @@ The company
 Day 1 tasks:
 
 object \#1 - change the screen
+object \#2 - change the screen
 * [>] -> day_1_5
 
 === day_1_5 ===
@@ -57,6 +58,7 @@ Welcome to day 2!
 Day 2 tasks:
 
 object \#1 - replace batteries
+object \#2 - change the screen
 
 * [>] -> day_2_3
 
@@ -72,8 +74,9 @@ Welcome to day 3!
 === day_3_2 ===
 Day 3 tasks:
 
-object \#1 - replace batteries
-object \#2 - change the screen
+object \#1 - change the screen
+object \#2 - replace batteries
+object \#3 - change the screen
 
 * [>] -> day_3_3
 
@@ -90,7 +93,8 @@ Welcome to day 4!
 Day 4 tasks:
 
 object \#1 - change the screen
-object \#2 - change the screen
+object \#2 - replace batteries
+object \#3 - replace batteries
 
 * [>] -> day_4_3
 
@@ -303,7 +307,10 @@ Bienvenue à un nouveau jour !
 
 === tutorial_start ===
 Bienvenue dans l'entreprise ! Vous êtes maintenant un réparateur chargé de maintenir nos objets technologiques en parfait état. Votre mission est de diagnostiquer et réparer les objets qui vous sont confiés. Suivez les instructions pour commencer.
-* [>] -> tutorial_diagnose
+* [Tutorial] -> tutorial_diagnose
+* [Skip tutorial] 
+    ~ EndTutorial()
+    -> start
 
 === tutorial_diagnose ===
 Pour commencer, utilisez le terminal pour diagnostiquer l'objet. Cliquez sur le bouton 'Diagnostiquer' pour voir les problèmes de l'objet.

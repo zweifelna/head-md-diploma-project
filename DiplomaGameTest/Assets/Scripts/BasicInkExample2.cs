@@ -33,6 +33,9 @@ public class BasicInkExample2 : MonoBehaviour {
         story.variablesState["currentDay"] = currentDay; // Set the currentDay variable in the Ink story
         if(OnCreateStory != null) OnCreateStory(story);
         Debug.Log("Starting story with currentDay: " + currentDay);
+        story.BindExternalFunction("EndTutorial", () => {
+            GameManager.Instance.EndTutorial();
+        });
         RefreshView();
     }
 

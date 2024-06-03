@@ -39,7 +39,7 @@ public class CameraManager : MonoBehaviour
     }
 
     void Start() {
-        SetActiveCamera(camRepair);  // Définir camRepair comme la caméra active au démarrage
+        //SetActiveCamera(camRepair);  // Définir camRepair comme la caméra active au démarrage
         canvasRepair.enabled = true;
         canvasStory.enabled = false;
         canvasEndDay.enabled = false;

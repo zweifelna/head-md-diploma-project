@@ -81,11 +81,9 @@ public class GameManager : MonoBehaviour
     private bool isFinalized = false;
 
 
-    void Start()
+    public void StartGame()
     {
-        Debug.Log("Starting new day with currentDay: " + currentDay);
         InitializeGame();
-
         // Commencer le tutoriel
         StartTutorial();
         //StartWithTerminal();
@@ -164,7 +162,7 @@ public class GameManager : MonoBehaviour
         {
             { 1, new List<(string, SubState)> 
                 { 
-                    ("Objet 1", SubState.ReplaceBatteries),
+                    ("Objet 1", SubState.RepairScreen),
                     ("Objet 2", SubState.RepairScreen)
                 } 
             },
@@ -172,13 +170,12 @@ public class GameManager : MonoBehaviour
                 { 
                     ("Objet 1", SubState.ReplaceBatteries),
                     ("Objet 2", SubState.RepairScreen),
-                    ("Objet 3", SubState.RepairScreen)
                 } 
             },
             { 3, new List<(string, SubState)> 
                 { 
-                    ("Objet 1", SubState.ReplaceBatteries),
-                    ("Objet 2", SubState.RepairScreen),
+                    ("Objet 1", SubState.RepairScreen),
+                    ("Objet 2", SubState.ReplaceBatteries),
                     ("Objet 3", SubState.RepairScreen)
                 } 
             },
@@ -186,7 +183,49 @@ public class GameManager : MonoBehaviour
                 { 
                     ("Objet 1", SubState.RepairScreen),
                     ("Objet 2", SubState.ReplaceBatteries),
-                    ("Objet 3", SubState.RepairScreen)
+                    ("Objet 3", SubState.ReplaceBatteries)
+                } 
+            },
+            { 10, new List<(string, SubState)> 
+                { 
+                    ("Objet 1", SubState.RepairScreen),
+                    ("Objet 2", SubState.ReplaceBatteries),
+                    ("Objet 3", SubState.ReplaceBatteries)
+                } 
+            },
+            { 17, new List<(string, SubState)> 
+                { 
+                    ("Objet 1", SubState.RepairScreen),
+                    ("Objet 2", SubState.ReplaceBatteries),
+                    ("Objet 3", SubState.ReplaceBatteries)
+                } 
+            },
+            { 20, new List<(string, SubState)> 
+                { 
+                    ("Objet 1", SubState.RepairScreen),
+                    ("Objet 2", SubState.ReplaceBatteries),
+                    ("Objet 3", SubState.ReplaceBatteries)
+                } 
+            },
+            { 23, new List<(string, SubState)> 
+                { 
+                    ("Objet 1", SubState.RepairScreen),
+                    ("Objet 2", SubState.ReplaceBatteries),
+                    ("Objet 3", SubState.ReplaceBatteries)
+                } 
+            },
+            { 25, new List<(string, SubState)> 
+                { 
+                    ("Objet 1", SubState.RepairScreen),
+                    ("Objet 2", SubState.ReplaceBatteries),
+                    ("Objet 3", SubState.ReplaceBatteries)
+                } 
+            },
+            { 30, new List<(string, SubState)> 
+                { 
+                    ("Objet 1", SubState.RepairScreen),
+                    ("Objet 2", SubState.ReplaceBatteries),
+                    ("Objet 3", SubState.ReplaceBatteries)
                 } 
             },
             { 35, new List<(string, SubState)> 
@@ -196,6 +235,20 @@ public class GameManager : MonoBehaviour
                     ("Objet 3", SubState.RepairScreen)
                 } 
             },
+            { 45, new List<(string, SubState)> 
+                { 
+                    ("Objet 1", SubState.RepairScreen),
+                    ("Objet 2", SubState.ReplaceBatteries),
+                    ("Objet 3", SubState.ReplaceBatteries)
+                } 
+            },
+            { 55, new List<(string, SubState)> 
+                { 
+                    ("Objet 1", SubState.RepairScreen),
+                    ("Objet 2", SubState.ReplaceBatteries),
+                    ("Objet 3", SubState.ReplaceBatteries)
+                } 
+            }
             // Ajouter d'autres jours ici...
         };
     }
@@ -341,7 +394,10 @@ public class GameManager : MonoBehaviour
         UpdateQuotaDisplay();
         DestroyObjects();
         ClearDiscardedObjects();
-        AdvanceDay();
+        if(currentState != State.Tutorial)
+        {
+            AdvanceDay();
+        }
         SetQuotaForCurrentDay();
         PrepareRepairPlan();
         Debug.Log("charge un nouvel objet jour 2");
@@ -441,55 +497,6 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    // public void LoadNewObject()
-    // {
-    //     RemoveAllObjects();
-    //     Vector3 spawnPosition = new Vector3(-1.73f, 1.19f, -3.04f);
-    //     Quaternion spawnRotation = Quaternion.Euler(0, 0, -90);
-
-    //     GameObject newObject = Instantiate(interactableObjectPrefab, spawnPosition, spawnRotation);
-    //     InteractableObject newInteractableObject = newObject.GetComponent<InteractableObject>();
-
-    //     if (newInteractableObject != null)
-    //     {
-    //         InitializeInteractableObjects();
-    //         Debug.Log("New interactable object loaded and initialized.");
-    //         dismantlingCompleted = false;
-    //     }
-    // }
-
-    // public void PrintAllInteractableObjectNames()
-    // {
-    //     Debug.Log("Currently " + allInteractableObjects.Count + " interactable objects in the scene:");
-    //     foreach (InteractableObject interactableObject in allInteractableObjects)
-    //     {
-    //         Debug.Log("Interactable Object: " + interactableObject.gameObject.name);
-    //     }
-    // }
-
-    private void RemoveAllObjects()
-    {
-        if (InteractionController.instance != null) {
-            InteractionController.instance.ClearReferences();
-        }
-
-        // foreach (InteractableObject obj in allInteractableObjects)
-        // {
-        //     if (obj.isMainObject)
-        //     {
-        //         // Supprime ou désactive l'objet principal et tous ses enfants
-        //         DestroyEntireStructure(obj.gameObject);
-        //     }
-        //     else
-        //     {
-        //         // Supprime ou désactive les objets normalement
-        //         GameObject.Destroy(obj.gameObject);
-        //     }
-        // }
-        allInteractableObjects.Clear(); // Nettoyer la liste
-        Debug.Log("Found " + allInteractableObjects.Count + " interactable objects.");
-    }
-
     private void DestroyObjects()
     {
         if (InteractionController.instance != null) {
@@ -534,68 +541,6 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    // public void ObjectSelected()
-    // {
-    //     SetSubState(SubState.ObjectSelected);
-    // }
-
-
-    // private void PrepareForPhoneShaking()
-    // {
-    //     SetSubState(SubState.PhoneShaking);
-    // }
-
-    // private bool DetectPhoneShake()
-    // {
-    //     // Seuil de secousse, ajustez cette valeur en fonction de la sensibilité désirée
-    //     float shakeDetectionThreshold = 2.5f;
-
-    //     // Accélération instantanée
-    //     Vector3 acceleration = Input.acceleration;
-
-    //     // Vérifier si l'accélération dépasse un certain seuil
-    //     if (acceleration.sqrMagnitude >= shakeDetectionThreshold * shakeDetectionThreshold) {
-    //         Debug.Log("Shake detected");
-    //         GameManager.Instance.SetSubState(GameManager.SubState.PhoneShaking); // Passer au substate suivant
-    //         return true;
-    //     }
-
-    //     // Simulation de secouement en appuyant sur le scoreText dans Unity Editor
-    //     #if UNITY_EDITOR
-    //     if (Input.GetMouseButtonDown(0)) {
-    //         Vector2 pos = Input.mousePosition;
-    //         if (RectTransformUtility.RectangleContainsScreenPoint(scoreText.rectTransform, pos, null)) {
-    //             Debug.Log("Shake simulated by clicking on scoreText");
-    //             GameManager.Instance.SetSubState(GameManager.SubState.PhoneShaking); // Passer au substate suivant
-    //             return true;
-    //         }
-    //     }
-    //     #endif
-
-    //     // Simulation de secouement en appuyant sur la touche "S"
-    //     if (Input.GetKeyDown(KeyCode.S))
-    //     {
-    //         Debug.Log("Shake simulated by pressing 'S' key");
-    //         GameManager.Instance.SetSubState(GameManager.SubState.PhoneShaking); // Passer au substate suivant
-    //         return true;
-    //     }
-
-    //     return false;
-    // }
-
-    void InitializeVibrationPatterns() 
-    {
-        // Exemple de motifs de vibration
-        vibrationPatterns.Add(new List<float> { 0.1f, 0.1f, 0.1f });  // Vibre 0.1 sec, pause 0.1 sec, vibre 0.1 sec
-        vibrationPatterns.Add(new List<float> { 0.2f, 0.1f, 0.2f, 0.1f, 0.2f });
-    }
-    private void PlayVibrationPattern() 
-    {
-        selectedPatternIndex = UnityEngine.Random.Range(0, vibrationPatterns.Count);
-        //selectedPatternIndex = 0;
-        AudioManager.Instance.Play(AudioManager.Instance.sounds[selectedPatternIndex].name);
-        //StartCoroutine(PlayPattern(vibrationPatterns[selectedPatternIndex]));
-    }
     IEnumerator PlayPattern(List<float> pattern) 
     {
         for (int i = 0; i < pattern.Count; i++) {
@@ -697,7 +642,7 @@ public class GameManager : MonoBehaviour
             // Vérifiez si c'est le jour 35 et le premier objet est réparé
             Debug.Log("C'est le "+currentDay+" jour");
             Debug.Log("Repair Index : "+ currentRepairIndex);
-            if (currentDay == 1)
+            if (currentDay == 35)
             {
                 
                 SpawnUSBKey(oldBatteries[0].transform.parent);
@@ -812,10 +757,11 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    void EndTutorial()
+    public void EndTutorial()
     {
-        currentState = State.GameActive;
+        InitializeDailyRepairPlans();
         ResetGameForNextDay();
+        currentState = State.GameActive;
         inkStoryManager.StartStory(currentDay);
     }
 
@@ -1049,6 +995,7 @@ public class GameManager : MonoBehaviour
         yield return new WaitUntil(() => isFinalized);
         CameraManager.Instance.SwitchToTerminalCamera();
         inkStoryManager.StartStoryFromKnot("start");
+        CompleteRepairProcess();
     }
 
     public void Diagnose()
