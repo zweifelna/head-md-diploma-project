@@ -7,11 +7,14 @@ public class USBPluggable : MonoBehaviour
     public float plugThreshold = 0.0001f; // Distance de tolérance pour plugger la clé USB
     private bool isPressing = false;
     private float pressStartTime;
+    public bool isUSBPlugged { get; private set; } = false; // Variable pour suivre l'état de la clé USB
+    private BasicInkExample2 inkStoryManager;
 
     void Start()
     {
         // Trouver l'objet clé USB dans la scène
         usbKey = GameObject.Find("usbkey").GetComponent<InteractableObject>();
+        inkStoryManager = FindObjectOfType<BasicInkExample2>(); // Récupérer le gestionnaire de l'histoire Ink
     }
 
     void Update()
@@ -60,5 +63,10 @@ public class USBPluggable : MonoBehaviour
 
         // Supprimer le composant InteractableObject
         Destroy(usbKey.GetComponent<InteractableObject>());
+        // Mettre à jour la variable isUSBPlugged
+        isUSBPlugged = true;
+
+        // Mettre à jour la variable Ink
+        inkStoryManager.SetInkVariable("isUSBPlugged", true);
     }
 }

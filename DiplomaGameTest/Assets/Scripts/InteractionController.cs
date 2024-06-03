@@ -161,6 +161,7 @@ public class InteractionController : MonoBehaviour
             if (interactableObject != null)
             {
                 
+                
                 bool canPlace = CheckPlacement(interactableObject, false); // Vérifie si on doit snapper
             
                 if (canPlace)
@@ -169,24 +170,17 @@ public class InteractionController : MonoBehaviour
                     CheckPlacement(interactableObject, true);
                     GameObject destinationZone = GameObject.Find(interactableObject.GetDestinationZoneName());
                     if (destinationZone != null)
-                    {
-                        // // Snapper l'objet à la position de destinationZone
-                        // interactableObject.transform.position = destinationZone.transform.position;
-
-                        // interactableObject.transform.rotation = destinationZone.transform.rotation;
-
-                        
-                        interactableObject.CanRotate = true; // Ou toute autre logique nécessaire après le snap
-
-                        // // Vérifier et forcer la mise à jour de la hiérarchie et de la position/rotation
-                        // Debug.Log($"{interactableObject.name} parented to {destinationZone.name}");
-                        // interactableObject.transform.localPosition = Vector3.zero;
-                        // interactableObject.transform.localRotation = Quaternion.identity;
+                    {   
+                        interactableObject.CanRotate = true; // Ou toute autre logique nécessaire après le snap 
                     }
                 }
                 else
-                {;
+                {
                     interactableObject.ResetPosition(); // Ou tout autre feedback nécessaire
+                    if (GameManager.Instance.currentState == GameManager.State.Tutorial && interactableObject.gameObject.name == "Ecran")
+                    {
+                        GameManager.Instance.RemoveScreen();
+                    }
                 }
 
                 if (selectedObject != null && (object)selectedObject != (object)interactableObject)
@@ -286,7 +280,6 @@ public class InteractionController : MonoBehaviour
         if (applyPlacement)
         {
             interactableObject.ResetPosition();
-            //Debug.Log("1");
         }
         return false; // Placement non possible
     }
@@ -350,6 +343,10 @@ public class InteractionController : MonoBehaviour
                     }
                     gameManager.CompleteRepairProcess();
                     interactableObject.Dispose(interactableObject);  // Appeler la méthode Dispose de l'objet
+                    if (GameManager.Instance.currentState == GameManager.State.Tutorial)
+                    {
+                        GameManager.Instance.FinalizeRepair();
+                    }
 
                       // Faire apparaître un nouvel objet
                 }

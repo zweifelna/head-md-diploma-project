@@ -67,6 +67,12 @@ IEnumerator DisplayTextAndChoices() {
         if (tag == "END_KNOT") {
             CameraManager.Instance.SwitchToRepairCamera();
             GameManager.Instance.StartTimer();
+        }else if (tag == "START_TUTO") {
+            Debug.Log("Tuto lancé pour l'écran");
+            GameManager.Instance.HandleTutorial();
+            GameManager.Instance.SpawnTutoObject();
+        }else if (tag == "ENDKNOT_TUTO") {
+            CameraManager.Instance.SwitchToRepairCamera();
         }
     }
 

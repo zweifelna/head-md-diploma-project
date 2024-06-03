@@ -1,5 +1,5 @@
 VAR currentDay = 1
-VAR usbPlugged = true
+VAR isUSBPlugged = false
 
 -> start
 
@@ -206,7 +206,7 @@ Remember to follow the instructions.
 * [>] -> day_35_2
 
 === day_35_2 ===
-{usbPlugged:
+{isUSBPlugged:
 (message qui s'affiche si la clé usb est branchée)
         Alert to all employees,
 
@@ -219,7 +219,7 @@ We have discovered that the company is installing bugs in repaired modules under
 
 === day_35_3 ===
 (message qui s'affiche si la clé usb est branchée)
-{ usbPlugged:
+{ isUSBPlugged:
 We call on all repairers to refuse to participate in this practice and to join us in our fight for transparency and a return to the company's core values.
 
 Yours sincerely, Open Resilience
@@ -299,3 +299,41 @@ The Management
 === generic_day ===
 Bienvenue à un nouveau jour !
 * [>] -> start
+
+
+=== tutorial_start ===
+Bienvenue dans l'entreprise ! Vous êtes maintenant un réparateur chargé de maintenir nos objets technologiques en parfait état. Votre mission est de diagnostiquer et réparer les objets qui vous sont confiés. Suivez les instructions pour commencer.
+* [>] -> tutorial_diagnose
+
+=== tutorial_diagnose ===
+Pour commencer, utilisez le terminal pour diagnostiquer l'objet. Cliquez sur le bouton 'Diagnostiquer' pour voir les problèmes de l'objet.
+* [Diagnostiquer] -> tutorial_screen_repair
+
+=== tutorial_screen_repair ===
+Le diagnostic montre que l'écran de l'objet est endommagé. Remplaçons l'écran.
+
+* [>] -> tutorial_screen_repair_2
+
+=== tutorial_screen_repair_2 ===
+#START_TUTO
+* [>] -> tutorial_remove_screen
+
+=== tutorial_remove_screen ===
+Maintenant, installez le nouvel écran en appuyant un moment sur celui-ci et en le plaçant sur l'objet.
+* [Installer l'écran] -> tutorial_remove_screen_2
+
+=== tutorial_remove_screen_2 ===
+#ENDKNOT_TUTO
+* [-] -> tutorial_finalize
+
+=== tutorial_finalize ===
+L'objet est maintenant réparé. Cliquez sur le bac d'envoie pour terminer votre tâche.
+* [Placer l'objet] -> tutorial_finalize_2
+
+=== tutorial_finalize_2 ===
+#ENDKNOT_TUTO
+* [-] -> tutorial_end
+
+=== tutorial_end ===
+Félicitations ! Vous avez terminé votre premiere reparation. Votre formation est terminée.
+* [Commencer le jeu] -> start

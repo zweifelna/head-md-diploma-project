@@ -164,12 +164,15 @@ public class CameraManager : MonoBehaviour
         StartCoroutine(AnimateCameraInverse(camTerminal, terminalPosition.position, backPosition.position, camRepair.transform.position, terminalCamRotation, repairCamRotation));
         canvasRepair.enabled = true;
         canvasStory.enabled = false;
+        IsTerminalActive = false;
+
     }
 
     public void SwitchToTerminalCamera() {
         //Debug.Log("Switching to terminal camera.");
         //scrollingText.ResetTextIndex();
         StartCoroutine(AnimateCamera(camTerminal, camRepair.transform.position, backPosition.position, terminalPosition.position,repairCamRotation, terminalCamRotation));
+        IsTerminalActive = true;
         //StartCoroutine(StartTextAfterAnimation());
     }
 

@@ -23,6 +23,7 @@ public class GameManager : MonoBehaviour
 
     public enum State
     {
+        Tutorial,
         GameActive,
         GamePause,
         GameOver,
@@ -73,32 +74,47 @@ public class GameManager : MonoBehaviour
     private int currentRepairIndex;
     private InteractableObject currentObject;
     private Dictionary<int, List<(string, SubState)>> dailyRepairPlans;
+    private bool isDiagnosed = false;
+    private bool isScreenRemoved = false;
+    private bool isScreenReplaced = false;
+    private bool isBatteriesReplaced = false;
+    private bool isFinalized = false;
 
 
     void Start()
     {
         Debug.Log("Starting new day with currentDay: " + currentDay);
         InitializeGame();
-        StartWithTerminal();
+
+        // Commencer le tutoriel
+        StartTutorial();
+        //StartWithTerminal();
     }
 
     void InitializeGame()
     {
-        InitializeDailyRepairPlans();
-        PrepareRepairPlan();
-        LoadNextObject();
         InitializeDailyEvents();
         InitializeInteractableObjects();
         UpdateQuotaDisplay();
         deskLamp.enabled = false;
         deskLamp.intensity = 100f;
-        SetQuotaForCurrentDay();
+    }
+
+    void StartTutorial()
+    {
+        currentState = State.Tutorial;
+        StartWithTerminal();
+        inkStoryManager.StartStoryFromKnot("tutorial_start");
     }
 
     void Update()
     {
-        Debug.Log(currentDay);
-        if (timerIsRunning)
+        if (currentState == State.Tutorial)
+        {
+            // Gestion des étapes du tutoriel
+            //HandleTutorial();
+        }
+        else if (timerIsRunning)
         {
             elapsedTime += Time.deltaTime;
 
@@ -763,20 +779,44 @@ public class GameManager : MonoBehaviour
         // }
     }
 
+    public void HandleTutorial()
+    {
+        if (currentState == State.Tutorial)
+        {
+            StartCoroutine(TutorialCoroutine());
+        }
+    }
+
     public void CompleteRepairProcess()
     {
-        score++;
-        Debug.Log("LE SCORE EST DE " + score);
-
-        // Vérifiez si le score est inférieur au quota avant d'appeler LoadNextObject
-        Debug.Log("Score : "+score+" et quota : "+quota);
-        if (score < quota)
+        if (currentState == State.Tutorial)
         {
-            LoadNextObject();
+            // Si dans le tutoriel, gérer la finalisation du tutoriel
+            if (isFinalized)
+            {
+                EndTutorial();
+            }
+        } else{
+            score++;
+            Debug.Log("LE SCORE EST DE " + score);
+
+            // Vérifiez si le score est inférieur au quota avant d'appeler LoadNextObject
+            Debug.Log("Score : "+score+" et quota : "+quota);
+            if (score < quota)
+            {
+                LoadNextObject();
+            }
+            else{
+                CheckQuota();
+            }
         }
-        else{
-            CheckQuota();
-        }
+    }
+
+    void EndTutorial()
+    {
+        currentState = State.GameActive;
+        ResetGameForNextDay();
+        inkStoryManager.StartStory(currentDay);
     }
 
     bool CheckRepairCompletion(InteractableObject targetObject)
@@ -948,6 +988,22 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void SpawnTutoObject()
+    {
+        Vector3 spawnPosition = new Vector3(-1.73f, 1.19f, -3.04f);
+        Quaternion spawnRotation = Quaternion.Euler(0, 0, -90);
+
+        GameObject newObject = Instantiate(interactableObjectPrefab, spawnPosition, spawnRotation);
+        InteractableObject newInteractableObject = newObject.GetComponent<InteractableObject>();
+
+        if (newInteractableObject != null)
+        {
+            InitializeInteractableObjects();
+            Debug.Log("Tutorial object spawned and initialized.");
+            dismantlingCompleted = false;
+        }
+    }
+
     void SpawnUSBKey(Transform parent)
     {
         GameObject usbKey = Instantiate(usbKeyPrefab, parent);
@@ -968,4 +1024,72 @@ public class GameManager : MonoBehaviour
             quota = 0;
         }
     }
+
+    private IEnumerator TutorialCoroutine()
+    {
+        CameraManager.Instance.SwitchToRepairCamera();
+
+        // Attendre que l'écran soit remplacé
+        yield return new WaitUntil(() => isScreenRemoved);
+        Debug.Log("COROUTINE screenremoved");
+        CameraManager.Instance.SwitchToTerminalCamera();
+        yield return new WaitUntil(() => CameraManager.Instance.IsTerminalActive);
+        StartScreenRepair();
+        inkStoryManager.StartStoryFromKnot("tutorial_remove_screen");
+
+        // Attendre que l'écran soit remplacé
+        Debug.Log("isScreenReplaced : "+isScreenReplaced);
+        yield return new WaitUntil(() => isScreenReplaced);
+        Debug.Log("COROUTINE screenreplaced");
+        CameraManager.Instance.SwitchToTerminalCamera();
+        yield return new WaitUntil(() => CameraManager.Instance.IsTerminalActive);
+        inkStoryManager.StartStoryFromKnot("tutorial_finalize");
+
+        // Attendre que la réparation soit finalisée
+        yield return new WaitUntil(() => isFinalized);
+        CameraManager.Instance.SwitchToTerminalCamera();
+        inkStoryManager.StartStoryFromKnot("start");
+    }
+
+    public void Diagnose()
+    {
+        if (currentState == State.Tutorial)
+        {
+            isDiagnosed = true;
+        }
+    }
+
+    public void RemoveScreen()
+    {
+        if (currentState == State.Tutorial)
+        {
+            isScreenRemoved = true;
+        }
+    }
+
+    public void ReplaceScreen()
+    {
+        if (currentState == State.Tutorial)
+        {
+            Debug.Log("isScreenReplaced MIS EN TRUE");
+            isScreenReplaced = true;
+        }
+    }
+
+    public void ReplaceBatteries()
+    {
+        if (currentState == State.Tutorial)
+        {
+            isBatteriesReplaced = true;
+        }
+    }
+
+    public void FinalizeRepair()
+    {
+        if (currentState == State.Tutorial)
+        {
+            isFinalized = true;
+        }
+    }
+
 }

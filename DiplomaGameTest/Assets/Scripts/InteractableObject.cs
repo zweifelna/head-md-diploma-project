@@ -208,6 +208,12 @@ public class InteractableObject : MonoBehaviour, IInteractable
         // Forcer la mise à jour de la hiérarchie et de la position/rotation
         transform.localPosition = Vector3.zero;
         transform.localRotation = Quaternion.Euler(0, 0, -90);
+        Debug.Log("TEST ECRAN PLACE");
+        if (GameManager.Instance.currentState == GameManager.State.Tutorial && gameObject.name == "Repaired_Ecran(Clone)")
+        {
+            Debug.Log("NOUVEL ECRAN PLACE");
+            GameManager.Instance.ReplaceScreen();
+        }
     
         // Validation supplémentaire
         //Debug.Log($"Placed: Local Position = {transform.localPosition}, Local Rotation = {transform.localRotation}");
