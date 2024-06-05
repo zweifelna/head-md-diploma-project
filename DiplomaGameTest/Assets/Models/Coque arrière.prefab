@@ -771,7 +771,7 @@ MonoBehaviour:
   animationDuration: 0.4
   initialPosition: {x: 0, y: 0, z: 0}
   initialRotation: {x: 0, y: 0, z: 0, w: 0}
-  rotateSpeed: 4000
+  rotateSpeed: 100
   validRotations: []
   rotationThreshold: 300
   requiredRotation: 10

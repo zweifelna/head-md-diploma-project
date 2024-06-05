@@ -847,6 +847,9 @@ public class GameManager : MonoBehaviour
         // Modifier la couleur de la zone lumineuse en fonction de l'heure
         dayLightZoneRenderer.material.color = dayLightColor.Evaluate(dayProgress);
 
+        // Modifier la couleur de la lumière principale en fonction de l'heure
+        mainLight.color = dayLightColor.Evaluate(dayProgress);
+
         // Gérer la diminution de l'intensité de la lumière principale vers la fin
         if (dayProgress >= 0.8f)
         {
@@ -873,6 +876,7 @@ public class GameManager : MonoBehaviour
         isNight = false; // Réinitialise l'état de nuit
         mainLight.intensity = 1f; // Réinitialise l'intensité de la lumière principale
         deskLamp.enabled = false; // Désactive la lampe de bureau
+        dayLightZoneRenderer.material.color = dayLightColor.Evaluate(0f); // Réinitialise la couleur de la zone lumineuse
         dayLightZoneRenderer.material.color = dayLightColor.Evaluate(0f); // Réinitialise la couleur de la zone lumineuse
     }
 

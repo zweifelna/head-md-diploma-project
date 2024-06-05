@@ -33,6 +33,8 @@ public class TitleScreenManager : MonoBehaviour
 
     private IEnumerator TransitionToTerminal()
     {
+        // Masquer l'écran titre
+        titleScreenCanvas.gameObject.SetActive(false);
         float elapsedTime = 0;
         Vector3 startingPos = terminalCamera.transform.position;
         Quaternion startingRot = terminalCamera.transform.rotation;
@@ -48,8 +50,7 @@ public class TitleScreenManager : MonoBehaviour
         terminalCamera.transform.position = terminalCameraPosition.position;
         terminalCamera.transform.rotation = terminalCameraPosition.rotation;
 
-        // Masquer l'écran titre
-        titleScreenCanvas.gameObject.SetActive(false);
+        
 
         // Démarrer le jeu
         GameManager.Instance.StartGame();
