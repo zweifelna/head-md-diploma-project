@@ -79,6 +79,8 @@ public class GameManager : MonoBehaviour
     private bool isScreenReplaced = false;
     private bool isBatteriesReplaced = false;
     private bool isFinalized = false;
+    public int gpsChipSpawnDay = 1;
+    public GameObject gpsChipPrefab;
 
 
     public void StartGame()
@@ -484,6 +486,7 @@ public class GameManager : MonoBehaviour
         Debug.Log("Found " + allInteractableObjects.Count + " interactable objects.");
         // Filtrer pour exclure les objets nommés "usbkey"
         allInteractableObjects = allInteractableObjects.FindAll(obj => !obj.gameObject.name.ToLower().Contains("usbkey"));
+
         foreach (InteractableObject obj in allInteractableObjects)
         {
             if (obj.transform.parent != null)
@@ -925,6 +928,11 @@ public class GameManager : MonoBehaviour
             currentObject = CreateInteractableObject(nextRepair.Item1);
             SubState subState = nextRepair.Item2;
 
+            if (currentDay == gpsChipSpawnDay)
+            {
+                SpawnGPSChip();
+            }
+
             currentObject.gameObject.SetActive(true); // Activez le prochain objet
             InitializeInteractableObjects();
 
@@ -1040,6 +1048,22 @@ public class GameManager : MonoBehaviour
         if (currentState == State.Tutorial)
         {
             isFinalized = true;
+        }
+    }
+
+    void SpawnGPSChip()
+    {
+        // Vérifiez que le prefab a un composant InteractableObject
+        InteractableObject gpsInteractableObject = gpsChipPrefab.GetComponent<InteractableObject>();
+        if (gpsInteractableObject != null)
+        {
+            // Instancier la puce GPS à sa position initiale
+            GameObject gpsChip = Instantiate(gpsChipPrefab, gpsInteractableObject.initialPosition, Quaternion.identity);
+            gpsChip.GetComponent<InteractableObject>().isDisposable = true; // Assurez-vous que la puce GPS peut être ramassée
+        }
+        else
+        {
+            Debug.LogError("Le prefab gpsChipPrefab n'a pas de composant InteractableObject.");
         }
     }
 

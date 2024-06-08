@@ -14,10 +14,10 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/ProPixelizer/ExampleAssets/Example.unity
     guid: 207e2b7b59b9f384d834c83120465870
-  - enabled: 0
+  - enabled: 1
     path: Assets/Scenes/3DSceneMove.unity
     guid: cc253dc28f7044302892904d624279b9
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/VisualScene.unity
     guid: 5709fca86ac954a0dae5ea3a7479b194
   m_configObjects: {}

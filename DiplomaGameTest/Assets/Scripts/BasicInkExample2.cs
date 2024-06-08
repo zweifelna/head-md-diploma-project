@@ -22,6 +22,7 @@ public class BasicInkExample2 : MonoBehaviour {
     private Button buttonPrefab = null;
     [SerializeField]
     private float textSpeed = 0.05f; // Vitesse d'affichage du texte
+    public AudioManager audiomanager;
 
     void Awake () {
         RemoveChildren();
@@ -36,7 +37,6 @@ public class BasicInkExample2 : MonoBehaviour {
         story.BindExternalFunction("EndTutorial", () => {
             GameManager.Instance.EndTutorial();
         });
-        RefreshView();
     }
 
     // This is the main function called every time the story changes. It does a few things:
@@ -84,6 +84,7 @@ IEnumerator DisplayTextAndChoices() {
         for (int i = 0; i < story.currentChoices.Count; i++) {
             Choice choice = story.currentChoices[i];
             Button button = CreateChoiceView(choice.text.Trim());
+            Debug.Log("Affiche un BOUTOOON");
             // Tell the button what to do when we press it
             button.onClick.AddListener(delegate {
                 OnClickChoiceButton(choice);
@@ -106,21 +107,9 @@ IEnumerator DisplayTextAndChoices() {
 
     // When we click the choice button, tell the story to choose that choice!
     void OnClickChoiceButton (Choice choice) {
+        audiomanager.Play("keytap");
         story.ChooseChoiceIndex (choice.index);
         RefreshView();
-    }
-
-    // Creates a textbox showing the the line of text
-    void CreateContentView (string text) {
-        if (textPrefab == null) {
-            Debug.LogError("textPrefab is not assigned in the inspector");
-            return;
-        }
-
-        TextMeshProUGUI storyText = Instantiate (textPrefab) as TextMeshProUGUI;
-        storyText.text = text;
-        storyText.transform.SetParent (canvas.transform, false);
-        StartCoroutine(AnimateText(storyText, text));
     }
 
     TextMeshProUGUI CreateTextView(string text) {
@@ -138,11 +127,17 @@ IEnumerator DisplayTextAndChoices() {
     // Coroutine for animating the text
     IEnumerator AnimateText(TextMeshProUGUI textComponent, string text) {
         textComponent.text = "";
+        audiomanager.Play("datatext");
+        int length = text.Length;
+        Debug.Log(length);
         foreach (char c in text) {
             textComponent.text += c;
             yield return new WaitForSeconds(textSpeed);
         }
+        
+        audiomanager.Stop("datatext");
     }
+
 
     // Creates a button showing the choice text
     Button CreateChoiceView (string text) {

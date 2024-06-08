@@ -23,6 +23,7 @@ public class InteractionController : MonoBehaviour
     public static InteractionController instance;
     private float rotationSum = 0f;
     public int currentDay = 1;
+    public AudioManager audioManager;
     
 
     void Awake() {
@@ -119,6 +120,8 @@ public class InteractionController : MonoBehaviour
             var interactableObject = pressingObject.GetComponent<InteractableObject>();
             if (interactableObject != null && !interactableObject.IsSelected())
             {
+                audioManager.Play("unsnap");
+                Debug.Log("PLAYYY Unsnap sound");
                 isFollowing = true;
                 // Suspend la rotation de l'objet actuellement sélectionné
                 if (selectedObject != null)
@@ -166,7 +169,7 @@ public class InteractionController : MonoBehaviour
             
                 if (canPlace)
                 {
-                    //Debug.Log("Snapping Object: " + interactableObject.name);
+                    Debug.Log("Snapping Object: " + interactableObject.name);
                     CheckPlacement(interactableObject, true);
                     GameObject destinationZone = GameObject.Find(interactableObject.GetDestinationZoneName());
                     if (destinationZone != null)
@@ -270,6 +273,7 @@ public class InteractionController : MonoBehaviour
             {
                 if (applyPlacement)
                 {
+                    audioManager.Play("snap");
                     interactableObject.transform.SetParent(hitCollider.transform, true);
                     interactableObject.Place();
                 }
