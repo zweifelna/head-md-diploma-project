@@ -24,8 +24,8 @@ As a repairer, your role is crucial to the continued operation of the FixFox.
 Instructions:
 
 1. Read the diagnosis on the terminal
-3. Replace faulty parts
-4. Place the item in the bin.
+2. Replace faulty parts
+3. Place the item in the bin.
 
 * [>] -> day_1_3
 
@@ -40,12 +40,55 @@ The company
 
 === day_1_4 ===
 Day 1 tasks:
-
+# LOAD_KNOT
+...
 object \#1 - change the screen
 object \#2 - change the screen
 * [>] -> day_1_5
 
 === day_1_5 ===
+Instructions:
+#UPDATE_KNOT
+1%
+#UPDATE_KNOT
+2%
+#UPDATE_KNOT
+8%
+#UPDATE_KNOT
+9%
+#UPDATE_KNOT
+15%
+#UPDATE_KNOT
+18%
+#UPDATE_KNOT
+19%
+#UPDATE_KNOT
+20%
+#UPDATE_KNOT
+28%
+#UPDATE_KNOT
+37%
+#UPDATE_KNOT
+39%
+#UPDATE_KNOT
+49%
+#UPDATE_KNOT
+57%
+#UPDATE_KNOT
+64%
+#UPDATE_KNOT
+65%
+#UPDATE_KNOT
+75%
+#UPDATE_KNOT
+84%
+#UPDATE_KNOT
+87%
+#UPDATE_KNOT
+98%
+#UPDATE_KNOT
+99%
+100%
 # END_KNOT
 * [>] -> day_2
 
@@ -56,7 +99,8 @@ Welcome to day 2!
 
 === day_2_2 ===
 Day 2 tasks:
-
+# LOAD_KNOT
+...
 object \#1 - replace batteries
 object \#2 - change the screen
 
@@ -73,7 +117,8 @@ Welcome to day 3!
 
 === day_3_2 ===
 Day 3 tasks:
-
+# LOAD_KNOT
+...
 object \#1 - change the screen
 object \#2 - replace batteries
 object \#3 - change the screen
@@ -91,7 +136,8 @@ Welcome to day 4!
 
 === day_4_2 ===
 Day 4 tasks:
-
+# LOAD_KNOT
+...
 object \#1 - change the screen
 object \#2 - replace batteries
 object \#3 - replace batteries
@@ -108,7 +154,8 @@ Welcome to day 10! (pirate batteries)
 
 === day_10_2 ===
 Day 10 tasks:
-
+# LOAD_KNOT
+...
 object \#1 - change the screen
 object \#2 - /!\ analysis error
 object \#3 - change the screen

@@ -23,6 +23,7 @@ public class BasicInkExample2 : MonoBehaviour {
     [SerializeField]
     private float textSpeed = 0.05f; // Vitesse d'affichage du texte
     public AudioManager audiomanager;
+    private GameObject lastTextGameObject;
 
     void Awake () {
         RemoveChildren();
@@ -61,8 +62,29 @@ IEnumerator DisplayTextAndChoices() {
 
         // This removes any white space from the text.
         text = text.Trim();
-        // Display the text on screen!
-        yield return StartCoroutine(AnimateText(CreateTextView(text), text));
+        // Check for special tag
+        bool isLoadKnot = false;
+        bool isUpdateKnot = false;
+        foreach (string tag in story.currentTags) {
+            if (tag == "LOAD_KNOT") {
+                isLoadKnot = true;
+                break;
+            } else if (tag == "UPDATE_KNOT") {
+                isUpdateKnot = true;
+                break;
+            }
+        }
+
+        if (isLoadKnot) {
+            // Display the text on screen with slow animation
+            yield return StartCoroutine(AnimateTextSlowly(CreateTextView(text), text));
+        } else if (isUpdateKnot) {
+            // Display the text on screen with slow animation
+            yield return StartCoroutine(DisplayRefreshingText(CreateTextView(text), text));
+        } else {
+            // Display the text on screen with normal animation
+            yield return StartCoroutine(AnimateText(CreateTextView(text), text));
+        }
     }
 
     // Check for end of knot tag
@@ -121,6 +143,7 @@ IEnumerator DisplayTextAndChoices() {
     TextMeshProUGUI storyText = Instantiate(textPrefab) as TextMeshProUGUI;
     storyText.text = "";
     storyText.transform.SetParent(canvas.transform, false);
+    lastTextGameObject = storyText.gameObject; // Keep track of the last text GameObject
     return storyText;
 }
 
@@ -136,6 +159,44 @@ IEnumerator DisplayTextAndChoices() {
         }
         
         audiomanager.Stop("datatext");
+    }
+
+    IEnumerator AnimateTextSlowly(TextMeshProUGUI textComponent, string text) {
+        textComponent.text = "";
+        audiomanager.Play("datatext");
+        foreach (char c in text) {
+            textComponent.text += c;
+            yield return new WaitForSeconds(1.0f); // Affiche chaque caractère avec une pause de 1 seconde
+        }
+        audiomanager.Stop("datatext");
+    }
+
+    IEnumerator DisplayRefreshingText(TextMeshProUGUI textComponent, string text) {
+        // Effacer le texte existant du textComponent
+        textComponent.text = "";
+
+        int length = text.Length;
+        Debug.Log(length);
+        string displayText = "";
+
+        for (int i = 0; i < length; i++) {
+            displayText += text[i];
+            textComponent.text = displayText;  // Mise à jour du texte affiché à chaque itération
+            yield return new WaitForSeconds(textSpeed);
+
+            // Si c'est la dernière itération, ne pas supprimer le texte immédiatement
+            if (i == length - 1) {
+                yield return new WaitForSeconds(UnityEngine.Random.Range(0.1f, 1f));  // Attendre un peu pour montrer le texte final
+            }
+        }
+
+        // Ensuite, supprimer le texte actuel pour le remplacer par le suivant
+        if (lastTextGameObject != null) {
+            Destroy(lastTextGameObject);
+        }
+
+        // Mettre à jour la référence au dernier GameObject de texte
+        lastTextGameObject = textComponent.gameObject;
     }
 
 

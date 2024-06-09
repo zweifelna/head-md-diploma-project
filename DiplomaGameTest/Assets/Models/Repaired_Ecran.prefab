@@ -157,7 +157,7 @@ MonoBehaviour:
   isBeingRepaired: 0
   centerPosition: {x: 0, y: 8.5, z: -6.5}
   animationDuration: 0.4
-  initialPosition: {x: -0.4, y: 1.187, z: -6.8}
+  initialPosition: {x: -1, y: 0.95, z: -7.15}
   initialRotation: {x: 0, y: 0, z: 0, w: 0}
   rotateSpeed: 100
   validRotations: []

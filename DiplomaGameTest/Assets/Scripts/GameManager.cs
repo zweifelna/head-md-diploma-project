@@ -55,6 +55,7 @@ public class GameManager : MonoBehaviour
     private Dictionary<int, Action> dailyEvents;
     public int currentDay = 1;
     public List<GameObject> discardedObjects = new List<GameObject>();
+    public List<GameObject> fakeObjects = new List<GameObject>();
     public GameObject screenReplacementPrefab;
     public GameObject battery1ReplacementPrefab;
     public GameObject battery2ReplacementPrefab;
@@ -79,7 +80,7 @@ public class GameManager : MonoBehaviour
     private bool isScreenReplaced = false;
     private bool isBatteriesReplaced = false;
     private bool isFinalized = false;
-    public int gpsChipSpawnDay = 1;
+    public int gpsChipSpawnDay = 20;
     public GameObject gpsChipPrefab;
 
 
@@ -396,6 +397,7 @@ public class GameManager : MonoBehaviour
         UpdateQuotaDisplay();
         DestroyObjects();
         ClearDiscardedObjects();
+        ClearFakeObjects();
         if(currentState != State.Tutorial)
         {
             AdvanceDay();
@@ -414,7 +416,7 @@ public class GameManager : MonoBehaviour
 
         bool allDismantled = true;
         foreach (InteractableObject obj in allInteractableObjects) {
-            if (obj.currentState != InteractableObject.ObjectState.Dismantled) {
+            if (obj.currentState != InteractableObject.ObjectState.Dismantled){
                 Debug.Log(obj.gameObject.name + " is not dismantled. Current state: " + obj.currentState);
                 allDismantled = false;
                 break; // Bonne utilisation du break pour optimiser la boucle
@@ -441,7 +443,7 @@ public class GameManager : MonoBehaviour
             if(!obj.isMainObject)
             {
                 Debug.Log("1");
-                if (!obj.isMainObject && !obj.IsSnapped && obj.isBeingRepaired)
+                if (!obj.isMainObject && !obj.IsSnapped && obj.isBeingRepaired && !fakeObjects.Contains(obj.gameObject))
                 {
                     Debug.Log("2");
                     Debug.Log(obj.gameObject.name + " is not assembled. Current state: " + obj.currentState);
@@ -587,6 +589,7 @@ public class GameManager : MonoBehaviour
 
     void StartScreenRepair()
     {
+        SpawnOtherBatteries();
         Debug.Log("Starting screen repair sequence.");
         InteractableObject oldScreen = FindScreenObject();
         if (oldScreen != null)
@@ -596,7 +599,7 @@ public class GameManager : MonoBehaviour
             oldScreen.isRepaired = false;
             oldScreen.isBeingRepaired = true;
             // Instancier le nouvel écran à remplacer
-            Vector3 newPosition = oldScreen.initialPosition - new Vector3(0, 0, (batteryZOffset*3));
+            Vector3 newPosition = new Vector3(-1, 0.95f, -7.15f);
             GameObject newScreen = Instantiate(screenReplacementPrefab, newPosition, oldScreen.initialRotation);
             InteractableObject newScreenInteractable = newScreen.GetComponent<InteractableObject>();
 
@@ -637,6 +640,7 @@ public class GameManager : MonoBehaviour
 
     void StartBatteryReplacement()
     {
+        SpawnOtherScreens();
         Debug.Log("Starting battery replacement sequence.");
         List<InteractableObject> oldBatteries = FindBatteryObjects();
         Debug.Log(oldBatteries.Count);
@@ -674,7 +678,7 @@ public class GameManager : MonoBehaviour
 
                 if (newBatteryPrefab != null)
                 {
-                    Vector3 newPosition = oldBattery.initialPosition + new Vector3(0, 0, batteryZOffset);
+                    Vector3 newPosition = new Vector3(1f+(-0.5f*i), 0.96f, -7);
                     GameObject newBattery = Instantiate(newBatteryPrefab, newPosition, oldBattery.initialRotation);
                     InteractableObject newBatteryInteractable = newBattery.GetComponent<InteractableObject>();
 
@@ -717,15 +721,6 @@ public class GameManager : MonoBehaviour
         return batteries;
     }
 
-    void StartFullDismantle()
-    {
-        Debug.Log("Starting full dismantle sequence.");
-        // Implémenter la logique de vérification des conditions de réparation
-        // if (CheckRepairCompletion())
-        // {
-        //     CompleteRepairProcess();
-        // }
-    }
 
     public void HandleTutorial()
     {
@@ -838,6 +833,15 @@ public class GameManager : MonoBehaviour
         discardedObjects.Clear();
     }
 
+    private void ClearFakeObjects()
+    {
+        foreach (GameObject fakeObject in fakeObjects)
+        {
+            Destroy(fakeObject);
+        }
+        fakeObjects.Clear();
+    }
+
     // public void InitializeObjectSelection()
     // {
     //     SetSubState(SubState.ObjectSelected);
@@ -928,9 +932,9 @@ public class GameManager : MonoBehaviour
             currentObject = CreateInteractableObject(nextRepair.Item1);
             SubState subState = nextRepair.Item2;
 
-            if (currentDay == gpsChipSpawnDay)
+            if (currentDay >= gpsChipSpawnDay)
             {
-                SpawnGPSChip();
+                //SpawnGPSChip();
             }
 
             currentObject.gameObject.SetActive(true); // Activez le prochain objet
@@ -1066,5 +1070,74 @@ public class GameManager : MonoBehaviour
             Debug.LogError("Le prefab gpsChipPrefab n'a pas de composant InteractableObject.");
         }
     }
+
+    void SpawnOtherBatteries(){
+        List<InteractableObject> oldBatteries = FindBatteryObjects();
+        if (oldBatteries.Count >= 3)
+        {
+            for (int i = 0; i < oldBatteries.Count; i++)
+            {
+                InteractableObject oldBattery = oldBatteries[i];
+
+                GameObject newBatteryPrefab = null;
+                switch (i)
+                {
+                    case 0:
+                        newBatteryPrefab = battery1ReplacementPrefab;
+                        break;
+                    case 1:
+                        newBatteryPrefab = battery2ReplacementPrefab;
+                        break;
+                    case 2:
+                        newBatteryPrefab = battery3ReplacementPrefab;
+                        break;
+                }
+
+                if (newBatteryPrefab != null)
+                {
+                    Vector3 newPosition = new Vector3(1f+(-0.5f*i), 0.96f, -7);
+                    GameObject newBattery = Instantiate(newBatteryPrefab, newPosition, oldBattery.initialRotation);
+                    InteractableObject newBatteryInteractable = newBattery.GetComponent<InteractableObject>();
+
+                    if (newBatteryInteractable != null)
+                    {
+                        fakeObjects.Add(newBatteryInteractable.gameObject);
+                        newBatteryInteractable.isRepaired = false;
+                        newBatteryInteractable.initialPosition = newBattery.transform.position;
+                        newBatteryInteractable.initialRotation = newBattery.transform.rotation;
+                    }
+
+                }
+            }
+        }
+    }
+
+    void SpawnOtherScreens(){
+        InteractableObject oldScreen = FindScreenObject();
+        Vector3 newPosition = new Vector3(-1, 0.95f, -7.15f);
+        GameObject newScreen = Instantiate(screenReplacementPrefab, newPosition, oldScreen.initialRotation);
+        InteractableObject newScreenInteractable = newScreen.GetComponent<InteractableObject>();
+
+        if (newScreenInteractable != null)
+        {
+            newScreenInteractable.isRepaired = true; // Le nouvel écran est marqué comme réparé
+            fakeObjects.Add(newScreenInteractable.gameObject);
+        }
+
+        // Ajouter le nouvel écran à la liste des objets interactables
+        allInteractableObjects.Add(newScreenInteractable);
+
+        newScreenInteractable.OnSnapped += () =>
+        {
+            oldScreen.isBeingRepaired = false;
+            oldScreen.isDisposable = false;
+            oldScreen.currentState = InteractableObject.ObjectState.Dismantled;
+            Debug.Log("Old screen marked as dismantled.");
+            CheckIfAllAssembled();
+        };
+
+    }
+
+    
 
 }
