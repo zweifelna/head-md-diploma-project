@@ -151,38 +151,40 @@ IEnumerator DisplayTextAndChoices() {
     IEnumerator AnimateText(TextMeshProUGUI textComponent, string text) {
         textComponent.text = "";
         audiomanager.Play("datatext");
+
         int length = text.Length;
-        Debug.Log(length);
-        foreach (char c in text) {
-            textComponent.text += c;
-            yield return new WaitForSeconds(textSpeed);
+        System.Text.StringBuilder displayedText = new System.Text.StringBuilder();
+
+        for (int i = 0; i < length; i++) {
+            displayedText.Append(text[i]);
+            textComponent.text = displayedText.ToString();
+            if (i % 3 == 0) { // Ajoute un petit délai toutes les trois lettres
+                yield return new WaitForSeconds(textSpeed);
+            }
         }
-        
+
         audiomanager.Stop("datatext");
     }
 
     IEnumerator AnimateTextSlowly(TextMeshProUGUI textComponent, string text) {
         textComponent.text = "";
-        audiomanager.Play("datatext");
         foreach (char c in text) {
             textComponent.text += c;
             yield return new WaitForSeconds(1.0f); // Affiche chaque caractère avec une pause de 1 seconde
         }
-        audiomanager.Stop("datatext");
     }
 
     IEnumerator DisplayRefreshingText(TextMeshProUGUI textComponent, string text) {
-        // Effacer le texte existant du textComponent
         textComponent.text = "";
+        System.Text.StringBuilder displayedText = new System.Text.StringBuilder();
 
         int length = text.Length;
-        Debug.Log(length);
-        string displayText = "";
-
         for (int i = 0; i < length; i++) {
-            displayText += text[i];
-            textComponent.text = displayText;  // Mise à jour du texte affiché à chaque itération
-            yield return new WaitForSeconds(textSpeed);
+            displayedText.Append(text[i]);
+            textComponent.text = displayedText.ToString();
+            if (i % 3 == 0) { // Ajoute un petit délai toutes les trois lettres
+                yield return new WaitForSeconds(textSpeed);
+            }
 
             // Si c'est la dernière itération, ne pas supprimer le texte immédiatement
             if (i == length - 1) {

@@ -20,4 +20,7 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/VisualScene.unity
     guid: 5709fca86ac954a0dae5ea3a7479b194
+  - enabled: 0
+    path: Assets/Scenes/interactiveObjects.unity
+    guid: 7f90a3bf6dcbc44cabb2c8af175f99d4
   m_configObjects: {}

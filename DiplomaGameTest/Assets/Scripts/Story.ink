@@ -16,11 +16,11 @@ EXTERNAL EndTutorial()
 
 === day_1_1 ===
 Welcome to your first day of work 
-As a repairer, your role is crucial to the continued operation of the FixFox.   
+As a repairer, your role is crucial to the continued operation of the FixFox.  
+# END_KNOT
 * [>] -> day_1_2
 
 === day_1_2 ===
-
 Instructions:
 
 1. Read the diagnosis on the terminal
@@ -42,8 +42,8 @@ The company
 Day 1 tasks:
 # LOAD_KNOT
 ...
-object \#1 - change the screen
-object \#2 - change the screen
+\-\-\-\-\-\-FixFox\#1\-\-\-\-\-\-\ \-\-> change the screen \-\-> OS up to date
+\-\-\-\-\-\-FixFox\#2\-\-\-\-\-\-\ \-\-> change the screen \-\-> update required
 * [>] -> day_1_5
 
 === day_1_5 ===

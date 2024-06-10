@@ -166,8 +166,18 @@ public class GameManager : MonoBehaviour
             { 1, new List<(string, SubState)> 
                 { 
                     ("Objet 1", SubState.RepairScreen),
-                    ("Objet 2", SubState.RepairScreen)
-                } 
+                    ("Objet 2", SubState.RepairScreen),
+                    ("Objet 3", SubState.RepairScreen),
+                    ("Objet 4", SubState.RepairScreen),
+                    ("Objet 5", SubState.RepairScreen),
+                    ("Objet 6", SubState.RepairScreen),
+                    ("Objet 7", SubState.RepairScreen),
+                    ("Objet 8", SubState.RepairScreen),
+                    ("Objet 9", SubState.RepairScreen),
+                    ("Objet 10", SubState.RepairScreen),
+                    ("Objet 11", SubState.RepairScreen),
+                    ("Objet 12", SubState.RepairScreen),
+                }
             },
             { 2, new List<(string, SubState)> 
                 { 
