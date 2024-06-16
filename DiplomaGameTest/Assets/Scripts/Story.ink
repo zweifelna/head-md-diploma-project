@@ -37,13 +37,13 @@ Yours sincerely
 
 Fixery
 
-# END_KNOT
-* [>] -> day_2
+* [>] -> day_1_4
 
 
 === day_1_4 ===
+# END_KNOT
 
-* [>] -> day_1_5
+* [>] -> day_2
 
 === day_1_5 ===
 # END_KNOT
@@ -439,7 +439,7 @@ The diagnosis shows that the object's screen is damaged. Let's replace the scree
 
 === tutorial_screen_repair_2 ===
 #START_TUTO
-* [>] -> tutorial_remove_screen
+* [...] -> tutorial_remove_screen
 
 === tutorial_remove_screen ===
 Now install the new screen at the bottom by pressing on it for a moment and placing it on the object.
@@ -447,7 +447,7 @@ Now install the new screen at the bottom by pressing on it for a moment and plac
 
 === tutorial_remove_screen_2 ===
 #ENDKNOT_TUTO
-* [-] -> tutorial_finalize
+* [...] -> tutorial_finalize
 
 === tutorial_finalize ===
 The object is now repaired. Now select the FixFox and click on the send bin to finish your job.
@@ -455,16 +455,19 @@ The object is now repaired. Now select the FixFox and click on the send bin to f
 
 === tutorial_finalize_2 ===
 #ENDKNOT_TUTO
-* [-] -> tutorial_end
+* [...] -> tutorial_end
 
 === tutorial_end ===
 Congratulations! You have completed your first repair. Your training is complete.
 * [Start the game] -> day_1_1
 
 === gameOver ===
-You haven't managed to keep up with the daily tasks. You will be fired.
-* [Play again] -> start
+You haven't managed to keep up with the daily tasks.
+You are fired.
+* [>] -> END
 
+=== gameOver_2 ===
+* [>] -> day_1_1
 === end_demo ===
 You have reached the end of the demo. I hope you enjoyed it, thanks for playing.
 * [Play again] -> END

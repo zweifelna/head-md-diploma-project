@@ -367,7 +367,7 @@ public class GameManager : MonoBehaviour
     void HandleGameOver()
     {
         Debug.Log("Game Over!");
-        StartCoroutine(EndOfDayRoutine("game_over"));
+        StartCoroutine(GameOverRoutine());
     }
 
     void HandleWin()
@@ -404,9 +404,18 @@ public class GameManager : MonoBehaviour
 
     }
 
+    private IEnumerator GameOverRoutine()
+    {
+        CameraManager.Instance.SwitchToTerminalCamera();
+        yield return new WaitForSeconds(3f);
+        ResetGameForNextDay();
+        inkStoryManager.StartStoryFromKnot("gameOver");
+        
+    }
+
     private void ResetGameForNextDay()
     {
-        timeRemaining = 120; // Réinitialiser le timer
+        timeRemaining = 100; // Réinitialiser le timer
         timerIsRunning = true;
         score = 0; // Réinitialiser le score
         UpdateQuotaDisplay();
@@ -1010,7 +1019,7 @@ public class GameManager : MonoBehaviour
         yield return new WaitUntil(() => isScreenRemoved);
         Debug.Log("COROUTINE screenremoved");
         CameraManager.Instance.SwitchToTerminalCamera();
-        yield return new WaitForSeconds(2.8f);
+        yield return new WaitForSeconds(2.5f);
         StartScreenRepair();
         inkStoryManager.StartStoryFromKnot("tutorial_remove_screen");
 
@@ -1019,13 +1028,13 @@ public class GameManager : MonoBehaviour
         yield return new WaitUntil(() => isScreenReplaced);
         Debug.Log("COROUTINE screenreplaced");
         CameraManager.Instance.SwitchToTerminalCamera();
-        yield return new WaitForSeconds(2.8f);
+        yield return new WaitForSeconds(2.5f);
         inkStoryManager.StartStoryFromKnot("tutorial_finalize");
 
         // Attendre que la réparation soit finalisée
         yield return new WaitUntil(() => isFinalized);
         CameraManager.Instance.SwitchToTerminalCamera();
-        yield return new WaitForSeconds(2.8f);
+        yield return new WaitForSeconds(2.5f);
         inkStoryManager.StartStoryFromKnot("start");
         CompleteRepairProcess();
     }
@@ -1170,6 +1179,33 @@ public class GameManager : MonoBehaviour
                 materialToHighlight.SetColor("_EdgeHighlightColor", originalEdgeColor);
             }
         }
+    }
+
+    public void RestartGame()
+    {
+        // Réinitialiser les variables de GameManager
+        currentState = State.Tutorial;
+        currentSubState = SubState.None;
+        timeRemaining = 60;
+        timerIsRunning = false;
+        quota = 2;
+        score = 0;
+        dismantlingCompleted = false;
+        selectedPatternIndex = -1;
+        currentDay = 1;
+        elapsedTime = 0f;
+        isNight = false;
+        isDiagnosed = false;
+        isScreenRemoved = false;
+        isScreenReplaced = false;
+        isBatteriesReplaced = false;
+        isFinalized = false;
+
+        // Supprimer tous les objets interactables
+        DestroyObjects();
+        ClearDiscardedObjects();
+        ClearFakeObjects();
+
     }
 
     

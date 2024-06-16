@@ -2708,7 +2708,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentState: 0
   currentSubState: 0
-  timeRemaining: 120
+  timeRemaining: 100
   timerIsRunning: 0
   timerText: {fileID: 38056863}
   scoreText: {fileID: 1635018449}
