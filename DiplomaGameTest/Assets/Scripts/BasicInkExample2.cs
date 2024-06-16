@@ -170,7 +170,7 @@ IEnumerator DisplayTextAndChoices() {
         textComponent.text = "";
         foreach (char c in text) {
             textComponent.text += c;
-            yield return new WaitForSeconds(1.0f); // Affiche chaque caractère avec une pause de 1 seconde
+            yield return new WaitForSeconds(0.8f); // Affiche chaque caractère avec une pause de 1 seconde
         }
     }
 

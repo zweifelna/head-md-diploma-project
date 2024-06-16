@@ -375,7 +375,7 @@ public class GameManager : MonoBehaviour
         Debug.Log("You Win!");
         StartCoroutine(EndOfDayRoutine("quota_achieved"));
         // Passer à la journée suivante
-        ResetGameForNextDay();
+        
         //inkStoryManager.RestartStory();
     }
 
@@ -383,6 +383,8 @@ public class GameManager : MonoBehaviour
     {
         // Passer à la caméra du terminal
         CameraManager.Instance.SwitchToTerminalCamera();
+        yield return new WaitForSeconds(3f);
+        ResetGameForNextDay();
         // Mettre à jour le score dans Ink
         inkStoryManager.SetInkVariable("current_score", score);
         inkStoryManager.SetInkVariable("currentDay", currentDay);
@@ -1008,7 +1010,7 @@ public class GameManager : MonoBehaviour
         yield return new WaitUntil(() => isScreenRemoved);
         Debug.Log("COROUTINE screenremoved");
         CameraManager.Instance.SwitchToTerminalCamera();
-        yield return new WaitUntil(() => CameraManager.Instance.IsTerminalActive);
+        yield return new WaitForSeconds(2.8f);
         StartScreenRepair();
         inkStoryManager.StartStoryFromKnot("tutorial_remove_screen");
 
@@ -1017,12 +1019,13 @@ public class GameManager : MonoBehaviour
         yield return new WaitUntil(() => isScreenReplaced);
         Debug.Log("COROUTINE screenreplaced");
         CameraManager.Instance.SwitchToTerminalCamera();
-        yield return new WaitUntil(() => CameraManager.Instance.IsTerminalActive);
+        yield return new WaitForSeconds(2.8f);
         inkStoryManager.StartStoryFromKnot("tutorial_finalize");
 
         // Attendre que la réparation soit finalisée
         yield return new WaitUntil(() => isFinalized);
         CameraManager.Instance.SwitchToTerminalCamera();
+        yield return new WaitForSeconds(2.8f);
         inkStoryManager.StartStoryFromKnot("start");
         CompleteRepairProcess();
     }

@@ -135,7 +135,7 @@ Daily tasks:
 
 === day_3_3 ===
 # END_KNOT
-* [>] -> end_demo
+* [>] -> day_20
 
 === day_4 ===
 You have reached the end of the demo. I hope you enjoyed it, thanks for playing.
@@ -183,14 +183,14 @@ object \#4 - /!\ analysis error
 * [>] -> day_20
 
 === day_20 ===
-Welcome to day 20!
+Welcome to day 10!
 
 * [>] -> day_20_2
 
 === day_20_2 ===
 Dear employees,
 
-We are delighted to announce that the [Group name] investment group has acquired 50% of our shares. This strategic alliance will enable us to expand our ambitions with FixFox.
+We are delighted to announce that an investment group has acquired 50% of our shares. This strategic alliance will enable us to expand our ambitions with FixFox.
 
 Your hard work has been essential in achieving this milestone, positioning us at the forefront of the industry. Our success reflects the commitment and excellence of our repair team.
 
@@ -204,7 +204,7 @@ Yours sincerely,
 
 The Management
 
-* [>] -> day_23
+* [>] -> end_demo
 
 === day_23 ===
 Welcome to day 23!
@@ -432,6 +432,7 @@ To begin, use the terminal to diagnose the object. Click on the ‘Diagnose’ b
 Diagnose
 # LOAD_KNOT
 ...
+\-\-\-\-\-\-FixFox\#1\-\-\-\-\-\-\ \-\-> change the screen
 
 The diagnosis shows that the object's screen is damaged. Let's replace the screen.
 * [>] -> tutorial_screen_repair_2
@@ -441,7 +442,7 @@ The diagnosis shows that the object's screen is damaged. Let's replace the scree
 * [>] -> tutorial_remove_screen
 
 === tutorial_remove_screen ===
-Now install the new screen by pressing on it for a moment and placing it on the object.
+Now install the new screen at the bottom by pressing on it for a moment and placing it on the object.
 * [Install the screen] -> tutorial_remove_screen_2
 
 === tutorial_remove_screen_2 ===
@@ -449,7 +450,7 @@ Now install the new screen by pressing on it for a moment and placing it on the 
 * [-] -> tutorial_finalize
 
 === tutorial_finalize ===
-The object is now repaired. Click on the send tray to finish your job.
+The object is now repaired. Now select the FixFox and click on the send bin to finish your job.
 * [Place object] -> tutorial_finalize_2
 
 === tutorial_finalize_2 ===
