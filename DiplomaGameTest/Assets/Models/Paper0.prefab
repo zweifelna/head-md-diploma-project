@@ -885,20 +885,13 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'We are the Open Resilience group, and we are contacting you to let you
-    know that we do not accept the new direction of the company. The FixFox was originally
-    about sustainability, community and innovation. We will not tolerate this great
-    object becoming a monopoly solely focused on profit.
-
-    We repeat to all repairers,
-    custom parts are not "pirates", they simply symbolise our freedom to use the
-    product.
-
-
-    Sincerely, Open Resilience'
+  m_text: 'Message from Open Resilience: We reject FixFox''s new profit-driven direction.
+    FixFox should focus on sustainability and community. Custom parts symbolize our
+    freedom.'
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 53d671027d7ea40b3a16f0692794ed26, type: 2}
+  m_sharedMaterial: {fileID: 3484873400186259767, guid: 53d671027d7ea40b3a16f0692794ed26,
+    type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []

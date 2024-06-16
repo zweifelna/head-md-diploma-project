@@ -2708,7 +2708,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentState: 0
   currentSubState: 0
-  timeRemaining: 20
+  timeRemaining: 120
   timerIsRunning: 0
   timerText: {fileID: 38056863}
   scoreText: {fileID: 1635018449}
@@ -2771,6 +2771,9 @@ MonoBehaviour:
   gpsChipSpawnDay: 1
   gpsChipPrefab: {fileID: 8271822756289547634, guid: 1883ff6ac8f7a4349a0a53bc6fa70fa6,
     type: 3}
+  materialToHighlight: {fileID: 0}
+  highlightOutlineColor: {r: 0, g: 0, b: 1, a: 1}
+  highlightEdgeColor: {r: 0, g: 0, b: 1, a: 1}
 --- !u!114 &1914429377
 MonoBehaviour:
   m_ObjectHideFlags: 0

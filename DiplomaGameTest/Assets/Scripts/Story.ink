@@ -11,43 +11,46 @@ EXTERNAL EndTutorial()
     - currentDay == 2: -> day_2
     - currentDay == 3: -> day_3
     - currentDay == 4: -> day_4
+    - currentDay == 100: -> gameOver
     - else: -> generic_day
 }
 
 === day_1_1 ===
 Welcome to your first day of work 
 As a repairer, your role is crucial to the continued operation of the FixFox.  
-# END_KNOT
+
 * [>] -> day_1_2
 
 === day_1_2 ===
-Instructions:
-
-1. Read the diagnosis on the terminal
-2. Replace faulty parts
-3. Place the item in the bin.
+Daily tasks:
+# LOAD_KNOT
+...
+\-\-\-\-\-\-FixFox\#1\-\-\-\-\-\-\ \-\-> change the screen
+\-\-\-\-\-\-FixFox\#2\-\-\-\-\-\-\ \-\-> change the screen
 
 * [>] -> day_1_3
 
 === day_1_3 ===
-Please respect the daily quotas to avoid suspension. 
+Please respect the daily tasks to avoid suspension. 
 
-Yours sincerely 
+Yours sincerely
 
-The company
+Fixery
 
-* [>] -> day_1_4
+# END_KNOT
+* [>] -> day_2
+
 
 === day_1_4 ===
-Day 1 tasks:
-# LOAD_KNOT
-...
-\-\-\-\-\-\-FixFox\#1\-\-\-\-\-\-\ \-\-> change the screen \-\-> OS up to date
-\-\-\-\-\-\-FixFox\#2\-\-\-\-\-\-\ \-\-> change the screen \-\-> update required
+
 * [>] -> day_1_5
 
 === day_1_5 ===
-Instructions:
+# END_KNOT
+* [FORCE UPDATES] -> day_1_6
+
+=== day_1_6 ===
+OS UPDATE
 #UPDATE_KNOT
 1%
 #UPDATE_KNOT
@@ -89,20 +92,25 @@ Instructions:
 #UPDATE_KNOT
 99%
 100%
-# END_KNOT
-* [>] -> day_2
+All devices are up to date.
+
+* [>] -> day_1_7
+
+=== day_1_7 ===
+
+* [FORCE UPDATES] -> day_1_7
 
 === day_2 ===
-Welcome to day 2!
+Welcome to day 2
 
 * [>] -> day_2_2
 
 === day_2_2 ===
-Day 2 tasks:
+Daily tasks:
 # LOAD_KNOT
 ...
-object \#1 - replace batteries
-object \#2 - change the screen
+\-\-\-\-\-\-FixFox\#1\-\-\-\-\-\-\ \-\-> replace batteries
+\-\-\-\-\-\-FixFox\#2\-\-\-\-\-\-\ \-\-> change the screen
 
 * [>] -> day_2_3
 
@@ -111,27 +119,26 @@ object \#2 - change the screen
 * [>] -> day_3
 
 === day_3 ===
-Welcome to day 3!
+Welcome to day 3
 
 * [>] -> day_3_2
 
 === day_3_2 ===
-Day 3 tasks:
+Daily tasks:
 # LOAD_KNOT
 ...
-object \#1 - change the screen
-object \#2 - replace batteries
-object \#3 - change the screen
+\-\-\-\-\-\-FixFox\#1\-\-\-\-\-\-\ \-\-> change the screen
+\-\-\-\-\-\-FixFox\#2\-\-\-\-\-\-\ \-\-> replace batteries
+\-\-\-\-\-\-FixFox\#1\-\-\-\-\-\-\ \-\-> change the screen
 
 * [>] -> day_3_3
 
 === day_3_3 ===
 # END_KNOT
-* [>] -> day_4
+* [>] -> end_demo
 
 === day_4 ===
-Welcome to day 4!
-
+You have reached the end of the demo. I hope you enjoyed it, thanks for playing.
 * [>] -> day_4_2
 
 === day_4_2 ===
@@ -422,6 +429,10 @@ To begin, use the terminal to diagnose the object. Click on the ‘Diagnose’ b
 * [Diagnose] -> tutorial_screen_repair
 
 === tutorial_screen_repair ===
+Diagnose
+# LOAD_KNOT
+...
+
 The diagnosis shows that the object's screen is damaged. Let's replace the screen.
 * [>] -> tutorial_screen_repair_2
 
@@ -447,4 +458,13 @@ The object is now repaired. Click on the send tray to finish your job.
 
 === tutorial_end ===
 Congratulations! You have completed your first repair. Your training is complete.
-* [Start the game] -> start
+* [Start the game] -> day_1_1
+
+=== gameOver ===
+You haven't managed to keep up with the daily tasks. You will be fired.
+* [Play again] -> start
+
+=== end_demo ===
+You have reached the end of the demo. I hope you enjoyed it, thanks for playing.
+* [Play again] -> END
+

@@ -82,12 +82,26 @@ public class GameManager : MonoBehaviour
     private bool isFinalized = false;
     public int gpsChipSpawnDay = 20;
     public GameObject gpsChipPrefab;
+    public Material materialToHighlight;
+    public Color highlightOutlineColor = Color.blue;
+    public Color highlightEdgeColor = Color.blue;
+    private Color originalOutlineColor;
+    private Color originalEdgeColor;
 
+    void Start()
+    {
+        if (materialToHighlight != null)
+        {
+            originalOutlineColor = materialToHighlight.GetColor("_OutlineColor");
+            originalEdgeColor = materialToHighlight.GetColor("_EdgeHighlightColor");
+        }
+    }
 
     public void StartGame()
     {
         InitializeGame();
         // Commencer le tutoriel
+        HighlightObject(true);
         StartTutorial();
         //StartWithTerminal();
     }
@@ -167,16 +181,6 @@ public class GameManager : MonoBehaviour
                 { 
                     ("Objet 1", SubState.RepairScreen),
                     ("Objet 2", SubState.RepairScreen),
-                    ("Objet 3", SubState.RepairScreen),
-                    ("Objet 4", SubState.RepairScreen),
-                    ("Objet 5", SubState.RepairScreen),
-                    ("Objet 6", SubState.RepairScreen),
-                    ("Objet 7", SubState.RepairScreen),
-                    ("Objet 8", SubState.RepairScreen),
-                    ("Objet 9", SubState.RepairScreen),
-                    ("Objet 10", SubState.RepairScreen),
-                    ("Objet 11", SubState.RepairScreen),
-                    ("Objet 12", SubState.RepairScreen),
                 }
             },
             { 2, new List<(string, SubState)> 
@@ -301,7 +305,6 @@ public class GameManager : MonoBehaviour
         {
             case State.GameActive:
                 // Initialiser et démarrer le timer ici si nécessaire
-                timeRemaining = 60; // Réinitialiser le timer
                 timerIsRunning = true;
                 break;
             case State.GamePause:
@@ -401,7 +404,7 @@ public class GameManager : MonoBehaviour
 
     private void ResetGameForNextDay()
     {
-        timeRemaining = 60; // Réinitialiser le timer
+        timeRemaining = 120; // Réinitialiser le timer
         timerIsRunning = true;
         score = 0; // Réinitialiser le score
         UpdateQuotaDisplay();
@@ -609,7 +612,7 @@ public class GameManager : MonoBehaviour
             oldScreen.isRepaired = false;
             oldScreen.isBeingRepaired = true;
             // Instancier le nouvel écran à remplacer
-            Vector3 newPosition = new Vector3(-1, 0.95f, -7.15f);
+            Vector3 newPosition = new Vector3(-1, 1f, -7.15f);
             GameObject newScreen = Instantiate(screenReplacementPrefab, newPosition, oldScreen.initialRotation);
             InteractableObject newScreenInteractable = newScreen.GetComponent<InteractableObject>();
 
@@ -688,7 +691,7 @@ public class GameManager : MonoBehaviour
 
                 if (newBatteryPrefab != null)
                 {
-                    Vector3 newPosition = new Vector3(1f+(-0.5f*i), 0.96f, -7);
+                    Vector3 newPosition = new Vector3(1f+(-0.5f*i), 1f, -7);
                     GameObject newBattery = Instantiate(newBatteryPrefab, newPosition, oldBattery.initialRotation);
                     InteractableObject newBatteryInteractable = newBattery.GetComponent<InteractableObject>();
 
@@ -1146,6 +1149,24 @@ public class GameManager : MonoBehaviour
             CheckIfAllAssembled();
         };
 
+    }
+
+    public void HighlightObject(bool shouldHighlight)
+    {
+        if (materialToHighlight != null)
+        {
+            if (shouldHighlight)
+            {
+                materialToHighlight.SetColor("_OutlineColor", highlightOutlineColor);
+                materialToHighlight.SetColor("_EdgeHighlightColor", highlightEdgeColor);
+            }
+            else
+            {
+                // Réinitialiser les couleurs originales
+                materialToHighlight.SetColor("_OutlineColor", originalOutlineColor);
+                materialToHighlight.SetColor("_EdgeHighlightColor", originalEdgeColor);
+            }
+        }
     }
 
     
