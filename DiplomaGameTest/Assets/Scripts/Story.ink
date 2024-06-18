@@ -192,8 +192,6 @@ Dear employees,
 
 We are delighted to announce that an investment group has acquired 50% of our shares. This strategic alliance will enable us to expand our ambitions with FixFox.
 
-Your hard work has been essential in achieving this milestone, positioning us at the forefront of the industry. Our success reflects the commitment and excellence of our repair team.
-
 * [>] -> day_20_3
 
 === day_20_3 ===
@@ -419,10 +417,7 @@ Welcome to a new day!
 
 === tutorial_start ===
 Welcome to the company! You are now a repairer responsible for keeping our technological objects in perfect condition. Your job is to diagnose and repair the objects entrusted to you. Follow the instructions to get started.
-* [Tutorial] -> tutorial_diagnose
-* [Skip tutorial] 
-    ~ EndTutorial()
-    -> start
+* [Start Tutorial] -> tutorial_diagnose
 
 === tutorial_diagnose ===
 To begin, use the terminal to diagnose the object. Click on the ‘Diagnose’ button to see the object's problems.
@@ -434,7 +429,7 @@ Diagnose
 ...
 \-\-\-\-\-\-FixFox\#1\-\-\-\-\-\-\ \-\-> change the screen
 
-The diagnosis shows that the object's screen is damaged. Let's replace the screen.
+The diagnosis shows that the object's screen is damaged. Let's replace the screen by pressing on it for a moment and dropping it on the side.
 * [>] -> tutorial_screen_repair_2
 
 === tutorial_screen_repair_2 ===

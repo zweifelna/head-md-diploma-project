@@ -284,7 +284,7 @@ public class InteractableObject : MonoBehaviour, IInteractable
         // Action à réaliser lorsque la rotation est correcte
         //Debug.Log("Rotation correcte, action déclenchée.");
         GetComponent<Renderer>().material.color = highlightColor;
-        TriggerVibration();
+        //TriggerVibration();
     }
     private void TriggerVibration()
     {
